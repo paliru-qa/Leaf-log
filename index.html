@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeafLog — догляд за рослинами</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#fbfaf7;
+  --surface:#ffffff;
+  --border:#e7e4de;
+  --border-soft:#f0eee9;
+  --text:#211f1c;
+  --text-muted:#84807a;
+  --accent:#436b34;
+  --accent-dark:#2f4d24;
+  --accent-soft:#eaf1e1;
+  --radius:14px;
+  --radius-sm:10px;
+
+  --water-ok-bg:#dbf3be;    --water-ok-text:#3f6b12;
+  --water-today-bg:#fff8ca; --water-today-text:#7a6300;
+  --water-overdue-bg:#ffd3be; --water-overdue-text:#973a12;
+  --fert-ok-bg:#c8d2ff;   --fert-ok-text:#2c3a99;
+  --fert-due-bg:#ffc8d8;  --fert-due-text:#99274f;
+  --fert-off-bg:#dbdbdb;  --fert-off-text:#4a4a4a;
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+h1,h2,h3,h4{ font-family:'Fraunces',serif; font-weight:600; margin:0; }
+p{ margin:0; }
+button{ font-family:'Inter',sans-serif; cursor:pointer; }
+input,textarea{ font-family:'Inter',sans-serif; }
+
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 28px; border-bottom:1px solid var(--border);
+  flex-wrap:wrap; gap:12px; background:var(--surface);
+}
+.brand{ font-family:'Fraunces',serif; font-size:22px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.topbar-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+.btn-primary{ background:var(--accent); color:#fff; border:none; padding:10px 18px; border-radius:999px; font-size:14px; font-weight:600; transition:background .15s ease; }
+.btn-primary:hover{ background:var(--accent-dark); }
+
+.mode-toggle{ background:var(--surface); border:1px solid var(--border); color:var(--text); padding:10px 16px; border-radius:999px; font-size:14px; font-weight:500; transition:all .15s ease; }
+.mode-toggle.active{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-dark); }
+
+main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
+
+.legend{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 22px; padding:12px 14px; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-sm); }
+.legend-chip{ font-size:11.5px; padding:4px 10px; border-radius:999px; font-weight:700; white-space:nowrap; }
+
+.plant-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+@media(min-width:780px){ .plant-grid{ grid-template-columns:repeat(4,1fr); gap:22px; } }
+
+.plant-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:flex; flex-direction:column; }
+.plant-card:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(30,25,15,.08); }
+.card-photo-wrap{ position:relative; aspect-ratio:1/1; background:var(--accent-soft); overflow:hidden; }
+.card-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
+.card-photo-wrap .no-photo{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:34px; }
+.card-photo-wrap .photo-count{ position:absolute; bottom:8px; right:8px; background:rgba(20,20,18,.62); color:#fff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:999px; }
+.card-body{ padding:12px 14px 14px; display:flex; flex-direction:column; gap:7px; flex:1; }
+.card-name{ font-size:15.5px; font-weight:600; font-family:'Fraunces',serif; line-height:1.25; }
+.card-meta-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11.5px; }
+.card-meta-label{ color:var(--text-muted); }
+.badge{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+
+.card-instructions{ margin-top:2px; padding:9px 10px; border-radius:var(--radius-sm); background:#eaf5e0; font-size:12.3px; line-height:1.4; color:#2f4d24; white-space:pre-wrap; }
+.card-quick-actions{ display:flex; gap:6px; margin-top:4px; }
+.qa-btn{ flex:1; font-size:11.5px; font-weight:700; padding:7px 4px; border-radius:8px; border:1px solid var(--border); background:#fff; }
+.qa-btn.water{ color:var(--water-ok-text); }
+.qa-btn.fert{ color:var(--fert-ok-text); }
+
+.empty-state{ text-align:center; padding:70px 20px; color:var(--text-muted); }
+.empty-state h3{ margin-bottom:8px; color:var(--text); font-size:19px; }
+
+.overlay{ position:fixed; inset:0; background:rgba(28,26,22,.42); display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; z-index:50; }
+.detail-panel, .form-panel{ background:var(--surface); border-radius:20px; max-width:760px; width:100%; padding:28px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.18); }
+.close-btn{ position:absolute; top:14px; right:16px; background:none; border:none; font-size:24px; color:var(--text-muted); line-height:1; padding:6px; }
+
+.detail-content{ display:flex; gap:28px; margin-top:8px; }
+@media(max-width:640px){ .detail-content{ flex-direction:column; } }
+.detail-left{ display:flex; flex-direction:column; align-items:center; gap:10px; width:220px; flex-shrink:0; }
+@media(max-width:640px){ .detail-left{ width:100%; max-width:280px; margin:0 auto; } }
+.detail-photo-wrap{ position:relative; width:100%; aspect-ratio:3/4; border-radius:var(--radius); overflow:hidden; background:var(--accent-soft); }
+.detail-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
+.detail-photo-wrap .no-photo{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:40px; }
+.detail-photo-wrap .badge{ position:absolute; top:10px; left:10px; }
+.detail-actions{ display:flex; flex-direction:column; gap:8px; width:150px; }
+.action-btn{ width:150px; padding:10px 0; border-radius:10px; border:1px solid var(--border); background:#fff; font-weight:700; font-size:13.5px; }
+.action-btn.water-action{ color:var(--water-ok-text); }
+.action-btn.fert-action{ color:var(--fert-ok-text); }
+.action-btn.edit-action{ color:var(--text-muted); }
+
+.detail-right{ flex:1; min-width:0; padding-top:4px; }
+.detail-right h2{ font-size:23px; margin-bottom:2px; }
+.latin{ font-style:italic; color:var(--text-muted); font-size:13.5px; margin:0 0 14px; }
+.meta-row{ display:flex; gap:6px; font-size:13.5px; margin-bottom:12px; }
+.meta-label{ color:var(--text-muted); }
+.badges-row{ display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.info-block{ margin-bottom:14px; }
+.info-block h4{ font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:4px; font-family:'Inter',sans-serif; font-weight:700; }
+.info-block p{ font-size:14px; line-height:1.5; }
+.instructions-block{ margin-top:8px; padding:14px 16px; border-radius:var(--radius-sm); background:#f6f5f1; transition:background .2s ease; }
+.instructions-block.caretaker-glow{ background:#e3f3d4; }
+.instructions-block h4{ font-size:12px; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; font-weight:700; }
+.instructions-block p{ font-size:14px; line-height:1.55; white-space:pre-wrap; }
+
+.date-popover{ position:fixed; z-index:80; background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.15); overflow:hidden; min-width:150px; }
+.date-popover button{ display:block; width:100%; text-align:left; padding:10px 14px; border:none; background:none; font-size:13.5px; border-bottom:1px solid var(--border-soft); }
+.date-popover button:last-child{ border-bottom:none; }
+.date-popover button:hover{ background:var(--accent-soft); }
+
+.form-panel h2{ margin-bottom:18px; font-size:21px; padding-right:20px; }
+.field{ margin-bottom:16px; }
+.field label{ display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--text-muted); margin-bottom:6px; }
+.field input[type=text], .field input[type=number], .field input[type=date], .field textarea{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; background:#fff; color:var(--text); }
+.field textarea{ min-height:90px; resize:vertical; font-family:'Inter',sans-serif; }
+.field-row{ display:flex; gap:14px; flex-wrap:wrap; }
+.field-row .field{ flex:1; min-width:140px; }
+.photo-upload{ display:flex; align-items:center; gap:14px; }
+.photo-preview{ width:74px; height:74px; border-radius:10px; overflow:hidden; background:var(--accent-soft); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:24px; }
+.photo-preview img{ width:100%; height:100%; object-fit:cover; }
+.upload-btn{ border:1px solid var(--border); background:#fff; padding:9px 14px; border-radius:9px; font-size:13px; font-weight:600; }
+.checkbox-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+.checkbox-row input{ width:16px; height:16px; }
+.checkbox-row label{ margin:0; text-transform:none; font-weight:500; font-size:13.5px; color:var(--text); }
+.form-actions{ display:flex; justify-content:space-between; align-items:center; margin-top:20px; gap:10px; flex-wrap:wrap; }
+.btn-secondary{ background:none; border:1px solid var(--border); padding:10px 18px; border-radius:999px; font-weight:600; font-size:14px; color:var(--text); }
+.btn-danger{ background:none; border:none; color:#b3391c; font-size:13px; font-weight:600; padding:6px 0; }
+
+.footer-note{ text-align:center; padding:22px; font-size:12px; color:var(--text-muted); }
+.footer-note button{ background:none; border:none; color:var(--text-muted); text-decoration:underline; font-size:12px; cursor:pointer; padding:0; margin-left:4px; }
+
+[hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">🌿 LeafLog</div>
+  <div class="topbar-actions">
+    <button type="button" class="mode-toggle" id="caretakerToggle">Режим доглядача</button>
+    <button type="button" class="btn-primary" id="addPlantBtn">+ Додати рослину</button>
+  </div>
+</div>
+
+<main>
+  <div class="legend" id="legend">
+    <span class="legend-chip" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</span>
+    <span class="legend-chip" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</span>
+    <span class="legend-chip" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</span>
+    <span class="legend-chip" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</span>
+    <span class="legend-chip" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</span>
+    <span class="legend-chip" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</span>
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    <h3>Поки що немає жодної рослини</h3>
+    <p>Додай першу — фото, графік поливу та інструкції завжди будуть під рукою.</p>
+    <button type="button" class="btn-primary" id="addFirstPlantBtn" style="margin-top:14px;">+ Додати рослину</button>
+  </div>
+
+  <div class="plant-grid" id="plantGrid" hidden></div>
+</main>
+
+<!-- Detail overlay -->
+<div class="overlay" id="detailOverlay" hidden>
+  <div class="detail-panel">
+    <button type="button" class="close-btn" data-close-detail>×</button>
+    <div class="detail-content">
+      <div class="detail-left">
+        <div class="detail-photo-wrap" id="detailPhotoWrap"></div>
+        <div class="detail-actions">
+          <button type="button" class="action-btn water-action" id="waterBtn">Полито</button>
+          <button type="button" class="action-btn fert-action" id="fertBtn">Удобрено</button>
+          <button type="button" class="action-btn edit-action" id="editBtn">Редагувати</button>
+        </div>
+      </div>
+      <div class="detail-right">
+        <h2 id="detailName"></h2>
+        <p class="latin" id="detailLatin"></p>
+        <div class="meta-row"><span class="meta-label">Розташування:</span><span id="detailRoom"></span></div>
+        <div class="badges-row" id="detailBadgesRow"></div>
+        <div class="info-block">
+          <h4>Полив</h4>
+          <p id="detailWaterInfo"></p>
+        </div>
+        <div class="info-block">
+          <h4>Добриво</h4>
+          <p id="detailFertInfo"></p>
+        </div>
+        <div class="instructions-block" id="detailInstructionsBlock">
+          <h4>Інструкції з догляду</h4>
+          <p id="detailInstructions"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit form overlay -->
+<div class="overlay" id="formOverlay" hidden>
+  <div class="form-panel">
+    <button type="button" class="close-btn" data-close-form>×</button>
+    <h2 id="formTitle">Додати рослину</h2>
+    <form id="plantForm">
+      <div class="field photo-upload">
+        <div class="photo-preview" id="photoPreview">🌿</div>
+        <div>
+          <input type="file" id="photoInput" accept="image/*" hidden>
+          <button type="button" class="upload-btn" id="uploadBtnTrigger">Завантажити фото</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="nameInput">Назва рослини *</label>
+        <input type="text" id="nameInput" required placeholder="напр. Monstera">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="latinInput">Латинська назва</label>
+          <input type="text" id="latinInput" placeholder="необов'язково">
+        </div>
+        <div class="field">
+          <label for="roomInput">Кімната / підвіконня</label>
+          <input type="text" id="roomInput" placeholder="напр. вітальня, південне вікно">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="waterFreqInput">Полив кожні (днів)</label>
+          <input type="number" id="waterFreqInput" min="1" value="7">
+        </div>
+        <div class="field">
+          <label for="lastWateredInput">Востаннє поливали</label>
+          <input type="date" id="lastWateredInput">
+        </div>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="fertEnabled" checked>
+        <label for="fertEnabled">Потрібне добриво зараз</label>
+      </div>
+      <div class="field-row" id="fertFields">
+        <div class="field">
+          <label for="fertFreqInput">Добриво кожні (днів)</label>
+          <input type="number" id="fertFreqInput" min="1" value="30">
+        </div>
+        <div class="field">
+          <label for="lastFertilizedInput">Востаннє удобрювали</label>
+          <input type="date" id="lastFertilizedInput">
+        </div>
+      </div>
+      <div class="field">
+        <label for="instructionsInput">Інструкції з догляду</label>
+        <textarea id="instructionsInput" placeholder="напр. перевіряти ґрунт перед поливом, не заливати, не ставити на пряме сонце..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-danger" id="deleteBtn" hidden>Видалити рослину</button>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn-secondary" data-close-form>Скасувати</button>
+          <button type="submit" class="btn-primary">Зберегти</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Date popover for quick-mark actions -->
+<div class="date-popover" id="datePopover" hidden>
+  <button type="button" data-days="0">Сьогодні</button>
+  <button type="button" data-days="1">Вчора</button>
+  <button type="button" data-days="2">Позавчора</button>
+</div>
+
+<div class="footer-note">
+  Дані зберігаються у спільній базі за твоїм посиланням.
+  <button type="button" id="shareLinkBtn">Скопіювати посилання для доступу</button>
+  ·
+  <button type="button" id="clearAllBtn">Очистити всі дані</button>
+</div>
+
+<script>
+(function(){
+  var STORAGE_KEY = 'plants';
+
+  function getHouseholdId(){
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('id');
+    if(!id){
+      try{ id = localStorage.getItem('leaflog_household_id'); }catch(e){ id = null; }
+    }
+    if(!id){
+      id = Math.random().toString(36).slice(2,10);
+    }
+    try{ localStorage.setItem('leaflog_household_id', id); }catch(e){}
+    if(params.get('id') !== id){
+      params.set('id', id);
+      var newUrl = window.location.pathname + '?' + params.toString();
+      try{ window.history.replaceState({}, '', newUrl); }catch(e){ /* напр. пісочниця about:srcdoc — ігноруємо */ }
+    }
+    return id;
+  }
+  var HOUSEHOLD_ID = getHouseholdId();
+
+  var plants = [];
+  var caretakerMode = false;
+  var activeDatePopover = { type:null, id:null, btnEl:null };
+  var currentDetailId = null;
+  var editingId = null;
+  var pendingPhoto = null;
+
+  var grid = document.getElementById('plantGrid');
+  var emptyState = document.getElementById('emptyState');
+
+  var SEED_DATE = '2026-07-01';
+  var SEED_PLANTS = [
+    ['Сциндапсус сріблястий','Scindapsus pictus','кабінет / яскраве розсіяне світло, недалеко від пн-сх вікна',7,true,21,'Поливати після підсихання верхньої половини горщика, не заливати, без прямого сонця.'],
+    ['Епіпремнум Neon','Epipremnum aureum ‘Neon’','спальня / яскраве розсіяне світло',6,true,21,'Не пересушувати повністю, але й не тримати мокрим; більше світла для яскравого кольору.'],
+    ['Аглаонема Prestige','Aglaonema sp. ‘Prestige’','кабінет / полиця біля вікна, без сонця',8,true,21,'Поливати тільки після підсихання верхніх 3–4 см, не тримати в холоді, без протягів.'],
+    ['Аглаонема Pink','Aglaonema sp.','тепло, біля світлого вікна без сонця',10,false,30,'Ослаблена: не підживлювати, не заливати, тримати в теплому місці, дати ґрунту підсихати зверху.'],
+    ['Драцена marginata','Dracaena marginata','кабінет / розсіяне світло',8,true,30,'Поливати після підсихання 1/2 горщика, не ставити під пряме сонце, не заливати.'],
+    ['Драцена marginata велика темна','Dracaena marginata','світле місце, без полуденного сонця',8,true,30,'Те саме: помірний полив, дати просихати, не тримати в холодному мокрому субстраті.'],
+    ['Фікус Natasha','Ficus benjamina','балкон / яскраве світло',7,true,21,'Не крутити часто, полив після підсихання верхніх 3–4 см, без застою води.'],
+    ['Фікус lyrata','Ficus lyrata','дуже світле місце / біля вікна',7,true,21,'Любить яскраве світло, полив після просихання верхніх 4–5 см, протирати листя.'],
+    ['Гранат Baby','Punica granatum ‘Nana’','найсвітліше місце, бажано балкон',4,true,14,'Багато сонця, полив після підсихання 2–3 см, не переливати, прищипувати витягнуті пагони.'],
+    ['Лимон Меєра','Citrus × meyeri','світлий балкон',5,true,14,'Поливати після просихання верхніх 4–5 см, не тримати воду в піддоні, багато світла.'],
+    ['Кімнатний плодоносний лимон','Citrus limon','світлий балкон / дуже світле вікно',5,true,14,'Те саме: максимум світла, помірний полив, добриво для середземноморських.'],
+    ['Арабіка','Coffea arabica','спальня / світле місце без сонця',6,true,21,'Любить м’яку воду, рівномірний полив без болота, не пересушувати повністю.'],
+    ['Монстера monkey','Monstera adansonii','біля пн-сх вікна',7,true,21,'Полив після підсихання верхньої половини горщика, без прямого сонця, любить опору.'],
+    ['Розмарин','Salvia rosmarinus','найсвітліше місце / балкон',5,true,21,'Багато світла, не заливати, краще трохи підсушити, без оприскування.'],
+    ['Батат гідропоніка','Ipomoea batatas','світле місце',7,true,21,'Міняти воду раз на 7–10 днів, слабке добриво, багато світла.'],
+    ['Haworthia attenuata','Haworthiopsis attenuata','світле вікно',12,false,45,'Полив тільки після повного просихання, не обприскувати, без болота.'],
+    ['Заміокулькас','Zamioculcas zamiifolia','полиця / півтінь',14,true,30,'Поливати лише після повного просихання, краще недолити, ніж перелити.'],
+    ['Красула','Crassula ovata','балкон / дуже світло',14,true,45,'Повне просихання між поливами, не оприскувати, багато світла.'],
+    ['Опунція','Opuntia sp.','найсонячніше місце',21,false,45,'Дуже рідкий полив, повне просихання, максимум сонця.'],
+    ['Авокадо','Persea americana','спальня / світле вікно',5,true,21,'Полив після підсихання 2–3 см, багато світла, прищипувати для кущіння.'],
+    ['Аденіум','Adenium obesum','східне вікно / ранкове сонце',8,false,21,'Повне просихання між поливами, не годувати часто азотом, більше сонця для цвітіння.'],
+    ['Кімнатний інжир','Ficus carica','східний балкон',4,true,14,'Багато світла, без оприскування, полив після підсихання верхніх 2–3 см.'],
+    ['Традесканція рео','Tradescantia spathacea','пн-сх підвіконня',5,true,21,'Яскраве світло, полив після підсихання 2–3 см, не лити воду в центр розетки.'],
+    ['Хойя Crimson Queen','Hoya carnosa ‘Krimson Queen’','найсвітліше пн-сх вікно',8,true,30,'Поливати після просихання мінімум половини горщика, не заливати, без темної полиці.'],
+    ['Бальзамін','Impatiens walleriana','світле місце без полуденного сонця',4,true,14,'Любить рівномірну вологість, не пересушувати повністю, добриво для квітучих.'],
+    ['Бугенвілія на штамбі','Bougainvillea sp.','пд-зх балкон / максимум сонця',2,true,14,'Дуже багато сонця, тісний горщик, полив після сильного просихання, не оприскувати. (Щойно куплена — добриво відкладено на 2 тижні.)'],
+    ['Хлорофітум','Chlorophytum comosum','світле місце / без прямого полуденного сонця',6,true,21,'Невибагливий, полив після підсихання 2–3 см, можна тримати в яскравій півтіні.'],
+    ['Трава Готьє','—','світлий балкон / без жорсткого полуденного сонця',4,true,21,'Не пересушувати повністю, тримати злегка вологим, не заливати.'],
+    ['Перець Peter Pepper','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Багато світла, регулярний полив без застою, підживлення для плодоношення.'],
+    ['Перець Patio Fire and Ice','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Те саме: не пересушувати надовго, але й не заливати, любить тепло.'],
+    ['Перець Red Hot Cherry Pepper','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Багато сонця, регулярне підживлення, вода після легкого підсихання верхнього шару.'],
+    ['Базилік великий горщик','Ocimum basilicum','світлий балкон / сонце',2,true,10,'Не пересушувати, прищипувати верхівки, не тримати мокрим постійно.'],
+    ['Томат у горщику','Solanum lycopersicum','пд-зх балкон / сонце',2,true,7,'Багато сонця, рясний полив після підсихання верху, підв’язка, підживлення регулярно.'],
+    ['Петунія ампельна + Лобелія ампельна','Petunia × hybrida + Lobelia erinus','балконний ящик / багато світла',2,true,7,'Регулярний полив, не пересушувати повністю, відцвіле прибирати, добриво для квітучих.'],
+    ['Чорнобривці','Tagetes sp.','балкон / сонце',3,true,14,'Сонце, помірний полив, краще недолити, ніж перелити, відцвілі кошики знімати.'],
+    ['Балконний ящик 1 — салат + базилік','Lactuca sativa + Ocimum basilicum','пн-сх або східний балкон',2,true,14,'Ґрунт тримати злегка вологим, без пересихання; салат любить прохолоду, базилік — тепло.'],
+    ['Балконний ящик 2 — салат + базилік','Lactuca sativa + Ocimum basilicum','пн-сх або східний балкон',2,true,14,'Те саме: поливати частіше, але потроху; не заливати до болота.']
+  ];
+
+  function buildSeedPlants(){
+    return SEED_PLANTS.map(function(row){
+      return {
+        id: uid(),
+        name: row[0],
+        latin: row[1] === '—' ? '' : row[1],
+        room: row[2],
+        photo: null,
+        waterFreq: row[3],
+        lastWatered: SEED_DATE,
+        fertEnabled: row[4],
+        fertFreq: row[5],
+        lastFertilized: SEED_DATE,
+        instructions: row[6]
+      };
+    });
+  }
+
+  function uid(){ return 'p_' + Math.random().toString(36).slice(2,10); }
+
+  function todayISO(){
+    var d = new Date();
+    var tz = d.getTimezoneOffset() * 60000;
+    return new Date(d - tz).toISOString().slice(0,10);
+  }
+  function daysAgoISO(n){
+    var d = new Date();
+    d.setDate(d.getDate() - n);
+    var tz = d.getTimezoneOffset() * 60000;
+    return new Date(d - tz).toISOString().slice(0,10);
+  }
+  function daysBetween(dateISO){
+    if(!dateISO) return 9999;
+    var a = new Date(dateISO + 'T00:00:00');
+    var b = new Date(todayISO() + 'T00:00:00');
+    return Math.round((b - a) / 86400000);
+  }
+  function formatDate(iso){
+    if(!iso) return '—';
+    var d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('uk-UA', {day:'numeric', month:'short'});
+  }
+
+  function waterStatus(plant){
+    var freq = plant.waterFreq || 7;
+    var d = daysBetween(plant.lastWatered);
+    if(d < freq) return {label:'Полито', bg:'var(--water-ok-bg)', text:'var(--water-ok-text)'};
+    if(d === freq) return {label:'Полити сьогодні', bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
+    return {label:'Полив прострочено', bg:'var(--water-overdue-bg)', text:'var(--water-overdue-text)'};
+  }
+  function fertStatus(plant){
+    if(!plant.fertEnabled) return {label:'Не удобрювати', bg:'var(--fert-off-bg)', text:'var(--fert-off-text)'};
+    var freq = plant.fertFreq || 30;
+    var d = daysBetween(plant.lastFertilized);
+    if(d < freq) return {label:'Удобрено', bg:'var(--fert-ok-bg)', text:'var(--fert-ok-text)'};
+    return {label:'Удобрити', bg:'var(--fert-due-bg)', text:'var(--fert-due-text)'};
+  }
+  function badgeEl(status){
+    var span = document.createElement('span');
+    span.className = 'badge';
+    span.style.background = status.bg;
+    span.style.color = status.text;
+    span.textContent = status.label;
+    return span;
+  }
+
+  async function loadPlants(){
+    plants = null;
+    if(typeof window.storage !== 'undefined' && window.storage){
+      try{
+        var res = await window.storage.get(STORAGE_KEY, false);
+        plants = (res && res.value) ? JSON.parse(res.value) : null;
+      }catch(e){ plants = null; }
+    }
+    if(plants === null){
+      try{
+        var r = await fetch('/api/plants?id=' + encodeURIComponent(HOUSEHOLD_ID));
+        if(r.ok){
+          var data = await r.json();
+          plants = data.plants || null;
+        }
+      }catch(e){ /* API недоступне — йдемо далі */ }
+    }
+    if(plants === null){
+      try{
+        var raw = localStorage.getItem(STORAGE_KEY);
+        plants = raw ? JSON.parse(raw) : [];
+      }catch(e){ plants = []; }
+    }
+    if(plants.length === 0){
+      plants = buildSeedPlants();
+      await savePlants();
+    }
+    render();
+  }
+  async function savePlants(){
+    if(typeof window.storage !== 'undefined' && window.storage){
+      try{
+        await window.storage.set(STORAGE_KEY, JSON.stringify(plants), false);
+        return;
+      }catch(e){ /* впало — йдемо далі */ }
+    }
+    try{
+      var r = await fetch('/api/plants', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: HOUSEHOLD_ID, plants: plants })
+      });
+      if(r.ok) return;
+    }catch(e){ /* API недоступне — йдемо далі */ }
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(plants));
+    }catch(e){
+      console.error('storage save failed', e);
+    }
+  }
+
+  function render(){
+    grid.innerHTML = '';
+    if(plants.length === 0){
+      emptyState.hidden = false;
+      grid.hidden = true;
+      return;
+    }
+    emptyState.hidden = true;
+    grid.hidden = false;
+    plants.forEach(function(p){ grid.appendChild(renderCard(p)); });
+  }
+
+  function renderCard(plant){
+    var ws = waterStatus(plant);
+    var fs = fertStatus(plant);
+    var card = document.createElement('div');
+    card.className = 'plant-card';
+
+    var photoWrap = document.createElement('div');
+    photoWrap.className = 'card-photo-wrap';
+    if(plant.photo){
+      var img = document.createElement('img');
+      img.src = plant.photo; img.alt = plant.name;
+      photoWrap.appendChild(img);
+    } else {
+      var ph = document.createElement('div');
+      ph.className = 'no-photo';
+      ph.textContent = '🌿';
+      photoWrap.appendChild(ph);
+    }
+    card.appendChild(photoWrap);
+
+    var body = document.createElement('div');
+    body.className = 'card-body';
+
+    var name = document.createElement('div');
+    name.className = 'card-name';
+    name.textContent = plant.name;
+    body.appendChild(name);
+
+    var waterRow = document.createElement('div');
+    waterRow.className = 'card-meta-row';
+    var waterLabel = document.createElement('span');
+    waterLabel.className = 'card-meta-label';
+    waterLabel.textContent = 'Полив кожні ' + (plant.waterFreq || 7) + ' дн.';
+    waterRow.appendChild(waterLabel);
+    waterRow.appendChild(badgeEl(ws));
+    body.appendChild(waterRow);
+
+    var fertRow = document.createElement('div');
+    fertRow.className = 'card-meta-row';
+    var fertLabel = document.createElement('span');
+    fertLabel.className = 'card-meta-label';
+    fertLabel.textContent = plant.fertEnabled ? ('Добриво кожні ' + (plant.fertFreq || 30) + ' дн.') : 'Добриво не потрібне';
+    fertRow.appendChild(fertLabel);
+    fertRow.appendChild(badgeEl(fs));
+    body.appendChild(fertRow);
+
+    if(caretakerMode){
+      if(plant.instructions){
+        var instr = document.createElement('div');
+        instr.className = 'card-instructions';
+        instr.textContent = plant.instructions;
+        body.appendChild(instr);
+      }
+      var qa = document.createElement('div');
+      qa.className = 'card-quick-actions';
+      var wBtn = document.createElement('button');
+      wBtn.type = 'button'; wBtn.className = 'qa-btn water'; wBtn.textContent = 'Полито';
+      wBtn.addEventListener('click', function(e){ e.stopPropagation(); openDatePopover('water', plant.id, wBtn); });
+      qa.appendChild(wBtn);
+      var fBtn = document.createElement('button');
+      fBtn.type = 'button'; fBtn.className = 'qa-btn fert'; fBtn.textContent = 'Удобрено';
+      fBtn.addEventListener('click', function(e){ e.stopPropagation(); openDatePopover('fert', plant.id, fBtn); });
+      qa.appendChild(fBtn);
+      body.appendChild(qa);
+    }
+
+    card.appendChild(body);
+    card.addEventListener('click', function(){ openDetail(plant.id); });
+    return card;
+  }
+
+  // ---------- Detail overlay ----------
+  var detailOverlay = document.getElementById('detailOverlay');
+  var detailPhotoWrap = document.getElementById('detailPhotoWrap');
+  var detailName = document.getElementById('detailName');
+  var detailLatin = document.getElementById('detailLatin');
+  var detailRoom = document.getElementById('detailRoom');
+  var detailBadgesRow = document.getElementById('detailBadgesRow');
+  var detailWaterInfo = document.getElementById('detailWaterInfo');
+  var detailFertInfo = document.getElementById('detailFertInfo');
+  var detailInstructions = document.getElementById('detailInstructions');
+  var detailInstructionsBlock = document.getElementById('detailInstructionsBlock');
+  var waterBtn = document.getElementById('waterBtn');
+  var fertBtn = document.getElementById('fertBtn');
+  var editBtn = document.getElementById('editBtn');
+
+  function openDetail(id){
+    var plant = plants.find(function(p){ return p.id === id; });
+    if(!plant) return;
+    currentDetailId = id;
+    var ws = waterStatus(plant);
+    var fs = fertStatus(plant);
+
+    detailPhotoWrap.innerHTML = '';
+    if(plant.photo){
+      var img = document.createElement('img');
+      img.src = plant.photo; img.alt = plant.name;
+      detailPhotoWrap.appendChild(img);
+    } else {
+      var ph = document.createElement('div');
+      ph.className = 'no-photo';
+      ph.textContent = '🌿';
+      detailPhotoWrap.appendChild(ph);
+    }
+    detailPhotoWrap.appendChild(badgeEl(ws));
+
+    detailName.textContent = plant.name;
+    detailLatin.textContent = plant.latin || '';
+    detailLatin.style.display = plant.latin ? 'block' : 'none';
+    detailRoom.textContent = plant.room || '—';
+
+    detailBadgesRow.innerHTML = '';
+    detailBadgesRow.appendChild(badgeEl(ws));
+    detailBadgesRow.appendChild(badgeEl(fs));
+
+    detailWaterInfo.textContent = 'Кожні ' + (plant.waterFreq || 7) + ' дн. · востаннє: ' + formatDate(plant.lastWatered);
+    detailFertInfo.textContent = plant.fertEnabled
+      ? ('Кожні ' + (plant.fertFreq || 30) + ' дн. · востаннє: ' + formatDate(plant.lastFertilized))
+      : 'Зараз не потрібне';
+
+    detailInstructions.textContent = plant.instructions || 'Інструкцій ще немає — додай їх при редагуванні.';
+    detailInstructionsBlock.classList.toggle('caretaker-glow', caretakerMode);
+
+    waterBtn.textContent = 'Полито';
+    fertBtn.textContent = 'Удобрено';
+    editBtn.style.display = caretakerMode ? 'none' : 'block';
+
+    detailOverlay.hidden = false;
+  }
+  function closeDetail(){ detailOverlay.hidden = true; currentDetailId = null; }
+
+  waterBtn.addEventListener('click', function(){ openDatePopover('water', currentDetailId, waterBtn); });
+  fertBtn.addEventListener('click', function(){ openDatePopover('fert', currentDetailId, fertBtn); });
+  editBtn.addEventListener('click', function(){
+    var p = plants.find(function(x){ return x.id === currentDetailId; });
+    closeDetail();
+    openForm(p);
+  });
+
+  document.querySelectorAll('[data-close-detail]').forEach(function(b){ b.addEventListener('click', closeDetail); });
+  detailOverlay.addEventListener('click', function(e){ if(e.target === detailOverlay) closeDetail(); });
+
+  // ---------- Date popover ----------
+  var datePopover = document.getElementById('datePopover');
+  function openDatePopover(type, plantId, btnEl){
+    activeDatePopover = { type: type, id: plantId, btnEl: btnEl };
+    var rect = btnEl.getBoundingClientRect();
+    datePopover.style.top = (rect.bottom + 6 + window.scrollY) + 'px';
+    var left = rect.left + window.scrollX;
+    datePopover.hidden = false;
+    requestAnimationFrame(function(){
+      var pw = datePopover.offsetWidth;
+      if(left + pw > window.innerWidth - 10) left = window.innerWidth - pw - 10;
+      datePopover.style.left = Math.max(10, left) + 'px';
+    });
+  }
+  datePopover.querySelectorAll('button').forEach(function(btn){
+    btn.addEventListener('click', async function(){
+      var days = parseInt(btn.dataset.days, 10);
+      var iso = daysAgoISO(days);
+      var plant = plants.find(function(p){ return p.id === activeDatePopover.id; });
+      if(plant){
+        if(activeDatePopover.type === 'water'){
+          plant.lastWatered = iso;
+          flashBtnLabel(waterBtn, 'water');
+        } else {
+          plant.lastFertilized = iso;
+          flashBtnLabel(fertBtn, 'fert');
+        }
+        await savePlants();
+        render();
+        if(!detailOverlay.hidden && currentDetailId === plant.id) openDetail(plant.id);
+      }
+      datePopover.hidden = true;
+    });
+  });
+  document.addEventListener('click', function(e){
+    if(!datePopover.hidden && !datePopover.contains(e.target) && e.target !== activeDatePopover.btnEl){
+      datePopover.hidden = true;
+    }
+  });
+  function flashBtnLabel(btn, type){
+    if(btn === waterBtn || btn === fertBtn){
+      btn.textContent = 'Відмічено ✓';
+      setTimeout(function(){ btn.textContent = type === 'water' ? 'Полито' : 'Удобрено'; }, 1400);
+    }
+  }
+
+  // ---------- Caretaker toggle ----------
+  var caretakerToggle = document.getElementById('caretakerToggle');
+  var addPlantBtn = document.getElementById('addPlantBtn');
+  caretakerToggle.addEventListener('click', function(){
+    caretakerMode = !caretakerMode;
+    caretakerToggle.classList.toggle('active', caretakerMode);
+    caretakerToggle.textContent = caretakerMode ? '✓ Режим доглядача' : 'Режим доглядача';
+    addPlantBtn.style.display = caretakerMode ? 'none' : 'inline-block';
+    render();
+  });
+
+  // ---------- Form ----------
+  var formOverlay = document.getElementById('formOverlay');
+  var plantForm = document.getElementById('plantForm');
+  var formTitle = document.getElementById('formTitle');
+  var photoInput = document.getElementById('photoInput');
+  var photoPreview = document.getElementById('photoPreview');
+  var uploadBtnTrigger = document.getElementById('uploadBtnTrigger');
+  var fertEnabledCheckbox = document.getElementById('fertEnabled');
+  var fertFields = document.getElementById('fertFields');
+  var deleteBtn = document.getElementById('deleteBtn');
+
+  addPlantBtn.addEventListener('click', function(){ openForm(); });
+  document.getElementById('addFirstPlantBtn').addEventListener('click', function(){ openForm(); });
+  uploadBtnTrigger.addEventListener('click', function(){ photoInput.click(); });
+  document.querySelectorAll('[data-close-form]').forEach(function(b){ b.addEventListener('click', closeForm); });
+  formOverlay.addEventListener('click', function(e){ if(e.target === formOverlay) closeForm(); });
+
+  function openForm(plant){
+    editingId = plant ? plant.id : null;
+    pendingPhoto = plant ? plant.photo : null;
+    formTitle.textContent = plant ? 'Редагувати рослину' : 'Додати рослину';
+    document.getElementById('nameInput').value = plant ? plant.name : '';
+    document.getElementById('latinInput').value = plant ? (plant.latin || '') : '';
+    document.getElementById('roomInput').value = plant ? (plant.room || '') : '';
+    document.getElementById('waterFreqInput').value = plant ? (plant.waterFreq || 7) : 7;
+    document.getElementById('lastWateredInput').value = plant ? (plant.lastWatered || todayISO()) : todayISO();
+    fertEnabledCheckbox.checked = plant ? !!plant.fertEnabled : true;
+    document.getElementById('fertFreqInput').value = plant ? (plant.fertFreq || 30) : 30;
+    document.getElementById('lastFertilizedInput').value = plant ? (plant.lastFertilized || todayISO()) : todayISO();
+    document.getElementById('instructionsInput').value = plant ? (plant.instructions || '') : '';
+    updatePhotoPreview();
+    fertFields.style.display = fertEnabledCheckbox.checked ? 'flex' : 'none';
+    deleteBtn.hidden = !plant;
+    formOverlay.hidden = false;
+  }
+  function closeForm(){ formOverlay.hidden = true; photoInput.value = ''; }
+
+  function updatePhotoPreview(){
+    photoPreview.innerHTML = '';
+    if(pendingPhoto){
+      var img = document.createElement('img');
+      img.src = pendingPhoto;
+      photoPreview.appendChild(img);
+    } else {
+      photoPreview.textContent = '🌿';
+    }
+  }
+
+  photoInput.addEventListener('change', async function(){
+    var file = photoInput.files[0];
+    if(!file) return;
+    try{
+      pendingPhoto = await compressImage(file);
+      updatePhotoPreview();
+    }catch(e){ console.error(e); }
+  });
+
+  function compressImage(file, maxWidth, quality){
+    maxWidth = maxWidth || 700;
+    quality = quality || 0.72;
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var img = new Image();
+        img.onload = function(){
+          var w = img.width, h = img.height;
+          if(w > maxWidth){ h = Math.round(h * maxWidth / w); w = maxWidth; }
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  fertEnabledCheckbox.addEventListener('change', function(){
+    fertFields.style.display = fertEnabledCheckbox.checked ? 'flex' : 'none';
+  });
+
+  plantForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var name = document.getElementById('nameInput').value.trim();
+    if(!name){ document.getElementById('nameInput').focus(); return; }
+    var data = {
+      id: editingId || uid(),
+      name: name,
+      latin: document.getElementById('latinInput').value.trim(),
+      room: document.getElementById('roomInput').value.trim(),
+      photo: pendingPhoto,
+      waterFreq: parseInt(document.getElementById('waterFreqInput').value, 10) || 7,
+      lastWatered: document.getElementById('lastWateredInput').value || todayISO(),
+      fertEnabled: fertEnabledCheckbox.checked,
+      fertFreq: parseInt(document.getElementById('fertFreqInput').value, 10) || 30,
+      lastFertilized: document.getElementById('lastFertilizedInput').value || todayISO(),
+      instructions: document.getElementById('instructionsInput').value.trim()
+    };
+    if(editingId){
+      var idx = plants.findIndex(function(p){ return p.id === editingId; });
+      if(idx > -1) plants[idx] = data;
+    } else {
+      plants.push(data);
+    }
+    await savePlants();
+    closeForm();
+    render();
+  });
+
+  deleteBtn.addEventListener('click', async function(){
+    if(!editingId) return;
+    if(!confirm('Видалити цю рослину зі списку?')) return;
+    plants = plants.filter(function(p){ return p.id !== editingId; });
+    await savePlants();
+    closeForm();
+    render();
+  });
+
+  document.getElementById('clearAllBtn').addEventListener('click', async function(){
+    if(!confirm('Це видалить усі рослини безповоротно. Продовжити?')) return;
+    plants = [];
+    await savePlants();
+    render();
+  });
+
+  document.getElementById('shareLinkBtn').addEventListener('click', function(){
+    var url = window.location.href;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){
+        alert('Посилання скопійовано! Надішли його тому, з ким хочеш поділитися списком рослин — у нього відкриється той самий список.');
+      }).catch(function(){
+        prompt('Скопіюй посилання вручну:', url);
+      });
+    } else {
+      prompt('Скопіюй посилання вручну:', url);
+    }
+  });
+
+  loadPlants();
+})();
+</script>
+</body>
+</html>
