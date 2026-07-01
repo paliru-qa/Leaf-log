@@ -455,30 +455,80 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     }
     if(plants.length === 0){
       plants = buildSeedPlants();
-      await savePlants();
+      await savePlantsMeta();
     }
     render();
+    loadAllPhotos();
   }
-  async function savePlants(){
+
+  // Зберігає ЛИШЕ текстові дані рослин (без фото) — завжди лишається легким
+  async function savePlantsMeta(){
+    var metaPlants = plants.map(function(p){
+      var copy = {};
+      for(var k in p){ if(k !== 'photo') copy[k] = p[k]; }
+      return copy;
+    });
     if(typeof window.storage !== 'undefined' && window.storage){
       try{
         await window.storage.set(STORAGE_KEY, JSON.stringify(plants), false);
-        return;
+        return true;
       }catch(e){ /* впало — йдемо далі */ }
     }
     try{
       var r = await fetch('/api/plants', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: HOUSEHOLD_ID, plants: plants })
+        body: JSON.stringify({ id: HOUSEHOLD_ID, plants: metaPlants })
       });
-      if(r.ok) return;
+      if(r.ok) return true;
     }catch(e){ /* API недоступне — йдемо далі */ }
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(plants));
     }catch(e){
       console.error('storage save failed', e);
     }
+    return false;
+  }
+
+  // Зберігає фото ОДНІЄЇ рослини окремим записом у базі
+  async function savePhoto(plantId, photo){
+    try{
+      var r = await fetch('/api/photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: HOUSEHOLD_ID, plantId: plantId, photo: photo || null })
+      });
+      return r.ok;
+    }catch(e){ return false; }
+  }
+
+  async function loadPhoto(plantId){
+    try{
+      var r = await fetch('/api/photo?id=' + encodeURIComponent(HOUSEHOLD_ID) + '&plantId=' + encodeURIComponent(plantId));
+      if(r.ok){
+        var d = await r.json();
+        return d.photo || null;
+      }
+    }catch(e){ /* ignore */ }
+    return null;
+  }
+
+  // Підвантажує фото всіх рослин у фоні, невеликими партіями, і оновлює картки по мірі надходження
+  async function loadAllPhotos(){
+    if(typeof window.storage !== 'undefined' && window.storage) return; // у Claude-артефакті фото вже в самому записі
+    var CONCURRENCY = 6;
+    var queue = plants.slice();
+    async function worker(){
+      while(queue.length){
+        var p = queue.shift();
+        if(!p) continue;
+        var photo = await loadPhoto(p.id);
+        if(photo){ p.photo = photo; render(); }
+      }
+    }
+    var workers = [];
+    for(var i=0; i<CONCURRENCY; i++) workers.push(worker());
+    await Promise.all(workers);
   }
 
   function render(){
@@ -662,7 +712,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
           plant.lastFertilized = iso;
           flashBtnLabel(fertBtn, 'fert');
         }
-        await savePlants();
+        await savePlantsMeta();
         render();
         if(!detailOverlay.hidden && currentDetailId === plant.id) openDetail(plant.id);
       }
@@ -750,8 +800,9 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   });
 
   function compressImage(file, maxWidth, quality){
-    maxWidth = maxWidth || 700;
-    quality = quality || 0.72;
+    maxWidth = maxWidth || 500;
+    quality = quality || 0.6;
+    var targetBytes = 180 * 1024; // ~180KB — з запасом під ліміт бази
     return new Promise(function(resolve, reject){
       var reader = new FileReader();
       reader.onload = function(e){
@@ -763,7 +814,24 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
           canvas.width = w; canvas.height = h;
           var ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
-          resolve(canvas.toDataURL('image/jpeg', quality));
+
+          var q = quality;
+          var dataUrl = canvas.toDataURL('image/jpeg', q);
+          var attempts = 0;
+          // Якщо фото все ще завелике — стискаємо агресивніше й зменшуємо розмір
+          while(dataUrl.length > targetBytes * 1.37 && attempts < 6){
+            if(q > 0.35){
+              q -= 0.12;
+            } else if(w > 260){
+              w = Math.round(w * 0.8);
+              h = Math.round(h * 0.8);
+              canvas.width = w; canvas.height = h;
+              ctx.drawImage(img, 0, 0, w, h);
+            }
+            dataUrl = canvas.toDataURL('image/jpeg', q);
+            attempts++;
+          }
+          resolve(dataUrl);
         };
         img.onerror = reject;
         img.src = e.target.result;
@@ -800,16 +868,22 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     } else {
       plants.push(data);
     }
-    await savePlants();
+    var metaOk = await savePlantsMeta();
+    var photoOk = await savePhoto(data.id, pendingPhoto);
     closeForm();
     render();
+    if(!metaOk || !photoOk){
+      alert('Увага: частину змін не вдалося зберегти у спільній базі (можливо, тимчасово недоступна). На цьому пристрої все збереглось — спробуй синхронізувати ще раз трохи пізніше.');
+    }
   });
 
   deleteBtn.addEventListener('click', async function(){
     if(!editingId) return;
     if(!confirm('Видалити цю рослину зі списку?')) return;
-    plants = plants.filter(function(p){ return p.id !== editingId; });
-    await savePlants();
+    var removedId = editingId;
+    plants = plants.filter(function(p){ return p.id !== removedId; });
+    await savePlantsMeta();
+    fetch('/api/photo?id=' + encodeURIComponent(HOUSEHOLD_ID) + '&plantId=' + encodeURIComponent(removedId), { method: 'DELETE' }).catch(function(){});
     closeForm();
     render();
   });
@@ -817,7 +891,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   document.getElementById('clearAllBtn').addEventListener('click', async function(){
     if(!confirm('Це видалить усі рослини безповоротно. Продовжити?')) return;
     plants = [];
-    await savePlants();
+    await savePlantsMeta();
     render();
   });
 
