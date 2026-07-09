@@ -491,15 +491,24 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   }
 
   // Зберігає фото ОДНІЄЇ рослини окремим записом у базі
+  var lastPhotoError = '';
   async function savePhoto(plantId, photo){
+    lastPhotoError = '';
     try{
       var r = await fetch('/api/photo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: HOUSEHOLD_ID, plantId: plantId, photo: photo || null })
       });
+      if(!r.ok){
+        try{ var errData = await r.json(); lastPhotoError = 'HTTP ' + r.status + ': ' + (errData.error || JSON.stringify(errData)); }
+        catch(e2){ lastPhotoError = 'HTTP ' + r.status; }
+      }
       return r.ok;
-    }catch(e){ return false; }
+    }catch(e){
+      lastPhotoError = 'Мережева помилка: ' + e.message;
+      return false;
+    }
   }
 
   async function loadPhoto(plantId){
@@ -873,7 +882,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     closeForm();
     render();
     if(!metaOk || !photoOk){
-      alert('Увага: частину змін не вдалося зберегти у спільній базі (можливо, тимчасово недоступна). На цьому пристрої все збереглось — спробуй синхронізувати ще раз трохи пізніше.');
+      var details = !photoOk && lastPhotoError ? ('\n\nДеталі помилки: ' + lastPhotoError) : '';
+      alert('Увага: частину змін не вдалося зберегти у спільній базі. На цьому пристрої все збереглось.' + details);
     }
   });
 
