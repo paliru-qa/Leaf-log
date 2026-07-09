@@ -1,34 +1,46 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+function getRedis() {
+  const url =
+    process.env.KV_REST_API_URL ||
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.REDIS_URL;
+  const token =
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  return new Redis({ url, token });
+}
 
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    const { id } = req.query;
-    if (!id) return res.status(400).json({ error: 'Missing id' });
-    try {
-      const plants = await kv.get(`household:${id}`);
-      return res.status(200).json({ plants: plants || null });
-    } catch (err) {
-      console.error('KV get failed', err);
-      return res.status(500).json({ error: 'KV read failed' });
-    }
+  const redis = getRedis();
+  if (!redis) {
+    return res.status(500).json({
+      error: 'Не знайдено змінні середовища для Upstash Redis (перевір Project Settings → Environment Variables у Vercel).'
+    });
   }
 
-  if (req.method === 'POST') {
-    let body = req.body;
-    if (typeof body === 'string') {
-      try { body = JSON.parse(body); } catch (e) { body = {}; }
+  const { id } = req.method === 'GET' ? req.query : (typeof req.body === 'string' ? JSON.parse(req.body) : req.body) || {};
+  if (!id) return res.status(400).json({ error: 'Missing id' });
+  const key = `household:${id}:plants`;
+
+  try {
+    if (req.method === 'GET') {
+      const plants = await redis.get(key);
+      return res.status(200).json({ plants: plants || [] });
     }
-    const { id, plants } = body || {};
-    if (!id) return res.status(400).json({ error: 'Missing id' });
-    try {
-      await kv.set(`household:${id}`, plants);
+
+    if (req.method === 'POST') {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const plants = (body && body.plants) || [];
+      await redis.set(key, plants);
       return res.status(200).json({ ok: true });
-    } catch (err) {
-      console.error('KV set failed', err);
-      return res.status(500).json({ error: 'KV write failed' });
     }
-  }
 
-  res.setHeader('Allow', ['GET', 'POST']);
-  return res.status(405).json({ error: 'Method not allowed' });
+    res.setHeader('Allow', ['GET', 'POST']);
+    return res.status(405).json({ error: 'Method not allowed' });
+  } catch (err) {
+    console.error('Redis plants error', err);
+    return res.status(500).json({ error: String(err) });
+  }
 }

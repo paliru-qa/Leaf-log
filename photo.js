@@ -1,15 +1,34 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+function getRedis() {
+  const url =
+    process.env.KV_REST_API_URL ||
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.REDIS_URL;
+  const token =
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  return new Redis({ url, token });
+}
 
 export default async function handler(req, res) {
+  const redis = getRedis();
+  if (!redis) {
+    return res.status(500).json({
+      error: 'Не знайдено змінні середовища для Upstash Redis (перевір Project Settings → Environment Variables у Vercel).'
+    });
+  }
+
   if (req.method === 'GET') {
     const { id, plantId } = req.query;
     if (!id || !plantId) return res.status(400).json({ error: 'Missing id or plantId' });
     try {
-      const photo = await kv.get(`household:${id}:photo:${plantId}`);
+      const photo = await redis.get(`household:${id}:photo:${plantId}`);
       return res.status(200).json({ photo: photo || null });
     } catch (err) {
-      console.error('KV photo get failed', err);
-      return res.status(500).json({ error: 'KV read failed' });
+      console.error('Redis photo get failed', err);
+      return res.status(500).json({ error: String(err) });
     }
   }
 
@@ -22,14 +41,14 @@ export default async function handler(req, res) {
     if (!id || !plantId) return res.status(400).json({ error: 'Missing id or plantId' });
     try {
       if (photo) {
-        await kv.set(`household:${id}:photo:${plantId}`, photo);
+        await redis.set(`household:${id}:photo:${plantId}`, photo);
       } else {
-        await kv.del(`household:${id}:photo:${plantId}`);
+        await redis.del(`household:${id}:photo:${plantId}`);
       }
       return res.status(200).json({ ok: true });
     } catch (err) {
-      console.error('KV photo set failed', err);
-      return res.status(500).json({ error: 'KV write failed' });
+      console.error('Redis photo set failed', err);
+      return res.status(500).json({ error: String(err) });
     }
   }
 
@@ -37,11 +56,11 @@ export default async function handler(req, res) {
     const { id, plantId } = req.query;
     if (!id || !plantId) return res.status(400).json({ error: 'Missing id or plantId' });
     try {
-      await kv.del(`household:${id}:photo:${plantId}`);
+      await redis.del(`household:${id}:photo:${plantId}`);
       return res.status(200).json({ ok: true });
     } catch (err) {
-      console.error('KV photo delete failed', err);
-      return res.status(500).json({ error: 'KV delete failed' });
+      console.error('Redis photo delete failed', err);
+      return res.status(500).json({ error: String(err) });
     }
   }
 
