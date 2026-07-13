@@ -697,13 +697,17 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   function openDatePopover(type, plantId, btnEl){
     activeDatePopover = { type: type, id: plantId, btnEl: btnEl };
     var rect = btnEl.getBoundingClientRect();
-    datePopover.style.top = (rect.bottom + 6 + window.scrollY) + 'px';
-    var left = rect.left + window.scrollX;
+    datePopover.style.top = (rect.bottom + 6) + 'px';
+    var left = rect.left;
     datePopover.hidden = false;
     requestAnimationFrame(function(){
       var pw = datePopover.offsetWidth;
+      var ph = datePopover.offsetHeight;
       if(left + pw > window.innerWidth - 10) left = window.innerWidth - pw - 10;
+      var top = rect.bottom + 6;
+      if(top + ph > window.innerHeight - 10) top = rect.top - ph - 6;
       datePopover.style.left = Math.max(10, left) + 'px';
+      datePopover.style.top = Math.max(10, top) + 'px';
     });
   }
   datePopover.querySelectorAll('button').forEach(function(btn){
