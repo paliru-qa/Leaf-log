@@ -64,7 +64,16 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .plant-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
 @media(min-width:780px){ .plant-grid{ grid-template-columns:repeat(4,1fr); gap:22px; } }
 
-.plant-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:flex; flex-direction:column; }
+.plant-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:flex; flex-direction:column; position:relative; }
+.plant-card.selected{ outline:2px solid var(--accent); outline-offset:-1px; }
+.card-select-box{ position:absolute; top:8px; left:8px; width:24px; height:24px; border-radius:7px; background:rgba(255,255,255,.9); border:1.5px solid var(--border); z-index:5; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:var(--accent); }
+.card-select-box.checked{ background:var(--accent); border-color:var(--accent); color:#fff; }
+
+.bulk-bar{ position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--accent-dark); color:#fff; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; box-shadow:0 -6px 20px rgba(0,0,0,.15); }
+.bulk-bar span{ font-size:14px; font-weight:600; }
+.bulk-bar-actions{ display:flex; gap:8px; }
+.bulk-bar-actions .qa-btn{ background:#fff; border:none; padding:9px 16px; }
+.bulk-bar-actions .btn-secondary{ background:none; border:1px solid rgba(255,255,255,.5); color:#fff; padding:9px 14px; font-size:13px; }
 .plant-card:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(30,25,15,.08); }
 .card-photo-wrap{ position:relative; aspect-ratio:1/1; background:var(--accent-soft); overflow:hidden; }
 .card-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
@@ -86,7 +95,9 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .empty-state h3{ margin-bottom:8px; color:var(--text); font-size:19px; }
 
 .overlay{ position:fixed; inset:0; background:rgba(28,26,22,.42); display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; z-index:50; }
-.detail-panel, .form-panel{ background:var(--surface); border-radius:20px; max-width:760px; width:100%; padding:28px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.18); }
+.detail-panel, .form-panel{ background:var(--surface); border-radius:20px; max-width:760px; width:100%; padding:28px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.18); touch-action:pan-y; }
+.detail-panel.swipe-anim{ transition:transform .18s ease, opacity .18s ease; }
+.swipe-counter{ position:absolute; top:16px; left:28px; font-size:12px; color:var(--text-muted); font-weight:600; }
 .close-btn{ position:absolute; top:14px; right:16px; background:none; border:none; font-size:24px; color:var(--text-muted); line-height:1; padding:6px; }
 
 .detail-content{ display:flex; gap:28px; margin-top:8px; }
@@ -151,6 +162,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 <div class="topbar">
   <div class="brand">🌿 LeafLog</div>
   <div class="topbar-actions">
+    <button type="button" class="mode-toggle" id="bulkToggle">Відмітити кілька</button>
     <button type="button" class="mode-toggle" id="caretakerToggle">Режим доглядача</button>
     <button type="button" class="btn-primary" id="addPlantBtn">+ Додати рослину</button>
   </div>
@@ -177,7 +189,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 <!-- Detail overlay -->
 <div class="overlay" id="detailOverlay" hidden>
-  <div class="detail-panel">
+  <div class="detail-panel" id="detailPanel">
+    <span class="swipe-counter" id="swipeCounter"></span>
     <button type="button" class="close-btn" data-close-detail>×</button>
     <div class="detail-content">
       <div class="detail-left">
@@ -282,13 +295,22 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   <button type="button" data-days="2">Позавчора</button>
 </div>
 
+<div class="bulk-bar" id="bulkBar" hidden>
+  <span id="bulkCount">0 обрано</span>
+  <div class="bulk-bar-actions">
+    <button type="button" class="qa-btn water" id="bulkWaterBtn">Полито</button>
+    <button type="button" class="qa-btn fert" id="bulkFertBtn">Удобрено</button>
+    <button type="button" class="btn-secondary" id="bulkCancelBtn">Скасувати</button>
+  </div>
+</div>
+
 <div class="footer-note">
   Дані зберігаються у спільній базі за твоїм посиланням.
   <button type="button" id="shareLinkBtn">Скопіювати посилання для доступу</button>
   ·
   <button type="button" id="clearAllBtn">Очистити всі дані</button>
   ·
-  <button type="button" id="summerUpdateBtn">Застосувати літній графік поливу</button>
+  <button type="button" id="summerUpdateBtn">Застосувати літній графік поливу й добрива</button>
 </div>
 
 <script>
@@ -316,6 +338,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
   var plants = [];
   var caretakerMode = false;
+  var bulkMode = false;
+  var selectedIds = {};
   var activeDatePopover = { type:null, id:null, btnEl:null };
   var currentDetailId = null;
   var editingId = null;
@@ -557,7 +581,14 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     var ws = waterStatus(plant);
     var fs = fertStatus(plant);
     var card = document.createElement('div');
-    card.className = 'plant-card';
+    card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '');
+
+    if(bulkMode){
+      var checkbox = document.createElement('div');
+      checkbox.className = 'card-select-box' + (selectedIds[plant.id] ? ' checked' : '');
+      checkbox.textContent = selectedIds[plant.id] ? '✓' : '';
+      card.appendChild(checkbox);
+    }
 
     var photoWrap = document.createElement('div');
     photoWrap.className = 'card-photo-wrap';
@@ -620,8 +651,27 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     }
 
     card.appendChild(body);
-    card.addEventListener('click', function(){ openDetail(plant.id); });
+    card.addEventListener('click', function(){
+      if(bulkMode){
+        toggleSelected(plant.id);
+      } else {
+        openDetail(plant.id);
+      }
+    });
     return card;
+  }
+
+  function toggleSelected(id){
+    if(selectedIds[id]) delete selectedIds[id];
+    else selectedIds[id] = true;
+    updateBulkBar();
+    render();
+  }
+
+  function updateBulkBar(){
+    var count = Object.keys(selectedIds).length;
+    bulkBar.hidden = !bulkMode || count === 0;
+    bulkCount.textContent = count + (count === 1 ? ' обрано' : ' обрано');
   }
 
   // ---------- Detail overlay ----------
@@ -637,6 +687,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var waterBtn = document.getElementById('waterBtn');
   var fertBtn = document.getElementById('fertBtn');
   var editBtn = document.getElementById('editBtn');
+  var detailPanel = document.getElementById('detailPanel');
+  var swipeCounter = document.getElementById('swipeCounter');
 
   function openDetail(id){
     var plant = plants.find(function(p){ return p.id === id; });
@@ -679,9 +731,53 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     fertBtn.textContent = 'Удобрено';
     editBtn.style.display = caretakerMode ? 'none' : 'block';
 
+    var pos = plants.findIndex(function(p){ return p.id === id; });
+    swipeCounter.textContent = plants.length > 1 ? (pos + 1) + ' / ' + plants.length : '';
+
     detailOverlay.hidden = false;
   }
   function closeDetail(){ detailOverlay.hidden = true; currentDetailId = null; }
+
+  function showAdjacentPlant(direction){
+    if(plants.length < 2) return;
+    var idx = plants.findIndex(function(p){ return p.id === currentDetailId; });
+    if(idx === -1) return;
+    var nextIdx = idx + direction;
+    if(nextIdx < 0) nextIdx = plants.length - 1;
+    if(nextIdx >= plants.length) nextIdx = 0;
+    var nextId = plants[nextIdx].id;
+
+    detailPanel.style.transition = 'transform .16s ease, opacity .16s ease';
+    detailPanel.style.transform = 'translateX(' + (direction > 0 ? '-24px' : '24px') + ')';
+    detailPanel.style.opacity = '0';
+    setTimeout(function(){
+      openDetail(nextId);
+      detailPanel.style.transition = 'none';
+      detailPanel.style.transform = 'translateX(' + (direction > 0 ? '24px' : '-24px') + ')';
+      requestAnimationFrame(function(){
+        detailPanel.style.transition = 'transform .16s ease, opacity .16s ease';
+        detailPanel.style.transform = 'translateX(0)';
+        detailPanel.style.opacity = '1';
+      });
+    }, 160);
+  }
+
+  // Свайп для переходу між рослинами в деталях
+  var touchStartX = null, touchStartY = null;
+  detailPanel.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  detailPanel.addEventListener('touchend', function(e){
+    if(touchStartX === null) return;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    var dy = e.changedTouches[0].clientY - touchStartY;
+    touchStartX = null; touchStartY = null;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5){
+      showAdjacentPlant(dx < 0 ? 1 : -1);
+    }
+  }, { passive: true });
 
   waterBtn.addEventListener('click', function(){ openDatePopover('water', currentDetailId, waterBtn); });
   fertBtn.addEventListener('click', function(){ openDatePopover('fert', currentDetailId, fertBtn); });
@@ -716,6 +812,19 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     btn.addEventListener('click', async function(){
       var days = parseInt(btn.dataset.days, 10);
       var iso = daysAgoISO(days);
+
+      if(activeDatePopover.type === 'bulk'){
+        var ids = Object.keys(selectedIds);
+        plants.forEach(function(p){
+          if(selectedIds[p.id]) p[bulkDateField] = iso;
+        });
+        await savePlantsMeta();
+        exitBulkMode();
+        render();
+        datePopover.hidden = true;
+        return;
+      }
+
       var plant = plants.find(function(p){ return p.id === activeDatePopover.id; });
       if(plant){
         if(activeDatePopover.type === 'water'){
@@ -752,8 +861,71 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     caretakerToggle.classList.toggle('active', caretakerMode);
     caretakerToggle.textContent = caretakerMode ? '✓ Режим доглядача' : 'Режим доглядача';
     addPlantBtn.style.display = caretakerMode ? 'none' : 'inline-block';
+    if(caretakerMode && bulkMode) exitBulkMode();
     render();
   });
+
+  // ---------- Bulk (масове відмічання) ----------
+  var bulkToggle = document.getElementById('bulkToggle');
+  var bulkBar = document.getElementById('bulkBar');
+  var bulkCount = document.getElementById('bulkCount');
+
+  function exitBulkMode(){
+    bulkMode = false;
+    selectedIds = {};
+    bulkToggle.classList.remove('active');
+    bulkToggle.textContent = 'Відмітити кілька';
+    bulkBar.hidden = true;
+  }
+
+  bulkToggle.addEventListener('click', function(){
+    bulkMode = !bulkMode;
+    selectedIds = {};
+    bulkToggle.classList.toggle('active', bulkMode);
+    bulkToggle.textContent = bulkMode ? '✓ Відмітити кілька' : 'Відмітити кілька';
+    if(bulkMode && caretakerMode){
+      caretakerMode = false;
+      caretakerToggle.classList.remove('active');
+      caretakerToggle.textContent = 'Режим доглядача';
+      addPlantBtn.style.display = 'inline-block';
+    }
+    updateBulkBar();
+    render();
+  });
+
+  document.getElementById('bulkCancelBtn').addEventListener('click', function(){
+    exitBulkMode();
+    render();
+  });
+
+  async function applyBulkAction(field, dateField, days){
+    // (логіку перенесено в обробник datePopover, лишено для сумісності — не використовується)
+  }
+
+  document.getElementById('bulkWaterBtn').addEventListener('click', function(e){
+    openBulkDatePopover('lastWatered', e.currentTarget);
+  });
+  document.getElementById('bulkFertBtn').addEventListener('click', function(e){
+    openBulkDatePopover('lastFertilized', e.currentTarget);
+  });
+
+  var bulkDateField = null;
+  function openBulkDatePopover(dateField, btnEl){
+    bulkDateField = dateField;
+    activeDatePopover = { type: 'bulk', id: null, btnEl: btnEl };
+    var rect = btnEl.getBoundingClientRect();
+    datePopover.hidden = false;
+    requestAnimationFrame(function(){
+      var pw = datePopover.offsetWidth;
+      var ph = datePopover.offsetHeight;
+      var left = rect.left;
+      if(left + pw > window.innerWidth - 10) left = window.innerWidth - pw - 10;
+      var top = rect.top - ph - 6;
+      if(top < 10) top = rect.bottom + 6;
+      datePopover.style.left = Math.max(10, left) + 'px';
+      datePopover.style.top = Math.max(10, top) + 'px';
+    });
+  }
 
   // ---------- Form ----------
   var formOverlay = document.getElementById('formOverlay');
@@ -955,15 +1127,54 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     'Арабіка': 5,
     'Авокадо': 4
   };
+  var SUMMER_FERT_OVERRIDES = {
+    'Бальзамін': 10,
+    'Хлорофітум': 14,
+    'Бугенвілія на штамбі': 10,
+    'Базилік великий горщик': 7,
+    'Томат у горщику': 5,
+    'Петунія ампельна + Лобелія ампельна': 5,
+    'Балконний ящик 1 — салат + базилік': 10,
+    'Балконний ящик 2 — салат + базилік': 10,
+    'Перець Peter Pepper': 5,
+    'Перець Patio Fire and Ice': 5,
+    'Перець Red Hot Cherry Pepper': 5,
+    'Чорнобривці': 10,
+    'Гранат Baby': 10,
+    'Кімнатний інжир': 10,
+    'Трава Готьє': 14,
+    'Лимон Меєра': 10,
+    'Кімнатний плодоносний лимон': 10,
+    'Традесканція рео': 14,
+    'Фікус Natasha': 14,
+    'Батат гідропоніка': 14,
+    'Фікус lyrata': 14,
+    'Хойя Crimson Queen': 21,
+    'Сциндапсус сріблястий': 14,
+    'Епіпремнум Neon': 14,
+    'Драцена marginata': 21,
+    'Драцена marginata велика темна': 21,
+    'Монстера monkey': 14,
+    'Аглаонема Prestige': 14,
+    'Арабіка': 14,
+    'Авокадо': 14
+  };
   document.getElementById('summerUpdateBtn').addEventListener('click', async function(){
-    if(!confirm('Це оновить графік поливу для рослин зі списку відповідно до літньої спеки (+24° і вище). Дані про "востаннє поливали" не зміняться. Продовжити?')) return;
+    if(!confirm('Це оновить графік поливу й добрива для рослин зі списку відповідно до літньої спеки (+24° і вище). Дати "востаннє поливали/удобрювали" не зміняться. Сукуленти, кактус та рослини без добрива не чіпаються. Продовжити?')) return;
     var changed = [];
     plants.forEach(function(p){
       if(Object.prototype.hasOwnProperty.call(SUMMER_WATER_OVERRIDES, p.name)){
-        var newFreq = SUMMER_WATER_OVERRIDES[p.name];
-        if(p.waterFreq !== newFreq){
-          changed.push(p.name + ': ' + p.waterFreq + ' → ' + newFreq + ' дн.');
-          p.waterFreq = newFreq;
+        var newWaterFreq = SUMMER_WATER_OVERRIDES[p.name];
+        if(p.waterFreq !== newWaterFreq){
+          changed.push(p.name + ' — полив: ' + p.waterFreq + ' → ' + newWaterFreq + ' дн.');
+          p.waterFreq = newWaterFreq;
+        }
+      }
+      if(p.fertEnabled && Object.prototype.hasOwnProperty.call(SUMMER_FERT_OVERRIDES, p.name)){
+        var newFertFreq = SUMMER_FERT_OVERRIDES[p.name];
+        if(p.fertFreq !== newFertFreq){
+          changed.push(p.name + ' — добриво: ' + p.fertFreq + ' → ' + newFertFreq + ' дн.');
+          p.fertFreq = newFertFreq;
         }
       }
     });
