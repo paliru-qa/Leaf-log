@@ -140,9 +140,30 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .field textarea{ min-height:90px; resize:vertical; font-family:'Inter',sans-serif; }
 .field-row{ display:flex; gap:14px; flex-wrap:wrap; }
 .field-row .field{ flex:1; min-width:140px; }
-.photo-upload{ display:flex; align-items:center; gap:14px; }
-.photo-preview{ width:74px; height:74px; border-radius:10px; overflow:hidden; background:var(--accent-soft); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:24px; }
-.photo-preview img{ width:100%; height:100%; object-fit:cover; }
+.photo-upload{ display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; }
+.photo-thumbs{ display:flex; gap:8px; flex-wrap:wrap; }
+.photo-thumb{ position:relative; width:74px; height:74px; border-radius:10px; overflow:hidden; background:var(--accent-soft); flex-shrink:0; }
+.photo-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.photo-thumb .thumb-remove{ position:absolute; top:2px; right:2px; width:20px; height:20px; border-radius:50%; background:rgba(20,20,18,.7); color:#fff; border:none; font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; }
+.photo-thumb .thumb-date{ position:absolute; bottom:0; left:0; right:0; background:rgba(20,20,18,.6); color:#fff; font-size:9px; text-align:center; padding:1px 0; }
+.photo-add-tile{ width:74px; height:74px; border-radius:10px; border:1.5px dashed var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--text-muted); flex-shrink:0; }
+
+.detail-gallery{ display:flex; gap:8px; margin-top:10px; overflow-x:auto; padding-bottom:2px; width:100%; }
+.detail-gallery .gthumb{ position:relative; width:54px; height:54px; border-radius:8px; overflow:hidden; flex-shrink:0; border:2px solid transparent; }
+.detail-gallery .gthumb.active{ border-color:var(--accent); }
+.detail-gallery .gthumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.compare-link{ font-size:12.5px; font-weight:700; color:var(--accent-dark); text-decoration:underline; background:none; border:none; margin-top:8px; padding:0; }
+
+.lightbox-overlay{ position:fixed; inset:0; background:rgba(10,10,8,.9); z-index:90; display:flex; align-items:center; justify-content:center; padding:20px; }
+.lightbox-overlay img{ max-width:100%; max-height:88vh; border-radius:10px; object-fit:contain; }
+.lightbox-close{ position:absolute; top:16px; right:20px; background:none; border:none; color:#fff; font-size:30px; line-height:1; }
+
+.compare-panel{ background:var(--surface); border-radius:20px; max-width:820px; width:100%; padding:24px; position:relative; }
+.compare-grid{ display:flex; gap:14px; margin-top:16px; }
+@media(max-width:640px){ .compare-grid{ flex-direction:column; } }
+.compare-col{ flex:1; display:flex; flex-direction:column; gap:8px; }
+.compare-col img{ width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:12px; background:var(--accent-soft); }
+.compare-label{ font-size:12.5px; font-weight:700; color:var(--text-muted); text-align:center; }
 .upload-btn{ border:1px solid var(--border); background:#fff; padding:9px 14px; border-radius:9px; font-size:13px; font-weight:600; }
 .checkbox-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
 .checkbox-row input{ width:16px; height:16px; }
@@ -195,6 +216,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     <div class="detail-content">
       <div class="detail-left">
         <div class="detail-photo-wrap" id="detailPhotoWrap"></div>
+        <div class="detail-gallery" id="detailGallery"></div>
+        <button type="button" class="compare-link" id="compareLink" hidden>Порівняти фото до/після</button>
         <div class="detail-actions">
           <button type="button" class="action-btn water-action" id="waterBtn">Полито</button>
           <button type="button" class="action-btn fert-action" id="fertBtn">Удобрено</button>
@@ -228,11 +251,12 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     <button type="button" class="close-btn" data-close-form>×</button>
     <h2 id="formTitle">Додати рослину</h2>
     <form id="plantForm">
-      <div class="field photo-upload">
-        <div class="photo-preview" id="photoPreview">🌿</div>
-        <div>
+      <div class="field">
+        <label>Фото (можна кілька — щоб порівнювати до/після)</label>
+        <div class="photo-upload">
+          <div class="photo-thumbs" id="photoThumbs"></div>
           <input type="file" id="photoInput" accept="image/*" hidden>
-          <button type="button" class="upload-btn" id="uploadBtnTrigger">Завантажити фото</button>
+          <div class="photo-add-tile" id="uploadBtnTrigger">+</div>
         </div>
       </div>
       <div class="field">
@@ -295,6 +319,21 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   <button type="button" data-days="2">Позавчора</button>
 </div>
 
+<!-- Full-size single photo view -->
+<div class="lightbox-overlay" id="lightboxOverlay" hidden>
+  <button type="button" class="lightbox-close" id="lightboxClose">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<!-- Before/after comparison -->
+<div class="overlay" id="compareOverlay" hidden>
+  <div class="compare-panel">
+    <button type="button" class="close-btn" id="compareClose">×</button>
+    <h2>Порівняння фото</h2>
+    <div class="compare-grid" id="compareGrid"></div>
+  </div>
+</div>
+
 <div class="bulk-bar" id="bulkBar" hidden>
   <span id="bulkCount">0 обрано</span>
   <div class="bulk-bar-actions">
@@ -343,7 +382,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var activeDatePopover = { type:null, id:null, btnEl:null };
   var currentDetailId = null;
   var editingId = null;
-  var pendingPhoto = null;
+  var pendingPhotos = [];
 
   var grid = document.getElementById('plantGrid');
   var emptyState = document.getElementById('emptyState');
@@ -396,7 +435,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
         name: row[0],
         latin: row[1] === '—' ? '' : row[1],
         room: row[2],
-        photo: null,
+        photos: [],
         waterFreq: row[3],
         lastWatered: SEED_DATE,
         fertEnabled: row[4],
@@ -486,11 +525,29 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     loadAllPhotos();
   }
 
+  // Приводить будь-яке старе/нове значення фото до єдиного формату: масив {id, url, date}
+  function normalizePhotos(raw){
+    if(!raw) return [];
+    if(Array.isArray(raw)){
+      return raw.map(function(item){
+        if(typeof item === 'string') return { id: uid(), url: item, date: null };
+        return { id: item.id || uid(), url: item.url, date: item.date || null };
+      });
+    }
+    if(typeof raw === 'string') return [{ id: uid(), url: raw, date: null }];
+    return [];
+  }
+  function primaryPhotoUrl(plant){
+    var arr = plant.photos;
+    if(!arr || !arr.length) return null;
+    return arr[arr.length - 1].url;
+  }
+
   // Зберігає ЛИШЕ текстові дані рослин (без фото) — завжди лишається легким
   async function savePlantsMeta(){
     var metaPlants = plants.map(function(p){
       var copy = {};
-      for(var k in p){ if(k !== 'photo') copy[k] = p[k]; }
+      for(var k in p){ if(k !== 'photos') copy[k] = p[k]; }
       return copy;
     });
     if(typeof window.storage !== 'undefined' && window.storage){
@@ -515,15 +572,15 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     return false;
   }
 
-  // Зберігає фото ОДНІЄЇ рослини окремим записом у базі
+  // Зберігає ВСІ фото однієї рослини (масив) одним записом у базі
   var lastPhotoError = '';
-  async function savePhoto(plantId, photo){
+  async function savePhoto(plantId, photos){
     lastPhotoError = '';
     try{
       var r = await fetch('/api/photo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: HOUSEHOLD_ID, plantId: plantId, photo: photo || null })
+        body: JSON.stringify({ id: HOUSEHOLD_ID, plantId: plantId, photo: (photos && photos.length) ? photos : null })
       });
       if(!r.ok){
         try{ var errData = await r.json(); lastPhotoError = 'HTTP ' + r.status + ': ' + (errData.error || JSON.stringify(errData)); }
@@ -556,8 +613,13 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       while(queue.length){
         var p = queue.shift();
         if(!p) continue;
-        var photo = await loadPhoto(p.id);
-        if(photo){ p.photo = photo; render(); }
+        var raw = await loadPhoto(p.id);
+        var normalized = normalizePhotos(raw);
+        if(normalized.length){
+          p.photos = normalized;
+          render();
+          if(!detailOverlay.hidden && currentDetailId === p.id) openDetail(p.id);
+        }
       }
     }
     var workers = [];
@@ -592,10 +654,17 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
     var photoWrap = document.createElement('div');
     photoWrap.className = 'card-photo-wrap';
-    if(plant.photo){
+    var cardPhotoUrl = primaryPhotoUrl(plant);
+    if(cardPhotoUrl){
       var img = document.createElement('img');
-      img.src = plant.photo; img.alt = plant.name;
+      img.src = cardPhotoUrl; img.alt = plant.name;
       photoWrap.appendChild(img);
+      if(plant.photos && plant.photos.length > 1){
+        var countBadge = document.createElement('span');
+        countBadge.className = 'photo-count';
+        countBadge.textContent = plant.photos.length + ' 📷';
+        photoWrap.appendChild(countBadge);
+      }
     } else {
       var ph = document.createElement('div');
       ph.className = 'no-photo';
@@ -690,17 +759,19 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var detailPanel = document.getElementById('detailPanel');
   var swipeCounter = document.getElementById('swipeCounter');
 
-  function openDetail(id){
-    var plant = plants.find(function(p){ return p.id === id; });
-    if(!plant) return;
-    currentDetailId = id;
-    var ws = waterStatus(plant);
-    var fs = fertStatus(plant);
+  var detailGallery = document.getElementById('detailGallery');
+  var compareLink = document.getElementById('compareLink');
+  var detailActivePhotoIdx = 0;
 
+  function renderDetailMainPhoto(plant){
     detailPhotoWrap.innerHTML = '';
-    if(plant.photo){
+    var photos = plant.photos || [];
+    var url = photos.length ? photos[Math.min(detailActivePhotoIdx, photos.length - 1)].url : null;
+    if(url){
       var img = document.createElement('img');
-      img.src = plant.photo; img.alt = plant.name;
+      img.src = url; img.alt = plant.name;
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function(){ openLightbox(url); });
       detailPhotoWrap.appendChild(img);
     } else {
       var ph = document.createElement('div');
@@ -708,11 +779,41 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       ph.textContent = '🌿';
       detailPhotoWrap.appendChild(ph);
     }
+    var ws = waterStatus(plant);
+    var fs = fertStatus(plant);
     var photoBadges = document.createElement('div');
     photoBadges.className = 'detail-photo-badges';
     photoBadges.appendChild(badgeEl(ws));
     photoBadges.appendChild(badgeEl(fs));
     detailPhotoWrap.appendChild(photoBadges);
+  }
+
+  function openDetail(id){
+    var plant = plants.find(function(p){ return p.id === id; });
+    if(!plant) return;
+    currentDetailId = id;
+    detailActivePhotoIdx = (plant.photos && plant.photos.length) ? plant.photos.length - 1 : 0;
+    renderDetailMainPhoto(plant);
+
+    // Галерея мініатюр
+    detailGallery.innerHTML = '';
+    var photos = plant.photos || [];
+    if(photos.length > 1){
+      photos.forEach(function(ph, idx){
+        var gt = document.createElement('div');
+        gt.className = 'gthumb' + (idx === detailActivePhotoIdx ? ' active' : '');
+        var gimg = document.createElement('img');
+        gimg.src = ph.url;
+        gt.appendChild(gimg);
+        gt.addEventListener('click', function(){
+          detailActivePhotoIdx = idx;
+          renderDetailMainPhoto(plant);
+          detailGallery.querySelectorAll('.gthumb').forEach(function(el, i){ el.classList.toggle('active', i === idx); });
+        });
+        detailGallery.appendChild(gt);
+      });
+    }
+    compareLink.hidden = photos.length < 2;
 
     detailName.textContent = plant.name;
     detailLatin.textContent = plant.latin || '';
@@ -737,6 +838,42 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     detailOverlay.hidden = false;
   }
   function closeDetail(){ detailOverlay.hidden = true; currentDetailId = null; }
+
+  // ---------- Lightbox (перегляд одного фото на весь екран) ----------
+  var lightboxOverlay = document.getElementById('lightboxOverlay');
+  var lightboxImg = document.getElementById('lightboxImg');
+  function openLightbox(url){
+    lightboxImg.src = url;
+    lightboxOverlay.hidden = false;
+  }
+  document.getElementById('lightboxClose').addEventListener('click', function(){ lightboxOverlay.hidden = true; });
+  lightboxOverlay.addEventListener('click', function(e){ if(e.target === lightboxOverlay) lightboxOverlay.hidden = true; });
+
+  // ---------- Порівняння фото до/після ----------
+  var compareOverlay = document.getElementById('compareOverlay');
+  var compareGrid = document.getElementById('compareGrid');
+  compareLink.addEventListener('click', function(){
+    var plant = plants.find(function(p){ return p.id === currentDetailId; });
+    if(!plant || !plant.photos || plant.photos.length < 2) return;
+    var before = plant.photos[0];
+    var after = plant.photos[plant.photos.length - 1];
+    compareGrid.innerHTML = '';
+    [ {photo: before, label: 'Було'}, {photo: after, label: 'Зараз'} ].forEach(function(entry){
+      var col = document.createElement('div');
+      col.className = 'compare-col';
+      var img = document.createElement('img');
+      img.src = entry.photo.url;
+      col.appendChild(img);
+      var lbl = document.createElement('div');
+      lbl.className = 'compare-label';
+      lbl.textContent = entry.label + (entry.photo.date ? (' · ' + formatDate(entry.photo.date)) : '');
+      col.appendChild(lbl);
+      compareGrid.appendChild(col);
+    });
+    compareOverlay.hidden = false;
+  });
+  document.getElementById('compareClose').addEventListener('click', function(){ compareOverlay.hidden = true; });
+  compareOverlay.addEventListener('click', function(e){ if(e.target === compareOverlay) compareOverlay.hidden = true; });
 
   function showAdjacentPlant(direction){
     if(plants.length < 2) return;
@@ -932,7 +1069,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var plantForm = document.getElementById('plantForm');
   var formTitle = document.getElementById('formTitle');
   var photoInput = document.getElementById('photoInput');
-  var photoPreview = document.getElementById('photoPreview');
+  var photoThumbs = document.getElementById('photoThumbs');
   var uploadBtnTrigger = document.getElementById('uploadBtnTrigger');
   var fertEnabledCheckbox = document.getElementById('fertEnabled');
   var fertFields = document.getElementById('fertFields');
@@ -946,7 +1083,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
   function openForm(plant){
     editingId = plant ? plant.id : null;
-    pendingPhoto = plant ? plant.photo : null;
+    pendingPhotos = plant && plant.photos ? plant.photos.slice() : [];
     formTitle.textContent = plant ? 'Редагувати рослину' : 'Додати рослину';
     document.getElementById('nameInput').value = plant ? plant.name : '';
     document.getElementById('latinInput').value = plant ? (plant.latin || '') : '';
@@ -957,31 +1094,47 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     document.getElementById('fertFreqInput').value = plant ? (plant.fertFreq || 30) : 30;
     document.getElementById('lastFertilizedInput').value = plant ? (plant.lastFertilized || todayISO()) : todayISO();
     document.getElementById('instructionsInput').value = plant ? (plant.instructions || '') : '';
-    updatePhotoPreview();
+    updatePhotoThumbs();
     fertFields.style.display = fertEnabledCheckbox.checked ? 'flex' : 'none';
     deleteBtn.hidden = !plant;
     formOverlay.hidden = false;
   }
   function closeForm(){ formOverlay.hidden = true; photoInput.value = ''; }
 
-  function updatePhotoPreview(){
-    photoPreview.innerHTML = '';
-    if(pendingPhoto){
+  function updatePhotoThumbs(){
+    photoThumbs.innerHTML = '';
+    pendingPhotos.forEach(function(ph, idx){
+      var t = document.createElement('div');
+      t.className = 'photo-thumb';
       var img = document.createElement('img');
-      img.src = pendingPhoto;
-      photoPreview.appendChild(img);
-    } else {
-      photoPreview.textContent = '🌿';
-    }
+      img.src = ph.url;
+      t.appendChild(img);
+      if(ph.date){
+        var d = document.createElement('div');
+        d.className = 'thumb-date';
+        d.textContent = formatDate(ph.date);
+        t.appendChild(d);
+      }
+      var rm = document.createElement('button');
+      rm.type = 'button'; rm.className = 'thumb-remove'; rm.textContent = '×';
+      rm.addEventListener('click', function(){
+        pendingPhotos.splice(idx, 1);
+        updatePhotoThumbs();
+      });
+      t.appendChild(rm);
+      photoThumbs.appendChild(t);
+    });
   }
 
   photoInput.addEventListener('change', async function(){
     var file = photoInput.files[0];
     if(!file) return;
     try{
-      pendingPhoto = await compressImage(file);
-      updatePhotoPreview();
+      var url = await compressImage(file);
+      pendingPhotos.push({ id: uid(), url: url, date: todayISO() });
+      updatePhotoThumbs();
     }catch(e){ console.error(e); }
+    photoInput.value = '';
   });
 
   function compressImage(file, maxWidth, quality){
@@ -1039,7 +1192,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       name: name,
       latin: document.getElementById('latinInput').value.trim(),
       room: document.getElementById('roomInput').value.trim(),
-      photo: pendingPhoto,
+      photos: pendingPhotos,
       waterFreq: parseInt(document.getElementById('waterFreqInput').value, 10) || 7,
       lastWatered: document.getElementById('lastWateredInput').value || todayISO(),
       fertEnabled: fertEnabledCheckbox.checked,
@@ -1054,7 +1207,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       plants.push(data);
     }
     var metaOk = await savePlantsMeta();
-    var photoOk = await savePhoto(data.id, pendingPhoto);
+    var photoOk = await savePhoto(data.id, pendingPhotos);
     closeForm();
     render();
     if(!metaOk || !photoOk){
