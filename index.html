@@ -287,6 +287,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   <button type="button" id="shareLinkBtn">Скопіювати посилання для доступу</button>
   ·
   <button type="button" id="clearAllBtn">Очистити всі дані</button>
+  ·
+  <button type="button" id="summerUpdateBtn">Застосувати літній графік поливу</button>
 </div>
 
 <script>
@@ -918,6 +920,60 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     } else {
       prompt('Скопіюй посилання вручну:', url);
     }
+  });
+
+  // ---------- Одноразове оновлення графіку поливу на літо (спека від +24°) ----------
+  var SUMMER_WATER_OVERRIDES = {
+    'Бальзамін': 1,
+    'Хлорофітум': 3,
+    'Бугенвілія на штамбі': 1,
+    'Базилік великий горщик': 1,
+    'Томат у горщику': 1,
+    'Петунія ампельна + Лобелія ампельна': 1,
+    'Балконний ящик 1 — салат + базилік': 1,
+    'Балконний ящик 2 — салат + базилік': 1,
+    'Перець Peter Pepper': 2,
+    'Перець Patio Fire and Ice': 2,
+    'Перець Red Hot Cherry Pepper': 2,
+    'Чорнобривці': 2,
+    'Гранат Baby': 3,
+    'Кімнатний інжир': 3,
+    'Трава Готьє': 3,
+    'Лимон Меєра': 4,
+    'Кімнатний плодоносний лимон': 4,
+    'Традесканція рео': 4,
+    'Фікус Natasha': 5,
+    'Батат гідропоніка': 5,
+    'Фікус lyrata': 6,
+    'Хойя Crimson Queen': 7,
+    'Сциндапсус сріблястий': 6,
+    'Епіпремнум Neon': 5,
+    'Драцена marginata': 7,
+    'Драцена marginata велика темна': 7,
+    'Монстера monkey': 6,
+    'Аглаонема Prestige': 7,
+    'Арабіка': 5,
+    'Авокадо': 4
+  };
+  document.getElementById('summerUpdateBtn').addEventListener('click', async function(){
+    if(!confirm('Це оновить графік поливу для рослин зі списку відповідно до літньої спеки (+24° і вище). Дані про "востаннє поливали" не зміняться. Продовжити?')) return;
+    var changed = [];
+    plants.forEach(function(p){
+      if(Object.prototype.hasOwnProperty.call(SUMMER_WATER_OVERRIDES, p.name)){
+        var newFreq = SUMMER_WATER_OVERRIDES[p.name];
+        if(p.waterFreq !== newFreq){
+          changed.push(p.name + ': ' + p.waterFreq + ' → ' + newFreq + ' дн.');
+          p.waterFreq = newFreq;
+        }
+      }
+    });
+    if(changed.length === 0){
+      alert('Змін не знадобилось — графік уже відповідає літньому.');
+      return;
+    }
+    var ok = await savePlantsMeta();
+    render();
+    alert((ok ? 'Оновлено й збережено' : 'Оновлено локально (у спільну базу не збереглось)') + ':\n\n' + changed.join('\n'));
   });
 
   loadPlants();
