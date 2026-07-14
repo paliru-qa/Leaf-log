@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LeafLog — догляд за рослинами</title>
+<title>Незалий — догляд за рослинами</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M13 13C9.5 10 8.5 5.5 11 1C14.5 4 15.5 9 13 13Z' fill='none' stroke='%23436b34' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M15.5 12.5C14 11 14 8 17 5.5C19 7.5 18.5 11 15.5 12.5Z' fill='none' stroke='%23436b34' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M8 13H23' stroke='%23436b34' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M8 13V22' stroke='%23436b34' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M23 13V21' stroke='%23436b34' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M8 22Q13 26 16 22.5Q19 19 23 22' fill='none' stroke='%23436b34' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 24Q16 29 25 24' fill='none' stroke='%23436b34' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M8 15C3.3 15 3.3 21 8 21' fill='none' stroke='%23436b34' stroke-width='1.7' stroke-linecap='round'/%3E%3Cpath d='M22 20.5C24.5 17 26.5 13 29 9' stroke='%23436b34' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -47,7 +48,9 @@ input,textarea{ font-family:'Inter',sans-serif; }
   padding:20px 28px; border-bottom:1px solid var(--border);
   flex-wrap:wrap; gap:12px; background:var(--surface);
 }
-.brand{ font-family:'Fraunces',serif; font-size:22px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.brand{ font-family:'Fraunces',serif; font-size:22px; font-weight:700; display:flex; align-items:center; gap:9px; color:var(--text); }
+.brand-icon{ width:26px; height:26px; flex-shrink:0; color:var(--accent); }
+.brand-icon svg{ width:100%; height:100%; display:block; }
 .topbar-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 
 .btn-primary{ background:var(--accent); color:#fff; border:none; padding:10px 18px; border-radius:999px; font-size:14px; font-weight:600; transition:background .15s ease; }
@@ -181,7 +184,22 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 <body>
 
 <div class="topbar">
-  <div class="brand">🌿 LeafLog</div>
+  <div class="brand">
+    <span class="brand-icon" title="не залий 🙂">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 13C9.5 10 8.5 5.5 11 1C14.5 4 15.5 9 13 13Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M15.5 12.5C14 11 14 8 17 5.5C19 7.5 18.5 11 15.5 12.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M8 13H23" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M8 13V22" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M23 13V21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M8 22Q13 26 16 22.5Q19 19 23 22" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6 24Q16 29 25 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M8 15C3.3 15 3.3 21 8 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M22 20.5C24.5 17 26.5 13 29 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+    </span>
+    Незалий
+  </div>
   <div class="topbar-actions">
     <button type="button" class="mode-toggle" id="bulkToggle">Відмітити кілька</button>
     <button type="button" class="mode-toggle" id="caretakerToggle">Режим доглядача</button>
