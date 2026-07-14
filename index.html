@@ -347,6 +347,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   Дані зберігаються у спільній базі за твоїм посиланням.
   <button type="button" id="shareLinkBtn">Скопіювати посилання для доступу</button>
   ·
+  <button type="button" id="newListBtn">Створити свій окремий список</button>
+  ·
   <button type="button" id="clearAllBtn">Очистити всі дані</button>
   ·
   <button type="button" id="summerUpdateBtn">Застосувати літній графік поливу й добрива</button>
@@ -1245,6 +1247,14 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     } else {
       prompt('Скопіюй посилання вручну:', url);
     }
+  });
+
+  document.getElementById('newListBtn').addEventListener('click', function(){
+    if(!confirm('Це створить твій ВЛАСНИЙ окремий список рослин, не пов\'язаний з поточним. Поточний список нікуди не зникне — просто відкриється по-старому за своїм посиланням. Продовжити?')) return;
+    var newId = Math.random().toString(36).slice(2,10);
+    try{ localStorage.setItem('leaflog_household_id', newId); }catch(e){}
+    var url = window.location.pathname + '?id=' + newId;
+    window.location.href = url;
   });
 
   // ---------- Одноразове оновлення графіку поливу на літо (спека від +24°) ----------
