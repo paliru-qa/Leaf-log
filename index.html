@@ -519,10 +519,6 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
         plants = raw ? JSON.parse(raw) : [];
       }catch(e){ plants = []; }
     }
-    if(plants.length === 0){
-      plants = buildSeedPlants();
-      await savePlantsMeta();
-    }
     render();
     loadAllPhotos();
   }
