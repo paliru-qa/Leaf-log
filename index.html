@@ -141,6 +141,10 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .form-panel h2{ margin-bottom:18px; font-size:21px; padding-right:20px; }
 .field{ margin-bottom:16px; }
 .field label{ display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--text-muted); margin-bottom:6px; }
+.instructions-label-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
+.instructions-label-row label{ margin-bottom:0; }
+.ai-generate-btn{ font-size:12px; font-weight:700; color:var(--accent-dark); background:var(--accent-soft); border:1px solid var(--accent); border-radius:999px; padding:5px 12px; white-space:nowrap; }
+.ai-generate-btn:disabled{ opacity:.6; cursor:default; }
 .field input[type=text], .field input[type=number], .field input[type=date], .field textarea{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; background:#fff; color:var(--text); }
 .field textarea{ min-height:90px; resize:vertical; font-family:'Inter',sans-serif; }
 .field-row{ display:flex; gap:14px; flex-wrap:wrap; }
@@ -318,7 +322,10 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
         </div>
       </div>
       <div class="field">
-        <label for="instructionsInput">Інструкції з догляду</label>
+        <div class="instructions-label-row">
+          <label for="instructionsInput">Інструкції з догляду</label>
+          <button type="button" class="ai-generate-btn" id="aiGenerateBtn">✨ Згенерувати ШІ</button>
+        </div>
         <textarea id="instructionsInput" placeholder="напр. перевіряти ґрунт перед поливом, не заливати, не ставити на пряме сонце..."></textarea>
       </div>
       <div class="form-actions">
@@ -1199,6 +1206,44 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
   fertEnabledCheckbox.addEventListener('change', function(){
     fertFields.style.display = fertEnabledCheckbox.checked ? 'flex' : 'none';
+  });
+
+  document.getElementById('aiGenerateBtn').addEventListener('click', async function(){
+    var btn = this;
+    var nameVal = document.getElementById('nameInput').value.trim();
+    if(!nameVal){
+      alert('Спочатку впиши назву рослини — за нею ШІ підбере інструкції.');
+      document.getElementById('nameInput').focus();
+      return;
+    }
+    var textarea = document.getElementById('instructionsInput');
+    if(textarea.value.trim() && !confirm('Поле з інструкціями вже не порожнє. Замінити його згенерованим текстом?')) return;
+
+    var originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '✨ Генерую...';
+    try{
+      var r = await fetch('/api/generate-instructions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: nameVal,
+          latin: document.getElementById('latinInput').value.trim(),
+          room: document.getElementById('roomInput').value.trim()
+        })
+      });
+      var data = await r.json();
+      if(!r.ok){
+        alert('Не вдалося згенерувати: ' + (data.error || ('HTTP ' + r.status)));
+        return;
+      }
+      textarea.value = data.instructions || '';
+    }catch(e){
+      alert('Мережева помилка при звʼязку з ШІ: ' + e.message);
+    }finally{
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
   });
 
   plantForm.addEventListener('submit', async function(e){
