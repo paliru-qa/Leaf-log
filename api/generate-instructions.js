@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     '.\n\nФормат відповіді: 2-4 короткі речення суцільним текстом, без вступних фраз і привітань, без списків і зірочок — лише суть: полив, світло, на що звертати увагу. Пиши як нотатку для себе, стисло.';
 
   try {
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-flash-latest';
     const r = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
