@@ -872,7 +872,9 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     lightboxOverlay.hidden = false;
   }
   document.getElementById('lightboxClose').addEventListener('click', function(){ lightboxOverlay.hidden = true; });
-  lightboxOverlay.addEventListener('click', function(e){ if(e.target === lightboxOverlay) lightboxOverlay.hidden = true; });
+  var lightboxMouseDownOnBackdrop = false;
+  lightboxOverlay.addEventListener('mousedown', function(e){ lightboxMouseDownOnBackdrop = (e.target === lightboxOverlay); });
+  lightboxOverlay.addEventListener('click', function(e){ if(e.target === lightboxOverlay && lightboxMouseDownOnBackdrop) lightboxOverlay.hidden = true; });
 
   // ---------- Порівняння фото до/після ----------
   var compareOverlay = document.getElementById('compareOverlay');
@@ -898,7 +900,9 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     compareOverlay.hidden = false;
   });
   document.getElementById('compareClose').addEventListener('click', function(){ compareOverlay.hidden = true; });
-  compareOverlay.addEventListener('click', function(e){ if(e.target === compareOverlay) compareOverlay.hidden = true; });
+  var compareMouseDownOnBackdrop = false;
+  compareOverlay.addEventListener('mousedown', function(e){ compareMouseDownOnBackdrop = (e.target === compareOverlay); });
+  compareOverlay.addEventListener('click', function(e){ if(e.target === compareOverlay && compareMouseDownOnBackdrop) compareOverlay.hidden = true; });
 
   function showAdjacentPlant(direction){
     if(plants.length < 2) return;
@@ -950,7 +954,9 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   });
 
   document.querySelectorAll('[data-close-detail]').forEach(function(b){ b.addEventListener('click', closeDetail); });
-  detailOverlay.addEventListener('click', function(e){ if(e.target === detailOverlay) closeDetail(); });
+  var detailMouseDownOnBackdrop = false;
+  detailOverlay.addEventListener('mousedown', function(e){ detailMouseDownOnBackdrop = (e.target === detailOverlay); });
+  detailOverlay.addEventListener('click', function(e){ if(e.target === detailOverlay && detailMouseDownOnBackdrop) closeDetail(); });
 
   // ---------- Date popover ----------
   var datePopover = document.getElementById('datePopover');
@@ -1104,7 +1110,9 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   document.getElementById('addFirstPlantBtn').addEventListener('click', function(){ openForm(); });
   uploadBtnTrigger.addEventListener('click', function(){ photoInput.click(); });
   document.querySelectorAll('[data-close-form]').forEach(function(b){ b.addEventListener('click', closeForm); });
-  formOverlay.addEventListener('click', function(e){ if(e.target === formOverlay) closeForm(); });
+  var formMouseDownOnBackdrop = false;
+  formOverlay.addEventListener('mousedown', function(e){ formMouseDownOnBackdrop = (e.target === formOverlay); });
+  formOverlay.addEventListener('click', function(e){ if(e.target === formOverlay && formMouseDownOnBackdrop) closeForm(); });
 
   function openForm(plant){
     editingId = plant ? plant.id : null;
