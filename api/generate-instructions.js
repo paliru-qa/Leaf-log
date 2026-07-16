@@ -27,8 +27,9 @@ export default async function handler(req, res) {
     (room ? `, яка росте тут: ${room}` : '') +
     '.\n\nФормат відповіді: 2-4 короткі речення суцільним текстом, без вступних фраз і привітань, без списків і зірочок — лише суть: полив, світло, на що звертати увагу. Пиши як нотатку для себе, стисло.';
 
-  try {
-    const model = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+  function sleep(ms){ return new Promise(function(resolve){ setTimeout(resolve, ms); }); }
+
+  async function callGemini(model){
     const r = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
@@ -41,14 +42,45 @@ export default async function handler(req, res) {
       }
     );
     const data = await r.json();
+    return { ok: r.ok, status: r.status, data: data };
+  }
 
-    if (!r.ok) {
-      return res.status(500).json({ error: (data && data.error && data.error.message) || 'Помилка Gemini API' });
+  function isOverloaded(result){
+    var msg = (result.data && result.data.error && result.data.error.message) || '';
+    return result.status === 503 || result.status === 429 || /overload|high demand|unavailable/i.test(msg);
+  }
+
+  // Список моделей у порядку пріоритету — якщо перша перевантажена, пробуємо наступну
+  const modelsToTry = process.env.GEMINI_MODEL
+    ? [process.env.GEMINI_MODEL]
+    : ['gemini-flash-latest', 'gemini-2.5-flash-lite', 'gemini-2.5-flash'];
+
+  try {
+    var lastResult = null;
+    for (var m = 0; m < modelsToTry.length; m++) {
+      var model = modelsToTry[m];
+      // Для кожної моделі — до 2 спроб з невеликою паузою (на випадок тимчасового перевантаження)
+      for (var attempt = 0; attempt < 2; attempt++) {
+        lastResult = await callGemini(model);
+        if (lastResult.ok) break;
+        if (!isOverloaded(lastResult)) break; // помилка не про перевантаження — немає сенсу повторювати
+        await sleep(700);
+      }
+      if (lastResult.ok) break;
+      if (!isOverloaded(lastResult)) break; // ця помилка не вирішиться зміною моделі
+    }
+
+    if (!lastResult.ok) {
+      var errMsg = (lastResult.data && lastResult.data.error && lastResult.data.error.message) || 'Помилка Gemini API';
+      if (isOverloaded(lastResult)) {
+        errMsg = 'Сервери Gemini зараз перевантажені. Це тимчасово — спробуй ще раз за хвилину-дві.';
+      }
+      return res.status(500).json({ error: errMsg });
     }
 
     var text = '';
     try {
-      text = data.candidates[0].content.parts[0].text.trim();
+      text = lastResult.data.candidates[0].content.parts[0].text.trim();
     } catch (e) {
       text = '';
     }
