@@ -101,6 +101,14 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 .overlay{ position:fixed; inset:0; background:rgba(28,26,22,.42); display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; z-index:50; }
 .detail-panel, .form-panel{ background:var(--surface); border-radius:20px; max-width:760px; width:100%; padding:28px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.18); touch-action:pan-y; }
+@media(min-width:900px){
+  .detail-panel{ max-width:980px; padding:36px; }
+  .detail-content{ gap:38px; }
+}
+.nav-arrow{ position:absolute; top:50%; transform:translateY(-50%); width:46px; height:46px; border-radius:50%; background:#fff; border:1px solid var(--border); font-size:24px; line-height:1; color:var(--text); box-shadow:0 6px 18px rgba(0,0,0,.14); z-index:55; display:flex; align-items:center; justify-content:center; }
+.nav-arrow-left{ left:10px; }
+.nav-arrow-right{ right:10px; }
+@media(max-width:640px){ .nav-arrow{ display:none; } }
 .detail-panel.swipe-anim{ transition:transform .18s ease, opacity .18s ease; }
 .swipe-counter{ position:absolute; top:16px; left:28px; font-size:12px; color:var(--text-muted); font-weight:600; }
 .close-btn{ position:absolute; top:14px; right:16px; background:none; border:none; font-size:24px; color:var(--text-muted); line-height:1; padding:6px; }
@@ -108,6 +116,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .detail-content{ display:flex; gap:28px; margin-top:8px; }
 @media(max-width:640px){ .detail-content{ flex-direction:column; } }
 .detail-left{ display:flex; flex-direction:column; align-items:center; gap:10px; width:220px; flex-shrink:0; }
+@media(min-width:900px){ .detail-left{ width:260px; } }
 @media(max-width:640px){ .detail-left{ width:100%; max-width:280px; margin:0 auto; } }
 .detail-photo-wrap{ position:relative; width:100%; aspect-ratio:3/4; border-radius:var(--radius); overflow:hidden; background:var(--accent-soft); }
 .detail-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
@@ -132,6 +141,12 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .instructions-block.caretaker-glow{ background:#e3f3d4; }
 .instructions-block h4{ font-size:12px; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; font-weight:700; }
 .instructions-block p{ font-size:14px; line-height:1.55; white-space:pre-wrap; }
+
+.question-block{ margin-top:14px; }
+.question-block h4{ font-size:12px; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; font-weight:700; }
+.question-block textarea{ width:100%; min-height:70px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; resize:vertical; background:#fff; color:var(--text); }
+.question-block .ai-generate-btn{ margin-top:8px; }
+.ai-answer-box{ margin-top:10px; padding:12px 14px; border-radius:var(--radius-sm); background:var(--accent-soft); font-size:14px; line-height:1.55; white-space:pre-wrap; color:#2f4d24; }
 
 .date-popover{ position:fixed; z-index:80; background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.15); overflow:hidden; min-width:150px; }
 .date-popover button{ display:block; width:100%; text-align:left; padding:10px 14px; border:none; background:none; font-size:13.5px; border-bottom:1px solid var(--border-soft); }
@@ -234,6 +249,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 <!-- Detail overlay -->
 <div class="overlay" id="detailOverlay" hidden>
+  <button type="button" class="nav-arrow nav-arrow-left" id="prevPlantBtn" aria-label="Попередня рослина">‹</button>
+  <button type="button" class="nav-arrow nav-arrow-right" id="nextPlantBtn" aria-label="Наступна рослина">›</button>
   <div class="detail-panel" id="detailPanel">
     <span class="swipe-counter" id="swipeCounter"></span>
     <button type="button" class="close-btn" data-close-detail>×</button>
@@ -263,6 +280,12 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
         <div class="instructions-block" id="detailInstructionsBlock">
           <h4>Інструкції з догляду</h4>
           <p id="detailInstructions"></p>
+        </div>
+        <div class="question-block">
+          <h4>Питання (проблема з рослиною?)</h4>
+          <textarea id="questionInput" placeholder="напр. листя жовтіє, з'явились плями, дрібні жучки, в'яне..."></textarea>
+          <button type="button" class="ai-generate-btn" id="askAiBtn">✨ Запитати ШІ</button>
+          <div class="ai-answer-box" id="aiAnswerBox" hidden></div>
         </div>
       </div>
     </div>
@@ -859,10 +882,22 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
     var pos = plants.findIndex(function(p){ return p.id === id; });
     swipeCounter.textContent = plants.length > 1 ? (pos + 1) + ' / ' + plants.length : '';
+    prevPlantBtn.style.display = plants.length > 1 ? 'flex' : 'none';
+    nextPlantBtn.style.display = plants.length > 1 ? 'flex' : 'none';
+
+    // Скидаємо блок питання ШІ при переході на іншу рослину
+    questionInput.value = '';
+    aiAnswerBox.hidden = true;
+    aiAnswerBox.textContent = '';
 
     detailOverlay.hidden = false;
   }
   function closeDetail(){ detailOverlay.hidden = true; currentDetailId = null; }
+
+  var prevPlantBtn = document.getElementById('prevPlantBtn');
+  var nextPlantBtn = document.getElementById('nextPlantBtn');
+  prevPlantBtn.addEventListener('click', function(){ showAdjacentPlant(-1); });
+  nextPlantBtn.addEventListener('click', function(){ showAdjacentPlant(1); });
 
   // ---------- Lightbox (перегляд одного фото на весь екран) ----------
   var lightboxOverlay = document.getElementById('lightboxOverlay');
@@ -903,6 +938,50 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var compareMouseDownOnBackdrop = false;
   compareOverlay.addEventListener('mousedown', function(e){ compareMouseDownOnBackdrop = (e.target === compareOverlay); });
   compareOverlay.addEventListener('click', function(e){ if(e.target === compareOverlay && compareMouseDownOnBackdrop) compareOverlay.hidden = true; });
+
+  // ---------- Питання ШІ (діагностика проблем рослини) ----------
+  var questionInput = document.getElementById('questionInput');
+  var askAiBtn = document.getElementById('askAiBtn');
+  var aiAnswerBox = document.getElementById('aiAnswerBox');
+
+  askAiBtn.addEventListener('click', async function(){
+    var plant = plants.find(function(p){ return p.id === currentDetailId; });
+    if(!plant) return;
+    var question = questionInput.value.trim();
+    if(!question){
+      alert('Опиши проблему з рослиною — наприклад, що саме сталося з листям чи стеблом.');
+      questionInput.focus();
+      return;
+    }
+    var originalLabel = askAiBtn.textContent;
+    askAiBtn.disabled = true;
+    askAiBtn.textContent = '✨ Думаю...';
+    aiAnswerBox.hidden = true;
+    try{
+      var r = await fetch('/api/diagnose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: plant.name,
+          latin: plant.latin || '',
+          room: plant.room || '',
+          question: question
+        })
+      });
+      var data = await r.json();
+      if(!r.ok){
+        alert('Не вдалося отримати відповідь: ' + (data.error || ('HTTP ' + r.status)));
+        return;
+      }
+      aiAnswerBox.textContent = data.answer || '';
+      aiAnswerBox.hidden = false;
+    }catch(e){
+      alert('Мережева помилка при звʼязку з ШІ: ' + e.message);
+    }finally{
+      askAiBtn.disabled = false;
+      askAiBtn.textContent = originalLabel;
+    }
+  });
 
   function showAdjacentPlant(direction){
     if(plants.length < 2) return;
