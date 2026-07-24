@@ -69,6 +69,17 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .plant-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
 @media(min-width:780px){ .plant-grid{ grid-template-columns:repeat(4,1fr); gap:22px; } }
 
+.reorder-list{ display:flex; flex-direction:column; gap:8px; max-width:640px; margin:0 auto; }
+.reorder-row{ display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:9px 12px; }
+.reorder-row.dragging{ opacity:.4; }
+.reorder-handle{ cursor:grab; touch-action:none; font-size:18px; color:var(--text-muted); flex-shrink:0; padding:4px; user-select:none; }
+.reorder-thumb{ width:40px; height:40px; border-radius:8px; overflow:hidden; flex-shrink:0; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; font-size:18px; }
+.reorder-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.reorder-name{ flex:1; min-width:0; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.reorder-arrows{ display:flex; gap:4px; flex-shrink:0; }
+.reorder-arrows button{ width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:#fff; font-size:14px; color:var(--text); display:flex; align-items:center; justify-content:center; }
+.reorder-arrows button:disabled{ opacity:.3; }
+
 .plant-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:flex; flex-direction:column; position:relative; }
 .plant-card.selected{ outline:2px solid var(--accent); outline-offset:-1px; }
 .card-select-box{ position:absolute; top:8px; left:8px; width:24px; height:24px; border-radius:7px; background:rgba(255,255,255,.9); border:1.5px solid var(--border); z-index:5; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:var(--accent); }
@@ -230,6 +241,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     Незалий
   </div>
   <div class="topbar-actions">
+    <button type="button" class="mode-toggle" id="reorderToggle">Змінити порядок</button>
     <button type="button" class="mode-toggle" id="bulkToggle">Відмітити кілька</button>
     <button type="button" class="mode-toggle" id="caretakerToggle">Режим доглядача</button>
     <button type="button" class="btn-primary" id="addPlantBtn">+ Додати рослину</button>
@@ -253,6 +265,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   </div>
 
   <div class="plant-grid" id="plantGrid" hidden></div>
+  <div class="reorder-list" id="reorderList" hidden></div>
 </main>
 
 <!-- Detail overlay -->
@@ -446,6 +459,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var plants = [];
   var caretakerMode = false;
   var bulkMode = false;
+  var reorderMode = false;
   var selectedIds = {};
   var activeDatePopover = { type:null, id:null, btnEl:null };
   var currentDetailId = null;
@@ -453,6 +467,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var pendingPhotos = [];
 
   var grid = document.getElementById('plantGrid');
+  var reorderListEl = document.getElementById('reorderList');
   var emptyState = document.getElementById('emptyState');
 
   var SEED_DATE = '2026-07-01';
@@ -692,15 +707,115 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   }
 
   function render(){
-    grid.innerHTML = '';
     if(plants.length === 0){
       emptyState.hidden = false;
       grid.hidden = true;
+      reorderListEl.hidden = true;
       return;
     }
     emptyState.hidden = true;
+
+    if(reorderMode){
+      grid.hidden = true;
+      grid.innerHTML = '';
+      reorderListEl.hidden = false;
+      renderReorderList();
+      return;
+    }
+
+    reorderListEl.hidden = true;
     grid.hidden = false;
+    grid.innerHTML = '';
     plants.forEach(function(p){ grid.appendChild(renderCard(p)); });
+  }
+
+  function renderReorderList(){
+    reorderListEl.innerHTML = '';
+    plants.forEach(function(plant, idx){
+      var row = document.createElement('div');
+      row.className = 'reorder-row';
+      row.draggable = true;
+      row.dataset.id = plant.id;
+
+      var handle = document.createElement('span');
+      handle.className = 'reorder-handle';
+      handle.textContent = '☰';
+      row.appendChild(handle);
+
+      var thumb = document.createElement('div');
+      thumb.className = 'reorder-thumb';
+      var url = primaryPhotoUrl(plant);
+      if(url){
+        var img = document.createElement('img');
+        img.src = url; img.alt = plant.name;
+        thumb.appendChild(img);
+      } else {
+        thumb.textContent = '🌿';
+      }
+      row.appendChild(thumb);
+
+      var name = document.createElement('span');
+      name.className = 'reorder-name';
+      name.textContent = plant.name;
+      row.appendChild(name);
+
+      var arrows = document.createElement('div');
+      arrows.className = 'reorder-arrows';
+      var upBtn = document.createElement('button');
+      upBtn.type = 'button'; upBtn.textContent = '↑'; upBtn.disabled = (idx === 0);
+      upBtn.addEventListener('click', function(){ movePlant(idx, idx - 1); });
+      var downBtn = document.createElement('button');
+      downBtn.type = 'button'; downBtn.textContent = '↓'; downBtn.disabled = (idx === plants.length - 1);
+      downBtn.addEventListener('click', function(){ movePlant(idx, idx + 1); });
+      arrows.appendChild(upBtn);
+      arrows.appendChild(downBtn);
+      row.appendChild(arrows);
+
+      row.addEventListener('dragstart', function(){
+        setTimeout(function(){ row.classList.add('dragging'); }, 0);
+      });
+      row.addEventListener('dragend', async function(){
+        row.classList.remove('dragging');
+        var newOrderIds = Array.from(reorderListEl.querySelectorAll('.reorder-row')).map(function(r){ return r.dataset.id; });
+        plants.sort(function(a, b){ return newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id); });
+        await savePlantsMeta();
+        render();
+      });
+
+      reorderListEl.appendChild(row);
+    });
+  }
+
+  reorderListEl.addEventListener('dragover', function(e){
+    e.preventDefault();
+    var draggingRow = reorderListEl.querySelector('.reorder-row.dragging');
+    if(!draggingRow) return;
+    var afterElement = getDragAfterElement(reorderListEl, e.clientY);
+    if(afterElement == null){
+      reorderListEl.appendChild(draggingRow);
+    } else {
+      reorderListEl.insertBefore(draggingRow, afterElement);
+    }
+  });
+
+  function getDragAfterElement(container, y){
+    var rows = Array.from(container.querySelectorAll('.reorder-row:not(.dragging)'));
+    return rows.reduce(function(closest, child){
+      var box = child.getBoundingClientRect();
+      var offset = y - box.top - box.height / 2;
+      if(offset < 0 && offset > closest.offset){
+        return { offset: offset, element: child };
+      }
+      return closest;
+    }, { offset: -Infinity, element: null }).element;
+  }
+
+  async function movePlant(fromIdx, toIdx){
+    if(toIdx < 0 || toIdx >= plants.length) return;
+    var moved = plants.splice(fromIdx, 1)[0];
+    plants.splice(toIdx, 0, moved);
+    await savePlantsMeta();
+    render();
   }
 
   function renderCard(plant){
@@ -1141,6 +1256,30 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     caretakerToggle.textContent = caretakerMode ? '✓ Режим доглядача' : 'Режим доглядача';
     addPlantBtn.style.display = caretakerMode ? 'none' : 'inline-block';
     if(caretakerMode && bulkMode) exitBulkMode();
+    if(caretakerMode && reorderMode) exitReorderMode();
+    render();
+  });
+
+  // ---------- Reorder (зміна порядку рослин) ----------
+  var reorderToggle = document.getElementById('reorderToggle');
+  function exitReorderMode(){
+    reorderMode = false;
+    reorderToggle.classList.remove('active');
+    reorderToggle.textContent = 'Змінити порядок';
+  }
+  reorderToggle.addEventListener('click', function(){
+    reorderMode = !reorderMode;
+    reorderToggle.classList.toggle('active', reorderMode);
+    reorderToggle.textContent = reorderMode ? '✓ Змінити порядок' : 'Змінити порядок';
+    if(reorderMode){
+      if(bulkMode) exitBulkMode();
+      if(caretakerMode){
+        caretakerMode = false;
+        caretakerToggle.classList.remove('active');
+        caretakerToggle.textContent = 'Режим доглядача';
+        addPlantBtn.style.display = 'inline-block';
+      }
+    }
     render();
   });
 
@@ -1212,6 +1351,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       caretakerToggle.textContent = 'Режим доглядача';
       addPlantBtn.style.display = 'inline-block';
     }
+    if(bulkMode && reorderMode) exitReorderMode();
     updateBulkBar();
     render();
   });
