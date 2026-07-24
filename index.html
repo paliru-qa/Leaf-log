@@ -77,10 +77,17 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .bulk-bar{ position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--accent-dark); color:#fff; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; box-shadow:0 -6px 20px rgba(0,0,0,.15); }
 .bulk-bar span{ font-size:14px; font-weight:600; }
 .bulk-bar-actions{ display:flex; gap:8px; align-items:center; }
-.bulk-bar-actions .qa-btn{ background:#fff; border:2px solid transparent; padding:9px 16px; opacity:.5; transition:opacity .15s ease, border-color .15s ease; }
+.bulk-bar-actions .qa-btn{ background:#fff; border:2px solid transparent; padding:9px 16px; opacity:.5; transition:opacity .15s ease, border-color .15s ease; white-space:nowrap; }
 .bulk-bar-actions .qa-btn.active{ opacity:1; border-color:rgba(255,255,255,.8); }
 .bulk-bar-actions .btn-primary{ padding:9px 16px; font-size:13px; }
 .bulk-bar-actions .btn-secondary{ background:none; border:1px solid rgba(255,255,255,.5); color:#fff; padding:9px 14px; font-size:13px; }
+
+.undo-toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:65; background:#211f1c; color:#fff; padding:12px 14px 12px 18px; border-radius:12px; display:flex; align-items:center; gap:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); max-width:92vw; }
+.undo-toast span{ font-size:13.5px; }
+.undo-toast-actions{ display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.undo-toast-actions button{ white-space:nowrap; }
+#undoToastBtn{ background:#fff; color:#211f1c; border:none; border-radius:999px; padding:7px 14px; font-size:12.5px; font-weight:700; }
+#undoToastClose{ background:none; border:none; color:rgba(255,255,255,.7); font-size:18px; padding:2px 6px; }
 .plant-card:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(30,25,15,.08); }
 .card-photo-wrap{ position:relative; aspect-ratio:1/1; background:var(--accent-soft); overflow:hidden; }
 .card-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
@@ -150,10 +157,9 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .question-block .ai-generate-btn{ margin-top:8px; }
 .ai-answer-box{ margin-top:10px; padding:12px 14px; border-radius:var(--radius-sm); background:var(--accent-soft); font-size:14px; line-height:1.55; white-space:pre-wrap; color:#2f4d24; }
 
-.date-popover{ position:fixed; z-index:80; background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.15); overflow:hidden; min-width:150px; }
-.date-popover button{ display:block; width:100%; text-align:left; padding:10px 14px; border:none; background:none; font-size:13.5px; border-bottom:1px solid var(--border-soft); }
-.date-popover button:last-child{ border-bottom:none; }
-.date-popover button:hover{ background:var(--accent-soft); }
+.date-popover{ position:fixed; z-index:80; background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.15); padding:10px; display:flex; gap:8px; align-items:center; }
+.date-popover input[type=date]{ border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'Inter',sans-serif; color:var(--text); background:#fff; }
+.date-popover #datePopoverConfirm{ background:var(--accent); color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:13.5px; font-weight:700; white-space:nowrap; }
 
 .form-panel h2{ margin-bottom:18px; font-size:21px; padding-right:20px; }
 .field{ margin-bottom:16px; }
@@ -366,9 +372,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 <!-- Date popover for quick-mark actions -->
 <div class="date-popover" id="datePopover" hidden>
-  <button type="button" data-days="0">Сьогодні</button>
-  <button type="button" data-days="1">Вчора</button>
-  <button type="button" data-days="2">Позавчора</button>
+  <input type="date" id="datePopoverInput">
+  <button type="button" id="datePopoverConfirm">OK</button>
 </div>
 
 <!-- Full-size single photo view -->
@@ -389,10 +394,18 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 <div class="bulk-bar" id="bulkBar" hidden>
   <span id="bulkCount">0 обрано</span>
   <div class="bulk-bar-actions">
-    <button type="button" class="qa-btn water active" id="bulkWaterToggle">✓ Полито</button>
-    <button type="button" class="qa-btn fert active" id="bulkFertToggle">✓ Удобрено</button>
+    <button type="button" class="qa-btn water" id="bulkWaterToggle">Полито</button>
+    <button type="button" class="qa-btn fert" id="bulkFertToggle">Удобрено</button>
     <button type="button" class="btn-primary" id="bulkApplyBtn">Застосувати</button>
     <button type="button" class="btn-secondary" id="bulkCancelBtn">Скасувати</button>
+  </div>
+</div>
+
+<div class="undo-toast" id="undoToast" hidden>
+  <span id="undoToastText"></span>
+  <div class="undo-toast-actions">
+    <button type="button" id="undoToastBtn">Скасувати дію</button>
+    <button type="button" id="undoToastClose" aria-label="Закрити">×</button>
   </div>
 </div>
 
@@ -791,7 +804,12 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   function updateBulkBar(){
     var count = Object.keys(selectedIds).length;
     bulkBar.hidden = !bulkMode || count === 0;
-    bulkCount.textContent = count + (count === 1 ? ' обрано' : ' обрано');
+    var summary;
+    if(bulkApplyWater && bulkApplyFert) summary = 'полив і добриво';
+    else if(bulkApplyWater) summary = 'полив';
+    else if(bulkApplyFert) summary = 'добриво';
+    else summary = 'нічого не вибрано';
+    bulkCount.textContent = count + (count === 1 ? ' обрано' : ' обрано') + ' · застосується: ' + summary;
   }
 
   // ---------- Detail overlay ----------
@@ -1044,6 +1062,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var datePopover = document.getElementById('datePopover');
   function openDatePopover(type, plantId, btnEl){
     activeDatePopover = { type: type, id: plantId, btnEl: btnEl };
+    datePopoverInput.value = todayISO();
+    datePopoverInput.max = todayISO();
     var rect = btnEl.getBoundingClientRect();
     datePopover.style.top = (rect.bottom + 6) + 'px';
     var left = rect.left;
@@ -1058,40 +1078,47 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       datePopover.style.top = Math.max(10, top) + 'px';
     });
   }
-  datePopover.querySelectorAll('button').forEach(function(btn){
-    btn.addEventListener('click', async function(){
-      var days = parseInt(btn.dataset.days, 10);
-      var iso = daysAgoISO(days);
+  var datePopoverInput = document.getElementById('datePopoverInput');
+  var datePopoverConfirm = document.getElementById('datePopoverConfirm');
+  datePopoverConfirm.addEventListener('click', async function(){
+    var iso = datePopoverInput.value;
+    if(!iso) return;
 
-      if(activeDatePopover.type === 'bulk'){
-        plants.forEach(function(p){
-          if(selectedIds[p.id]){
-            if(bulkApplyWater) p.lastWatered = iso;
-            if(bulkApplyFert) p.lastFertilized = iso;
-          }
-        });
-        await savePlantsMeta();
-        exitBulkMode();
-        render();
-        datePopover.hidden = true;
-        return;
-      }
-
-      var plant = plants.find(function(p){ return p.id === activeDatePopover.id; });
-      if(plant){
-        if(activeDatePopover.type === 'water'){
-          plant.lastWatered = iso;
-          flashBtnLabel(waterBtn, 'water');
-        } else {
-          plant.lastFertilized = iso;
-          flashBtnLabel(fertBtn, 'fert');
+    if(activeDatePopover.type === 'bulk'){
+      var snapshot = [];
+      plants.forEach(function(p){
+        if(selectedIds[p.id]){
+          snapshot.push({ id: p.id, lastWatered: p.lastWatered, lastFertilized: p.lastFertilized });
         }
-        await savePlantsMeta();
-        render();
-        if(!detailOverlay.hidden && currentDetailId === plant.id) openDetail(plant.id);
-      }
+      });
+      plants.forEach(function(p){
+        if(selectedIds[p.id]){
+          if(bulkApplyWater) p.lastWatered = iso;
+          if(bulkApplyFert) p.lastFertilized = iso;
+        }
+      });
+      await savePlantsMeta();
+      showUndoToast(snapshot, snapshot.length, bulkApplyWater, bulkApplyFert);
+      exitBulkMode();
+      render();
       datePopover.hidden = true;
-    });
+      return;
+    }
+
+    var plant = plants.find(function(p){ return p.id === activeDatePopover.id; });
+    if(plant){
+      if(activeDatePopover.type === 'water'){
+        plant.lastWatered = iso;
+        flashBtnLabel(waterBtn, 'water');
+      } else {
+        plant.lastFertilized = iso;
+        flashBtnLabel(fertBtn, 'fert');
+      }
+      await savePlantsMeta();
+      render();
+      if(!detailOverlay.hidden && currentDetailId === plant.id) openDetail(plant.id);
+    }
+    datePopover.hidden = true;
   });
   document.addEventListener('click', function(e){
     if(!datePopover.hidden && !datePopover.contains(e.target) && e.target !== activeDatePopover.btnEl){
@@ -1122,18 +1149,56 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var bulkBar = document.getElementById('bulkBar');
   var bulkCount = document.getElementById('bulkCount');
 
+  // ---------- Відкат останньої масової дії ----------
+  var undoToast = document.getElementById('undoToast');
+  var undoToastText = document.getElementById('undoToastText');
+  var undoToastBtn = document.getElementById('undoToastBtn');
+  var undoToastClose = document.getElementById('undoToastClose');
+  var lastBulkSnapshot = null;
+  var undoToastTimer = null;
+
+  function showUndoToast(snapshot, count, appliedWater, appliedFert){
+    lastBulkSnapshot = snapshot;
+    var what = (appliedWater && appliedFert) ? 'полив і добриво' : (appliedWater ? 'полив' : 'добриво');
+    undoToastText.textContent = 'Оновлено ' + what + ' для ' + count + (count === 1 ? ' рослини' : ' рослин') + '.';
+    undoToast.hidden = false;
+    if(undoToastTimer) clearTimeout(undoToastTimer);
+    undoToastTimer = setTimeout(function(){ undoToast.hidden = true; }, 15000);
+  }
+
+  undoToastBtn.addEventListener('click', async function(){
+    if(!lastBulkSnapshot) return;
+    lastBulkSnapshot.forEach(function(entry){
+      var p = plants.find(function(pl){ return pl.id === entry.id; });
+      if(p){
+        p.lastWatered = entry.lastWatered;
+        p.lastFertilized = entry.lastFertilized;
+      }
+    });
+    await savePlantsMeta();
+    render();
+    lastBulkSnapshot = null;
+    undoToast.hidden = true;
+    if(undoToastTimer) clearTimeout(undoToastTimer);
+  });
+
+  undoToastClose.addEventListener('click', function(){
+    undoToast.hidden = true;
+    if(undoToastTimer) clearTimeout(undoToastTimer);
+  });
+
   function exitBulkMode(){
     bulkMode = false;
     selectedIds = {};
     bulkToggle.classList.remove('active');
     bulkToggle.textContent = 'Відмітити кілька';
     bulkBar.hidden = true;
-    bulkApplyWater = true;
-    bulkApplyFert = true;
-    bulkWaterToggle.classList.add('active');
-    bulkWaterToggle.textContent = '✓ Полито';
-    bulkFertToggle.classList.add('active');
-    bulkFertToggle.textContent = '✓ Удобрено';
+    bulkApplyWater = false;
+    bulkApplyFert = false;
+    bulkWaterToggle.classList.remove('active');
+    bulkWaterToggle.textContent = 'Полито';
+    bulkFertToggle.classList.remove('active');
+    bulkFertToggle.textContent = 'Удобрено';
   }
 
   bulkToggle.addEventListener('click', function(){
@@ -1156,8 +1221,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     render();
   });
 
-  var bulkApplyWater = true;
-  var bulkApplyFert = true;
+  var bulkApplyWater = false;
+  var bulkApplyFert = false;
   var bulkWaterToggle = document.getElementById('bulkWaterToggle');
   var bulkFertToggle = document.getElementById('bulkFertToggle');
 
@@ -1165,11 +1230,13 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     bulkApplyWater = !bulkApplyWater;
     bulkWaterToggle.classList.toggle('active', bulkApplyWater);
     bulkWaterToggle.textContent = (bulkApplyWater ? '✓ ' : '') + 'Полито';
+    updateBulkBar();
   });
   bulkFertToggle.addEventListener('click', function(){
     bulkApplyFert = !bulkApplyFert;
     bulkFertToggle.classList.toggle('active', bulkApplyFert);
     bulkFertToggle.textContent = (bulkApplyFert ? '✓ ' : '') + 'Удобрено';
+    updateBulkBar();
   });
 
   document.getElementById('bulkApplyBtn').addEventListener('click', function(e){
@@ -1182,6 +1249,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
   function openBulkDatePopover(btnEl){
     activeDatePopover = { type: 'bulk', id: null, btnEl: btnEl };
+    datePopoverInput.value = todayISO();
+    datePopoverInput.max = todayISO();
     var rect = btnEl.getBoundingClientRect();
     datePopover.hidden = false;
     requestAnimationFrame(function(){
