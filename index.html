@@ -201,14 +201,18 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .lightbox-overlay img{ max-width:100%; max-height:88vh; border-radius:10px; object-fit:contain; }
 .lightbox-close{ position:absolute; top:16px; right:20px; background:none; border:none; color:#fff; font-size:30px; line-height:1; }
 
-.compare-panel{ background:var(--surface); border-radius:20px; max-width:820px; width:100%; padding:24px; position:relative; touch-action:pan-y; }
-.compare-title{ font-size:19px; font-weight:600; display:flex; align-items:baseline; gap:8px; }
-.compare-subtitle{ font-size:12.5px; font-weight:400; color:var(--text-muted); }
-.compare-grid{ display:flex; gap:14px; margin-top:16px; }
+.compare-panel{ background:var(--surface); border-radius:20px; max-width:820px; width:100%; padding:26px; position:relative; touch-action:pan-y; }
+.compare-header{ padding-right:30px; }
+.compare-swipe-counter{ display:block; font-size:11px; font-weight:700; letter-spacing:.03em; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; }
+.compare-title{ font-size:20px; font-weight:700; display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; letter-spacing:-.01em; }
+.compare-subtitle{ font-size:13px; font-weight:500; color:var(--text-muted); }
+.compare-grid{ display:flex; align-items:center; gap:16px; margin-top:22px; }
 @media(max-width:640px){ .compare-grid{ flex-direction:column; } }
-.compare-col{ flex:1; display:flex; flex-direction:column; gap:8px; }
-.compare-col img{ width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:12px; background:var(--accent-soft); }
-.compare-label{ font-size:12.5px; font-weight:700; color:var(--text-muted); text-align:center; }
+.compare-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:10px; min-width:0; }
+.compare-col img{ width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:14px; background:var(--accent-soft); border:1px solid var(--border-soft); box-shadow:0 8px 22px rgba(30,25,15,.08); }
+.compare-label{ font-size:11px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--accent-dark); background:var(--accent-soft); padding:4px 12px; border-radius:999px; }
+.compare-arrow{ flex-shrink:0; width:32px; height:32px; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:20px; }
+@media(max-width:640px){ .compare-arrow{ transform:rotate(90deg); width:auto; height:auto; padding:2px 0; } }
 .upload-btn{ border:1px solid var(--border); background:#fff; padding:9px 14px; border-radius:9px; font-size:13px; font-weight:600; }
 .checkbox-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
 .checkbox-row input{ width:16px; height:16px; }
@@ -400,9 +404,11 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 <!-- Before/after comparison -->
 <div class="overlay" id="compareOverlay" hidden>
   <div class="compare-panel" id="comparePanel">
-    <span class="swipe-counter" id="compareSwipeCounter"></span>
     <button type="button" class="close-btn" id="compareClose">×</button>
-    <h2 class="compare-title"><span id="compareplantName"></span><span class="compare-subtitle">до і після</span></h2>
+    <div class="compare-header">
+      <span class="compare-swipe-counter" id="compareSwipeCounter"></span>
+      <h2 class="compare-title"><span id="compareplantName"></span><span class="compare-subtitle">до і після</span></h2>
+    </div>
     <div class="compare-grid" id="compareGrid"></div>
   </div>
 </div>
@@ -1063,7 +1069,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     var before = plant.photos[0];
     var after = plant.photos[plant.photos.length - 1];
     compareGrid.innerHTML = '';
-    [ {photo: before, label: 'Було'}, {photo: after, label: 'Зараз'} ].forEach(function(entry){
+    [ {photo: before, label: 'Було'}, {photo: after, label: 'Зараз'} ].forEach(function(entry, idx){
       var col = document.createElement('div');
       col.className = 'compare-col';
       var img = document.createElement('img');
@@ -1074,6 +1080,12 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       lbl.textContent = entry.label + (entry.photo.date ? (' · ' + formatDate(entry.photo.date)) : '');
       col.appendChild(lbl);
       compareGrid.appendChild(col);
+      if(idx === 0){
+        var arrow = document.createElement('div');
+        arrow.className = 'compare-arrow';
+        arrow.textContent = '→';
+        compareGrid.appendChild(arrow);
+      }
     });
     comparePlantName.textContent = plant.name;
 
