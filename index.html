@@ -1200,6 +1200,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     if(!iso) return;
 
     if(activeDatePopover.type === 'bulk'){
+      var effectiveWater = bulkApplyWater || bulkApplyFert; // добриво рідке — удобрення завжди означає й полив
       var snapshot = [];
       plants.forEach(function(p){
         if(selectedIds[p.id]){
@@ -1208,12 +1209,12 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       });
       plants.forEach(function(p){
         if(selectedIds[p.id]){
-          if(bulkApplyWater) p.lastWatered = iso;
+          if(effectiveWater) p.lastWatered = iso;
           if(bulkApplyFert) p.lastFertilized = iso;
         }
       });
       await savePlantsMeta();
-      showUndoToast(snapshot, snapshot.length, bulkApplyWater, bulkApplyFert);
+      showUndoToast(snapshot, snapshot.length, effectiveWater, bulkApplyFert);
       exitBulkMode();
       render();
       datePopover.hidden = true;
@@ -1226,7 +1227,9 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
         plant.lastWatered = iso;
         flashBtnLabel(waterBtn, 'water');
       } else {
+        // добриво рідке — удобрення завжди означає й полив
         plant.lastFertilized = iso;
+        plant.lastWatered = iso;
         flashBtnLabel(fertBtn, 'fert');
       }
       await savePlantsMeta();
@@ -1376,6 +1379,12 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     bulkApplyFert = !bulkApplyFert;
     bulkFertToggle.classList.toggle('active', bulkApplyFert);
     bulkFertToggle.textContent = (bulkApplyFert ? '✓ ' : '') + 'Удобрено';
+    // добриво рідке — удобрення завжди означає й полив
+    if(bulkApplyFert && !bulkApplyWater){
+      bulkApplyWater = true;
+      bulkWaterToggle.classList.add('active');
+      bulkWaterToggle.textContent = '✓ Полито';
+    }
     updateBulkBar();
   });
 
