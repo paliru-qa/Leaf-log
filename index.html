@@ -179,6 +179,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .instructions-label-row label{ margin-bottom:0; }
 .ai-generate-btn{ font-size:12px; font-weight:700; color:var(--accent-dark); background:var(--accent-soft); border:1px solid var(--accent); border-radius:999px; padding:5px 12px; white-space:nowrap; }
 .ai-generate-btn:disabled{ opacity:.6; cursor:default; }
+.field input.ai-loading{ background:var(--accent-soft); border-color:var(--accent); transition:background .2s ease; }
 .field input[type=text], .field input[type=number], .field input[type=date], .field textarea{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; background:#fff; color:var(--text); }
 .field textarea{ min-height:90px; resize:vertical; font-family:'Inter',sans-serif; }
 .field-row{ display:flex; gap:14px; flex-wrap:wrap; }
@@ -1527,6 +1528,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     updatePhotoThumbs();
     fertFields.style.display = fertEnabledCheckbox.checked ? 'flex' : 'none';
     deleteBtn.hidden = !plant;
+    aiAutoFillDone = false;
     formOverlay.hidden = false;
   }
   function closeForm(){ formOverlay.hidden = true; photoInput.value = ''; }
@@ -1613,20 +1615,27 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     fertFields.style.display = fertEnabledCheckbox.checked ? 'flex' : 'none';
   });
 
-  document.getElementById('aiGenerateBtn').addEventListener('click', async function(){
-    var btn = this;
-    var nameVal = document.getElementById('nameInput').value.trim();
-    if(!nameVal){
-      alert('Спочатку впиши назву рослини — за нею ШІ підбере інструкції.');
-      document.getElementById('nameInput').focus();
-      return;
-    }
-    var textarea = document.getElementById('instructionsInput');
-    if(textarea.value.trim() && !confirm('Поле з інструкціями вже не порожнє. Замінити його згенерованим текстом?')) return;
+  var aiAutoFillDone = false; // щоб не запускати автопідбір повторно для тієї ж форми без потреби
 
+  async function runAiSuggest(opts){
+    // opts: { silent: bool } — silent = без alert-попереджень про перезапис (для автозапуску)
+    var nameVal = document.getElementById('nameInput').value.trim();
+    if(!nameVal) return false;
+
+    var textarea = document.getElementById('instructionsInput');
+    var waterInput = document.getElementById('waterFreqInput');
+    var fertInput = document.getElementById('fertFreqInput');
+
+    if(!opts.silent && textarea.value.trim() && !confirm('Поле з інструкціями вже не порожнє. Замінити його згенерованим текстом?')) return false;
+
+    var btn = document.getElementById('aiGenerateBtn');
     var originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '✨ Генерую...';
+    if(opts.silent){
+      waterInput.classList.add('ai-loading');
+      fertInput.classList.add('ai-loading');
+    }
     try{
       var r = await fetch('/api/generate-instructions', {
         method: 'POST',
@@ -1639,16 +1648,41 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       });
       var data = await r.json();
       if(!r.ok){
-        alert('Не вдалося згенерувати: ' + (data.error || ('HTTP ' + r.status)));
-        return;
+        if(!opts.silent) alert('Не вдалося згенерувати: ' + (data.error || ('HTTP ' + r.status)));
+        return false;
       }
       textarea.value = data.instructions || '';
+      if(data.waterDays) waterInput.value = data.waterDays;
+      if(data.fertDays) fertInput.value = data.fertDays;
+      return true;
     }catch(e){
-      alert('Мережева помилка при звʼязку з ШІ: ' + e.message);
+      if(!opts.silent) alert('Мережева помилка при звʼязку з ШІ: ' + e.message);
+      return false;
     }finally{
       btn.disabled = false;
       btn.textContent = originalLabel;
+      waterInput.classList.remove('ai-loading');
+      fertInput.classList.remove('ai-loading');
     }
+  }
+
+  document.getElementById('nameInput').addEventListener('blur', function(){
+    var nameVal = this.value.trim();
+    var instructionsEmpty = !document.getElementById('instructionsInput').value.trim();
+    if(!editingId && nameVal && instructionsEmpty && !aiAutoFillDone){
+      aiAutoFillDone = true;
+      runAiSuggest({ silent: true });
+    }
+  });
+
+  document.getElementById('aiGenerateBtn').addEventListener('click', function(){
+    var nameVal = document.getElementById('nameInput').value.trim();
+    if(!nameVal){
+      alert('Спочатку впиши назву рослини — за нею ШІ підбере інструкції.');
+      document.getElementById('nameInput').focus();
+      return;
+    }
+    runAiSuggest({ silent: false });
   });
 
   plantForm.addEventListener('submit', async function(e){
