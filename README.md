@@ -1,48 +1,54 @@
-# 🪴 Незалий
+# Nezalyi QA Portfolio Project
 
-**Незалий** («не залий») — персональний застосунок для догляду за рослинами: графік поливу й добрива, фото (можна кілька — щоб порівнювати «до / після»), інструкції з догляду та режим для доглядача на час відʼїзду.
+Manual QA portfolio project based on a live web application: **Nezalyi** — a plant care tracker for watering, fertilizing, shared plant lists, and AI-assisted care features.
 
-Живий сайт: **https://leaf-log-six.vercel.app**
+**Live app:** https://leaf-log-six.vercel.app
+**Note:** Personal shared-list links are omitted for privacy.
 
-> Домен поки лишається старим (`leaf-log-six`) — сама адреса не змінюється автоматично разом з назвою застосунку. Якщо захочеш новий домен на кшталт `nezalyi.vercel.app`, це можна перейменувати окремо в Vercel → Settings → Domains.
+## Overview
 
-## Що вміє
+This repository contains QA documentation created by analyzing the implemented behavior of the live application.
 
-- Картки рослин з фото, статусом поливу й добрива (кольорові лейби)
-- Деталі рослини: фото на весь екран, галерея кількох фото, порівняння «було / зараз»
-- Свайп між рослинами в деталях
-- Режим доглядача — показує лише інструкції та кнопки «Полито / Удобрено», без можливості редагувати чи видаляти
-- Масове відмічання — вибрати кілька рослин чекбоксами й відмітити полив/добриво одразу всім
-- Форма додавання/редагування рослини з графіком поливу, добрива та нотатками з догляду
-- Кожен новий відвідувач за посиланням без `?id=` отримує свій власний окремий список; кнопка «Створити свій окремий список» дозволяє почати з чистого аркуша, навіть якщо відкрито чиєсь чуже посилання
+The project demonstrates how a manual QA engineer can:
+- reverse-engineer functional requirements from a working product,
+- identify business rules and edge cases,
+- prepare structured QA artifacts for testing and portfolio use.
 
-## Як це працює технічно
+## Included / Planned QA Artifacts
 
-- **Фронтенд** — один файл `index.html` (чистий HTML/CSS/JS, без збірки)
-- **Бекенд** — дві serverless-функції на Vercel:
-  - `api/plants.js` — зберігає список рослин (назва, графік поливу/добрива, інструкції) одним записом на список
-  - `api/photo.js` — зберігає фото окремо для кожної рослини (щоб не впертись у ліміт розміру одного запису в базі)
-- **База даних** — Upstash Redis через офіційний SDK `@upstash/redis`
-- Кожен список рослин має свій ідентифікатор (`?id=...` в посиланні) — це і є «ключ доступу»: хто має посилання з тим самим `id`, той бачить і редагує той самий список
+- `docs/requirements-v1.0.md`
+- `docs/test-plan-v1.0.md`
+- `docs/checklist-v1.0.md`
+- `docs/test-cases-v1.0.md`
+- `docs/bug-reports.md`
+- `assets/screenshots/`
 
-## Структура репозиторію
+## Scope Covered
 
-```
-index.html          — весь сайт (фронтенд)
-api/
-  plants.js          — API для списку рослин
-  photo.js            — API для фото рослин
-package.json          — залежність @upstash/redis
-vercel.json           — налаштування Vercel
-```
+- shared list behavior via URL `id`
+- plant list and detail view
+- add / edit / delete plant flows
+- watering and fertilizing logic
+- bulk-select mode and bulk actions
+- reorder mode
+- Caretaker mode
+- photo upload and before/after comparison
+- AI-generated care instructions
+- AI plant problem Q&A
+- shared access and sync limitations
 
-## Деплой
+## Skills Demonstrated
 
-Проєкт задеплоєний на **Vercel**, підключений до **Upstash Redis** (через маркетплейс-інтеграцію Vercel). Змінні середовища (`KV_REST_API_URL` / `KV_REST_API_TOKEN` або `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`) підтягуються автоматично при підключенні бази — вручну їх задавати не треба.
+- Manual Testing
+- Requirements Analysis
+- Test Planning
+- Checklist Design
+- Test Case Design
+- Bug Reporting
+- Reverse Engineering of Product Behavior
 
-Будь-яка зміна в цьому репозиторії (гілка `main`) автоматично перезбирає й перевикладає сайт.
+## Notes
 
-## Обмеження
-
-- Дані не прив'язані до акаунтів — доступ визначається виключно посиланням (`?id=...`). Хто має посилання, той має повний доступ до редагування.
-- Фото стискаються на пристрої перед збереженням (щоб влізти в ліміти бази), тому дуже високу якість зображення не зберігає.
+- The QA artifacts reflect the app version analyzed at the time of documentation.
+- Requirements were derived from actual implemented behavior, including current limitations.
+- This repository is intended as a QA portfolio project rather than a product development repository.
