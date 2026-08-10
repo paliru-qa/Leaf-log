@@ -2,8 +2,7 @@
 
 Manual QA portfolio project based on a live web application: **Nezalyi** — a plant care tracker for watering, fertilizing, shared plant lists, and AI-assisted care features.
 
-**Live app:** https://leaf-log-six.vercel.app
-
+**Live app:** https://leaf-log-six.vercel.app  
 **Note:** Personal shared-list links are omitted for privacy.
 
 ## Overview
