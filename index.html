@@ -450,8 +450,6 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   <button type="button" id="shareLinkBtn">Скопіювати посилання для доступу</button>
   ·
   <button type="button" id="newListBtn">Створити свій окремий список</button>
-  ·
-  <button type="button" id="summerUpdateBtn">Застосувати літній графік поливу й добрива</button>
 </div>
 
 <script>
@@ -1752,99 +1750,6 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     try{ localStorage.setItem('leaflog_household_id', newId); }catch(e){}
     var url = window.location.pathname + '?id=' + newId;
     window.location.href = url;
-  });
-
-  // ---------- Одноразове оновлення графіку поливу на літо (спека від +24°) ----------
-  var SUMMER_WATER_OVERRIDES = {
-    'Бальзамін': 1,
-    'Хлорофітум': 3,
-    'Бугенвілія на штамбі': 1,
-    'Базилік великий горщик': 1,
-    'Томат у горщику': 1,
-    'Петунія ампельна + Лобелія ампельна': 1,
-    'Балконний ящик 1 — салат + базилік': 1,
-    'Балконний ящик 2 — салат + базилік': 1,
-    'Перець Peter Pepper': 2,
-    'Перець Patio Fire and Ice': 2,
-    'Перець Red Hot Cherry Pepper': 2,
-    'Чорнобривці': 2,
-    'Гранат Baby': 3,
-    'Кімнатний інжир': 3,
-    'Трава Готьє': 3,
-    'Лимон Меєра': 4,
-    'Кімнатний плодоносний лимон': 4,
-    'Традесканція рео': 4,
-    'Фікус Natasha': 5,
-    'Батат гідропоніка': 5,
-    'Фікус lyrata': 6,
-    'Хойя Crimson Queen': 7,
-    'Сциндапсус сріблястий': 6,
-    'Епіпремнум Neon': 5,
-    'Драцена marginata': 7,
-    'Драцена marginata велика темна': 7,
-    'Монстера monkey': 6,
-    'Аглаонема Prestige': 7,
-    'Арабіка': 5,
-    'Авокадо': 4
-  };
-  var SUMMER_FERT_OVERRIDES = {
-    'Бальзамін': 10,
-    'Хлорофітум': 14,
-    'Бугенвілія на штамбі': 10,
-    'Базилік великий горщик': 7,
-    'Томат у горщику': 5,
-    'Петунія ампельна + Лобелія ампельна': 5,
-    'Балконний ящик 1 — салат + базилік': 10,
-    'Балконний ящик 2 — салат + базилік': 10,
-    'Перець Peter Pepper': 5,
-    'Перець Patio Fire and Ice': 5,
-    'Перець Red Hot Cherry Pepper': 5,
-    'Чорнобривці': 10,
-    'Гранат Baby': 10,
-    'Кімнатний інжир': 10,
-    'Трава Готьє': 14,
-    'Лимон Меєра': 10,
-    'Кімнатний плодоносний лимон': 10,
-    'Традесканція рео': 14,
-    'Фікус Natasha': 14,
-    'Батат гідропоніка': 14,
-    'Фікус lyrata': 14,
-    'Хойя Crimson Queen': 21,
-    'Сциндапсус сріблястий': 14,
-    'Епіпремнум Neon': 14,
-    'Драцена marginata': 21,
-    'Драцена marginata велика темна': 21,
-    'Монстера monkey': 14,
-    'Аглаонема Prestige': 14,
-    'Арабіка': 14,
-    'Авокадо': 14
-  };
-  document.getElementById('summerUpdateBtn').addEventListener('click', async function(){
-    if(!confirm('Це оновить графік поливу й добрива для рослин зі списку відповідно до літньої спеки (+24° і вище). Дати "востаннє поливали/удобрювали" не зміняться. Сукуленти, кактус та рослини без добрива не чіпаються. Продовжити?')) return;
-    var changed = [];
-    plants.forEach(function(p){
-      if(Object.prototype.hasOwnProperty.call(SUMMER_WATER_OVERRIDES, p.name)){
-        var newWaterFreq = SUMMER_WATER_OVERRIDES[p.name];
-        if(p.waterFreq !== newWaterFreq){
-          changed.push(p.name + ' — полив: ' + p.waterFreq + ' → ' + newWaterFreq + ' дн.');
-          p.waterFreq = newWaterFreq;
-        }
-      }
-      if(p.fertEnabled && Object.prototype.hasOwnProperty.call(SUMMER_FERT_OVERRIDES, p.name)){
-        var newFertFreq = SUMMER_FERT_OVERRIDES[p.name];
-        if(p.fertFreq !== newFertFreq){
-          changed.push(p.name + ' — добриво: ' + p.fertFreq + ' → ' + newFertFreq + ' дн.');
-          p.fertFreq = newFertFreq;
-        }
-      }
-    });
-    if(changed.length === 0){
-      alert('Змін не знадобилось — графік уже відповідає літньому.');
-      return;
-    }
-    var ok = await savePlantsMeta();
-    render();
-    alert((ok ? 'Оновлено й збережено' : 'Оновлено локально (у спільну базу не збереглось)') + ':\n\n' + changed.join('\n'));
   });
 
   loadPlants();
