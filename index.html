@@ -815,31 +815,33 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   }
 
   async function loadPlants(){
-    plants = null;
-    if(typeof window.storage !== 'undefined' && window.storage){
-      try{
-        var res = await window.storage.get(STORAGE_KEY, false);
-        plants = (res && res.value) ? JSON.parse(res.value) : null;
-      }catch(e){ plants = null; }
+  plants = null;
+
+  try{
+    var r = await fetch('/api/plants?id=' + encodeURIComponent(HOUSEHOLD_ID));
+    if(r.ok){
+      var data = await r.json();
+      plants = Array.isArray(data.plants) ? data.plants : [];
     }
-    if(plants === null){
-      try{
-        var r = await fetch('/api/plants?id=' + encodeURIComponent(HOUSEHOLD_ID));
-        if(r.ok){
-          var data = await r.json();
-          plants = data.plants || null;
-        }
-      }catch(e){ /* API недоступне — йдемо далі */ }
-    }
-    if(plants === null){
-      try{
-        var raw = localStorage.getItem(STORAGE_KEY);
-        plants = raw ? JSON.parse(raw) : [];
-      }catch(e){ plants = []; }
-    }
-    render();
-    loadAllPhotos();
+  }catch(e){ /* API недоступне — йдемо далі */ }
+
+  if(plants === null && typeof window.storage !== 'undefined' && window.storage){
+    try{
+      var res = await window.storage.get(STORAGE_KEY, false);
+      plants = (res && res.value) ? JSON.parse(res.value) : null;
+    }catch(e){ plants = null; }
   }
+
+  if(plants === null){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      plants = raw ? JSON.parse(raw) : [];
+    }catch(e){ plants = []; }
+  }
+
+  render();
+  loadAllPhotos();
+}
 
   // Приводить будь-яке старе/нове значення фото до єдиного формату: масив {id, url, date}
   function normalizePhotos(raw){
