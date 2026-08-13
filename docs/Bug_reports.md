@@ -1,35 +1,27 @@
-# User Story
+# Bug Reports
 
-## BR-001
-
-## Rename fertilizing toggle label to improve clarity
+## BR-001 Rename unclear fertilizing checkbox label in Add and Edit Plant forms
 
 ```txt
 *Summary:*
-As a user, I want the fertilizing toggle label in the Add/Edit Plant form to clearly indicate that it enables fertilizing tracking for a plant, so that I do not confuse it with an immediate one-time fertilizing action.
+Fertilizing checkbox label uses unclear wording in Add Plant and Edit Plant forms and should be renamed for better clarity and future English localization
 
-*Description:*
-* The current fertilizing toggle label is ambiguous
-* It may imply that fertilizing is needed right now instead of representing an enabled/disabled plant setting
-* The label should be updated to clearer wording in both supported languages
+*Steps to Reproduce:*
+# Open the site
+# Click "Додати рослину"
+# Observe the fertilizing checkbox label in the Add Plant form
+# Close the form
+# Open any existing plant card
+# Click "Редагувати"
+# Observe the same fertilizing checkbox label in the Edit Plant form
 
-*Proposed Label:*
-* English: Fertilizing enabled
-* Ukrainian: Увімкнути підживлення
+*Actual Result:*
+* The checkbox label is displayed as "Потрібне добриво зараз"
+* The wording is ambiguous and may suggest an immediate one-time fertilizing action instead of a setting that enables fertilizing tracking
+* The same unclear wording is used in both Add Plant and Edit Plant forms
 
 *Expected Result:*
-* The toggle label clearly communicates that fertilizing tracking is enabled for the plant
-* Users understand that enabling the toggle reveals fertilizing-related fields and includes the plant in fertilizing logic where applicable
-* The wording is used consistently in:
-** Add Plant form
-** Edit Plant form
-** related requirements documentation
-** checklist
-** test cases
-
-*Acceptance Criteria:*
-* The fertilizing toggle label is updated to `Fertilizing enabled` in English
-* The fertilizing toggle label is updated to `Увімкнути підживлення` in Ukrainian
-* The label meaning matches the actual product behavior
-* The label no longer implies an immediate one-time fertilizing action
-* Related documentation uses the same terminology consistently
+* The checkbox label should be renamed in both Add Plant and Edit Plant forms
+* Ukrainian label should be: "Увімкнути підживлення"
+* English label for future localization should be: "Fertilizing enabled"
+* The wording should clearly indicate that the checkbox enables fertilizing tracking for the plant rather than describing an immediate fertilizing need
