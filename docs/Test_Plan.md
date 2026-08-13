@@ -329,20 +329,50 @@ Testing may resume when:
 - **Environment Type:** Production-like live deployment
 - **Data Model:** Shared anonymous plant list via URL `id`
 
-### 12.2 Recommended Platforms
-Testing should cover modern desktop and mobile browsers where possible.
+### 12.2 Browser Coverage
 
-Recommended minimum coverage:
-- Google Chrome (desktop)
-- Mozilla Firefox (desktop)
-- Safari or Chrome on mobile device
-- Edge (optional)
+Testing should include validation in the primary target environments listed below.
 
-### 12.3 Environment Notes
-- shared-list data is mutable and may be changed by anyone with the same URL;
-- there is no real-time sync;
-- refresh may be required to observe changes made in another session;
-- browser-native date controls may differ visually by browser/OS.
+- **Desktop**
+  - Google Chrome (latest stable)
+  - Microsoft Edge (latest stable)
+
+- **Mobile**
+  - Safari on iPhone with a current iOS version
+  - Chrome on Android with a current Android version
+
+### 12.3 Screen / Viewport Coverage
+
+| Device Category | Target Width / Resolution | Notes |
+|---|---:|---|
+| Mobile iPhone | `390px` width | current iPhone-sized viewport |
+| Mobile Android | `412px` width | common Android viewport |
+| Tablet portrait | `768px` width | tablet responsive layout |
+| Tablet landscape / small laptop | `1024px` width | breakpoint validation |
+| Small desktop | `1200px` width | standard desktop layout |
+| Large desktop | `1900px` width | wide-screen layout validation |
+
+### 12.4 Responsive Validation Focus
+
+The following areas should be checked across the listed viewport sizes:
+
+- header layout and control stability
+- top-bar wrapping and alignment
+- plant card grid behavior
+- modal / form usability
+- date picker accessibility and visibility
+- bulk action bar visibility and usability
+- detail view layout
+- caretaker mode card layout
+- AI sections readability
+- button stability across interaction states
+- absence of clipping, overlap, or hidden critical controls
+
+### 12.5 Environment Notes
+
+- Exact rendering of native date inputs may differ between desktop and mobile browsers.
+- Mobile testing may be performed on real devices or browser emulation, depending on availability.
+- Cross-browser coverage in this test cycle is limited to the primary browsers available for execution.
 
 ---
 
