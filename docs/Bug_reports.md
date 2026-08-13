@@ -22,3 +22,6 @@ Fertilizing checkbox label uses unclear wording in Add Plant and Edit Plant form
 - Ukrainian label should be: **"Увімкнути підживлення"**.
 - English label for future localization should be: **"Fertilizing enabled"**.
 - The wording should clearly indicate that the checkbox enables fertilizing tracking for the plant rather than describing an immediate fertilizing need.
+
+### Attachment
+![BR-001 screenshot](../assets/screenshots/br-001-checkbox-label.png)
