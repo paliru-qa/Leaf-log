@@ -24,3 +24,24 @@ Fertilizing checkbox label uses unclear wording in Add Plant and Edit Plant form
 
 ### Attachment
 ![BR-001 screenshot](../assets/screenshots/br-001-checkbox-label.png)
+
+## BR-002 Caretaker mode does not allow entering bulk-select flow for updating multiple plants
+
+### Summary
+When Caretaker mode is enabled, the user cannot use bulk-select / bulk-edit style flow, but caretaker users should be able to mark several plants as watered at once.
+
+### Steps to Reproduce
+1. Open the site.
+2. Enable **"Режим доглядача"**.
+3. Try to update multiple plants at once.
+4. Check whether bulk-select mode can be entered or whether a multi-plant watering action is available.
+
+### Actual Result
+- In Caretaker mode, the user cannot use bulk-select mode.
+- There is no available flow for marking several plants as watered at once while staying in Caretaker mode.
+- The caretaker is limited to updating plants one by one.
+
+### Expected Result
+- In Caretaker mode, the user should be able to update multiple plants in one flow.
+- The caretaker should have a way to mark several plants as watered at once.
+- A bulk watering option should be available for caretaker usage without requiring access to full editing functionality.
