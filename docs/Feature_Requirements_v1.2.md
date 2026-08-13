@@ -6,63 +6,53 @@
 ## Feature 1. Header Layout Update
 
 ### Goal
-Improve header stability, preserve access to shared-list actions, and keep the layout consistent across modes and screen sizes.
+Improve header stability and layout consistency across modes and screen sizes.
 
 ### Requirements
 
-**HF-001.** The header shall have a three-part layout:
-- left area,
-- centered logo area,
-- right control area.
+**HF-001.** The top page area shall use a three-row structure:
+- header row 1,
+- header row 2,
+- a separate filter row below the header.
 
-**HF-002.** The **Add Plant** button shall be placed in the left header area.
+**HF-002.** Header row 1 shall contain:
+- the centered site title `LeafLOG`,
+- a compact language switcher in the right corner.
 
-**HF-003.** The logo shall be centered in the header and shall contain:
-- a watering can icon above,
-- the `LeafLOG` title below.
+**HF-003.** Header row 2 shall contain:
+- the **Add Plant** action on the left,
+- mode/action controls on the right.
 
-**HF-004.** The right header area shall contain:
-- existing mode/action controls,
-- the language switcher,
-- access to shared-list actions.
+**HF-004.** The mode/action controls in header row 2 shall include:
+- Select multiple / Bulk mode
+- Caretaker mode
+- Change order
 
-**HF-005.** Shared-list actions shall include:
-- **Copy share link**
-- **Create your own separate list**
+**HF-005.** The filter labels shall be displayed in a separate row below the header and shall not be treated as part of the header rows.
 
-**HF-006.** Shared-list actions may be presented as secondary controls or inside a dedicated menu, provided they remain clearly accessible.
+**HF-006.** In Caretaker mode, the **Add Plant** button shall remain hidden.
 
-**HF-007.** The behavior of shared-list actions shall remain unchanged:
-- **Copy share link** shall copy the current shared list URL;
-- **Create your own separate list** shall generate a new separate list without modifying the current list data.
+**HF-007.** Hiding the Add Plant button in Caretaker mode shall not cause the centered site title or right-side controls to shift position.
 
-**HF-008.** In Caretaker mode, the **Add Plant** button shall remain hidden.
+**HF-008.** The left area of header row 2 shall preserve reserved space for the Add Plant button even when the button is hidden.
 
-**HF-009.** Hiding the Add Plant button in Caretaker mode shall not cause the centered logo or right-side controls to shift position.
+**HF-009.** Header controls shall remain visually stable across hover, press, active, and toggle states, without changing size or position.
 
-**HF-010.** The left header area shall preserve reserved space for the Add Plant button even when the button is hidden.
+**HF-010.** The same header stability behavior shall apply on mobile devices.
 
-**HF-011.** Header controls shall remain visually stable across hover, press, active, and toggle states, without changing size or position.
-
-**HF-012.** The same header stability behavior shall apply on mobile devices.
-
-**HF-013.** The header shall remain readable and usable in normal mode, Caretaker mode, bulk-select mode, and reorder mode.
+**HF-011.** The header shall remain readable and usable in normal mode, Caretaker mode, bulk-select mode, and reorder mode.
 
 ### Acceptance Criteria
 
-**AC-H-01.** In normal mode, the Add Plant button is shown on the left, the logo is centered, and controls are displayed on the right.
+**AC-H-01.** In normal mode, header row 1 displays the centered `LeafLOG` title and the language switcher in the right corner.
 
-**AC-H-02.** The logo displays the watering can icon above the `LeafLOG` title.
+**AC-H-02.** In normal mode, header row 2 displays the Add Plant button on the left and mode/action controls on the right.
 
-**AC-H-03.** The header provides access to shared-list actions.
+**AC-H-03.** Filter labels are displayed in a separate row below the header.
 
-**AC-H-04.** The user can copy the current shared list link from the header.
+**AC-H-04.** When Caretaker mode is enabled, the Add Plant button is hidden, but the centered title and right-side controls do not shift.
 
-**AC-H-05.** The user can create a new separate list from the header without affecting the current list.
-
-**AC-H-06.** When Caretaker mode is enabled, the Add Plant button is hidden, but the logo and right-side controls do not shift.
-
-**AC-H-07.** Header buttons and controls do not visually jump, resize, or move when hovered, pressed, or toggled on desktop or mobile.
+**AC-H-05.** Header buttons and controls do not visually jump, resize, or move when hovered, pressed, or toggled on desktop or mobile.
 
 ---
 
@@ -73,7 +63,7 @@ Allow users to switch the site UI between Ukrainian and English.
 
 ### Requirements
 
-**LF-001.** The application shall provide a language switcher in the right side of the header, after the Caretaker mode control.
+**LF-001.** The application shall provide a compact language switcher in the right corner of header row 1.
 
 **LF-002.** The language switcher shall be displayed as a dropdown button with at least two options:
 - Ukrainian (`UA`)
@@ -84,6 +74,7 @@ Allow users to switch the site UI between Ukrainian and English.
 - buttons,
 - form labels,
 - empty states,
+- filter labels,
 - detail view labels,
 - bulk action labels,
 - caretaker mode labels,
@@ -98,11 +89,11 @@ Allow users to switch the site UI between Ukrainian and English.
 
 **LF-007.** Switching the UI language shall not automatically translate user-entered plant data already stored in the list.
 
-**LF-008.** Adding or using the language switcher shall not cause header controls to shift or resize unexpectedly.
+**LF-008.** Using the language switcher shall not cause header controls to shift or resize unexpectedly.
 
 ### Acceptance Criteria
 
-**AC-L-01.** A language switcher is visible in the right side of the header after the Caretaker mode control.
+**AC-L-01.** A language switcher is visible in the right corner of header row 1.
 
 **AC-L-02.** The user can switch between Ukrainian and English.
 
@@ -123,7 +114,7 @@ Allow users to switch the site UI between Ukrainian and English.
 ## Feature 3. Footer
 
 ### Goal
-Add a lightweight footer with product identity information and stable page-end layout behavior.
+Add a lightweight footer with product identity information, shared-list actions, and stable page-end layout behavior.
 
 ### Requirements
 
@@ -132,7 +123,8 @@ Add a lightweight footer with product identity information and stable page-end l
 **FF-002.** The footer shall contain:
 - copyright text,
 - the product name,
-- a short tagline.
+- a short tagline,
+- shared-list actions.
 
 **FF-003.** The footer tagline shall be:
 - Ukrainian: `Доглядай за рослинами без зайвого клопоту`
@@ -140,15 +132,23 @@ Add a lightweight footer with product identity information and stable page-end l
 
 **FF-004.** Footer text shall follow the currently selected UI language.
 
-**FF-005.** The footer shall use a lightweight, brand-aligned visual style and shall not distract from the main application content.
+**FF-005.** The footer shall provide access to the following shared-list actions:
+- **Copy share link**
+- **Create your own separate list**
 
-**FF-006.** The footer shall remain readable and responsive on desktop and mobile screen sizes.
+**FF-006.** The behavior of shared-list actions shall remain unchanged:
+- **Copy share link** shall copy the current shared list URL;
+- **Create your own separate list** shall generate a new separate list without modifying the current list data.
 
-**FF-007.** When page content is shorter than the viewport height, the footer shall remain visually attached to the bottom of the screen.
+**FF-007.** The footer shall use a lightweight, brand-aligned visual style and shall not distract from the main application content.
 
-**FF-008.** When page content exceeds the viewport height, the footer shall appear below the page content and shall not overlap it.
+**FF-008.** The footer shall remain readable and responsive on desktop and mobile screen sizes.
 
-**FF-009.** The footer shall not obscure interactive content, modal content, or the bulk action bar.
+**FF-009.** When page content is shorter than the viewport height, the footer shall remain visually attached to the bottom of the screen.
+
+**FF-010.** When page content exceeds the viewport height, the footer shall appear below the page content and shall not overlap it.
+
+**FF-011.** The footer shall not obscure interactive content, modal content, or the bulk action bar.
 
 ### Acceptance Criteria
 
@@ -158,10 +158,12 @@ Add a lightweight footer with product identity information and stable page-end l
 
 **AC-F-03.** The footer displays the approved tagline in the currently selected language.
 
-**AC-F-04.** Footer content switches together with the selected UI language.
+**AC-F-04.** The footer provides access to Copy share link and Create your own separate list.
 
-**AC-F-05.** The footer remains readable and visually stable across supported screen sizes.
+**AC-F-05.** Footer content switches together with the selected UI language.
 
-**AC-F-06.** If the page contains little or no plant content, the footer remains positioned at the bottom of the viewport.
+**AC-F-06.** The footer remains readable and visually stable across supported screen sizes.
 
-**AC-F-07.** If the page contains enough content to scroll, the footer appears after the content and does not overlap it.
+**AC-F-07.** If the page contains little or no plant content, the footer remains positioned at the bottom of the viewport.
+
+**AC-F-08.** If the page contains enough content to scroll, the footer appears after the content and does not overlap it.
