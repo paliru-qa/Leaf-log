@@ -152,17 +152,17 @@ input,textarea{ font-family:'Inter',sans-serif; }
 
 .mobile-add-btn{
   display:none;
-  min-width:48px;
+  width:44px;
   height:36px;
-  padding:0 10px;
+  padding:0;
   border-radius:999px;
   border:1px solid transparent;
   background:var(--accent);
   color:#fff;
   align-items:center;
   justify-content:center;
-  white-space:nowrap;
   transition:background .15s ease, border-color .15s ease;
+  overflow:hidden;
 }
 
 .mobile-add-btn:hover{
@@ -170,10 +170,11 @@ input,textarea{ font-family:'Inter',sans-serif; }
 }
 
 .mobile-add-btn-icon{
-  width:22px;
-  height:22px;
+  width:26px;
+  height:26px;
   display:block;
   object-fit:contain;
+  flex-shrink:0;
 }
 
 .btn-primary,
@@ -231,19 +232,25 @@ input,textarea{ font-family:'Inter',sans-serif; }
   }
 
   .topbar-row-1{
-    grid-template-columns:1fr auto;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+  }
+
+  .topbar-row-side-left{
+    display:flex;
+    justify-content:flex-start;
   }
 
   .brand{
-    justify-self:start;
+    justify-self:center;
   }
-  
+
   .brand-word{
-  height:26px;
+    height:26px;
   }
-  
-  .topbar-row-side-left{
-    display:none;
+
+  .mobile-add-btn{
+    display:inline-flex;
   }
 
   .topbar-row-2{
@@ -252,7 +259,7 @@ input,textarea{ font-family:'Inter',sans-serif; }
   }
 
   .topbar-left-slot{
-    min-width:0;
+    display:none;
   }
 
   .topbar-actions{
@@ -1554,8 +1561,9 @@ function syncAddPlantVisibility(){
     addPlantSlot.classList.toggle('is-hidden', caretakerMode);
   }
   if(addPlantBtnMobile){
-    addPlantBtnMobile.style.display = caretakerMode ? 'none' : '';
-  }
+  addPlantBtnMobile.addEventListener('click', function(){
+    addPlantBtn.click();
+  });
 }
 
 caretakerToggle.addEventListener('click', function(){
