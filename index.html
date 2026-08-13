@@ -1561,9 +1561,8 @@ function syncAddPlantVisibility(){
     addPlantSlot.classList.toggle('is-hidden', caretakerMode);
   }
   if(addPlantBtnMobile){
-  addPlantBtnMobile.addEventListener('click', function(){
-    addPlantBtn.click();
-  });
+    addPlantBtnMobile.style.display = caretakerMode ? 'none' : '';
+  }
 }
 
 caretakerToggle.addEventListener('click', function(){
@@ -1754,10 +1753,9 @@ syncAddPlantVisibility();
 
   addPlantBtn.addEventListener('click', function(){ openForm(); });
   if(addPlantBtnMobile){
-  addPlantBtnMobile.addEventListener('click', function(){
-    addPlantBtn.click();
-  });
-}
+  addPlantBtnMobile.addEventListener('click', function(){ openForm(); });
+  }
+  
   document.getElementById('addFirstPlantBtn').addEventListener('click', function(){ openForm(); });
   uploadBtnTrigger.addEventListener('click', function(){ photoInput.click(); });
   document.querySelectorAll('[data-close-form]').forEach(function(b){ b.addEventListener('click', closeForm); });
