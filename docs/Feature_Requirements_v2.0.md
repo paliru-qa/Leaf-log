@@ -1,5 +1,5 @@
-# Feature Requirements v2.0
-## Status Filters and Fertilizing Calendar
+# Feature Requirements v2.1
+## Status Filters, Fertilizing Calendar and Reorder Mode Update
 
 ---
 
@@ -138,3 +138,52 @@ Provide a calendar-based sidebar view for reviewing recorded fertilizing dates a
 **AC-FC-10.** Calendar labels follow the selected UI language.
 
 **AC-FC-11.** The Fertilizing Calendar uses data from the current shared list only.
+
+---
+
+## Feature 4. Reorder Mode Update
+
+### Goal
+Make plant reordering more intuitive by preserving the existing tile/card layout and enabling drag-and-drop directly on plant cards.
+
+### Requirements
+
+**RF-001.** Reorder mode shall preserve the existing tile/card view of the plant list instead of switching to a compact list layout.
+
+**RF-002.** Plant cards shall become draggable in reorder mode.
+
+**RF-003.** In reorder mode, clicking or tapping a plant card shall not open the plant detail view.
+
+**RF-004.** The system shall allow the user to change plant order by dragging plant cards to a new position.
+
+**RF-005.** The updated plant order shall be saved after drag-and-drop is completed.
+
+**RF-006.** The saved plant order shall persist after page refresh.
+
+**RF-007.** While dragging a plant card near the top or bottom edge of the viewport, the page shall auto-scroll in the corresponding direction.
+
+**RF-008.** Auto-scroll during drag shall allow the user to continue moving the same plant card without releasing it.
+
+**RF-009.** The auto-scroll behavior shall support moving a plant card across long lists on mobile and desktop devices.
+
+**RF-010.** The user shall not need to repeatedly stop dragging, scroll manually, and re-drag the same plant card to move it across distant positions.
+
+**RF-011.** Reorder mode shall remain mutually exclusive with other conflicting interaction modes where applicable.
+
+### Acceptance Criteria
+
+**AC-R-01.** When reorder mode is enabled, the plant list remains in tile/card view.
+
+**AC-R-02.** Plant cards can be dragged to a different position.
+
+**AC-R-03.** Plant detail view does not open when the user taps or clicks a card in reorder mode.
+
+**AC-R-04.** After drag-and-drop is completed, the new plant order is saved and remains after refresh.
+
+**AC-R-05.** When the user drags a plant card near the top edge of the screen, the list auto-scrolls upward.
+
+**AC-R-06.** When the user drags a plant card near the bottom edge of the screen, the list auto-scrolls downward.
+
+**AC-R-07.** The user can move a plant card from a low position to a much higher position in one continuous drag action.
+
+**AC-R-08.** The user does not need to manually stop, scroll, and restart dragging to move a card across a long list.
