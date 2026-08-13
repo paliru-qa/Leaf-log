@@ -6,7 +6,7 @@
 ## Feature 1. Header Layout Update
 
 ### Goal
-Improve header stability and layout consistency across modes and screen sizes.
+Improve header stability, preserve access to shared-list actions, and keep the layout consistent across modes and screen sizes.
 
 ### Requirements
 
@@ -21,29 +21,48 @@ Improve header stability and layout consistency across modes and screen sizes.
 - a watering can icon above,
 - the `LeafLOG` title below.
 
-**HF-004.** The right header area shall contain the existing mode/action controls and reserved space for a future language switcher.
+**HF-004.** The right header area shall contain:
+- existing mode/action controls,
+- the language switcher,
+- access to shared-list actions.
 
-**HF-005.** In Caretaker mode, the **Add Plant** button shall remain hidden.
+**HF-005.** Shared-list actions shall include:
+- **Copy share link**
+- **Create your own separate list**
 
-**HF-006.** Hiding the Add Plant button in Caretaker mode shall not cause the centered logo or right-side controls to shift position.
+**HF-006.** Shared-list actions may be presented as secondary controls or inside a dedicated menu, provided they remain clearly accessible.
 
-**HF-007.** The left header area shall preserve reserved space for the Add Plant button even when the button is hidden.
+**HF-007.** The behavior of shared-list actions shall remain unchanged:
+- **Copy share link** shall copy the current shared list URL;
+- **Create your own separate list** shall generate a new separate list without modifying the current list data.
 
-**HF-008.** Header controls shall remain visually stable across hover, press, active, and toggle states, without changing size or position.
+**HF-008.** In Caretaker mode, the **Add Plant** button shall remain hidden.
 
-**HF-009.** The same header stability behavior shall apply on mobile devices.
+**HF-009.** Hiding the Add Plant button in Caretaker mode shall not cause the centered logo or right-side controls to shift position.
 
-**HF-010.** The header shall remain readable and usable in normal mode, Caretaker mode, bulk-select mode, and reorder mode.
+**HF-010.** The left header area shall preserve reserved space for the Add Plant button even when the button is hidden.
+
+**HF-011.** Header controls shall remain visually stable across hover, press, active, and toggle states, without changing size or position.
+
+**HF-012.** The same header stability behavior shall apply on mobile devices.
+
+**HF-013.** The header shall remain readable and usable in normal mode, Caretaker mode, bulk-select mode, and reorder mode.
 
 ### Acceptance Criteria
 
-**AC-H-01.** In normal mode, the Add Plant button is shown on the left, the logo is centered, and action controls are displayed on the right.
+**AC-H-01.** In normal mode, the Add Plant button is shown on the left, the logo is centered, and controls are displayed on the right.
 
 **AC-H-02.** The logo displays the watering can icon above the `LeafLOG` title.
 
-**AC-H-03.** When Caretaker mode is enabled, the Add Plant button is hidden, but the logo and right-side controls do not shift.
+**AC-H-03.** The header provides access to shared-list actions.
 
-**AC-H-04.** Header buttons do not visually jump, resize, or move when hovered, pressed, or toggled on desktop or mobile.
+**AC-H-04.** The user can copy the current shared list link from the header.
+
+**AC-H-05.** The user can create a new separate list from the header without affecting the current list.
+
+**AC-H-06.** When Caretaker mode is enabled, the Add Plant button is hidden, but the logo and right-side controls do not shift.
+
+**AC-H-07.** Header buttons and controls do not visually jump, resize, or move when hovered, pressed, or toggled on desktop or mobile.
 
 ---
 
