@@ -150,6 +150,32 @@ input,textarea{ font-family:'Inter',sans-serif; }
   white-space:nowrap;
 }
 
+.mobile-add-btn{
+  display:none;
+  min-width:48px;
+  height:36px;
+  padding:0 10px;
+  border-radius:999px;
+  border:1px solid transparent;
+  background:var(--accent);
+  color:#fff;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  transition:background .15s ease, border-color .15s ease;
+}
+
+.mobile-add-btn:hover{
+  background:var(--accent-dark);
+}
+
+.mobile-add-btn-icon{
+  width:22px;
+  height:22px;
+  display:block;
+  object-fit:contain;
+}
+
 .btn-primary,
 .mode-toggle,
 .lang-switcher{
@@ -233,7 +259,6 @@ input,textarea{ font-family:'Inter',sans-serif; }
     justify-content:flex-start;
   }
 }
-
 
 main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
@@ -419,7 +444,11 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 <div class="topbar">
   <div class="topbar-row topbar-row-1">
-    <div class="topbar-row-side topbar-row-side-left"></div>
+    <div class="topbar-row-side topbar-row-side-left">
+  <button type="button" class="mobile-add-btn" id="addPlantBtnMobile" aria-label="Додати рослину">
+    <img class="mobile-add-btn-icon" src="assets/icons/add-plant-mobile-white.png" alt="">
+  </button>
+</div>
 
     <button type="button" class="brand brand-title-only" id="homeLogoBtn" aria-label="LeafLOG">
   <img
@@ -1516,12 +1545,17 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   // ---------- Caretaker toggle ----------
   var caretakerToggle = document.getElementById('caretakerToggle');
 var addPlantBtn = document.getElementById('addPlantBtn');
+var addPlantBtnMobile = document.getElementById('addPlantBtnMobile');
 var addPlantSlot = document.getElementById('addPlantSlot');
 var homeLogoBtn = document.getElementById('homeLogoBtn');
 
 function syncAddPlantVisibility(){
-  if(!addPlantSlot) return;
-  addPlantSlot.classList.toggle('is-hidden', caretakerMode);
+  if(addPlantSlot){
+    addPlantSlot.classList.toggle('is-hidden', caretakerMode);
+  }
+  if(addPlantBtnMobile){
+    addPlantBtnMobile.style.display = caretakerMode ? 'none' : '';
+  }
 }
 
 caretakerToggle.addEventListener('click', function(){
@@ -1711,6 +1745,11 @@ syncAddPlantVisibility();
   var deleteBtn = document.getElementById('deleteBtn');
 
   addPlantBtn.addEventListener('click', function(){ openForm(); });
+  if(addPlantBtnMobile){
+  addPlantBtnMobile.addEventListener('click', function(){
+    addPlantBtn.click();
+  });
+}
   document.getElementById('addFirstPlantBtn').addEventListener('click', function(){ openForm(); });
   uploadBtnTrigger.addEventListener('click', function(){ photoInput.click(); });
   document.querySelectorAll('[data-close-form]').forEach(function(b){ b.addEventListener('click', closeForm); });
