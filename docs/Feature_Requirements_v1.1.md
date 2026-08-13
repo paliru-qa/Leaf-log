@@ -1,5 +1,5 @@
-# Feature Requirements v1.1
-## LeafLOG Header Update and Language Switcher
+# Feature Requirements v1.2
+## LeafLOG Header Update, Language Switcher, and Footer
 
 ---
 
@@ -98,3 +98,51 @@ Allow users to switch the site UI between Ukrainian and English.
 **AC-L-07.** The selected language remains active after page refresh.
 
 **AC-L-08.** Opening or using the language switcher does not cause header layout instability.
+
+---
+
+## Feature 3. Footer
+
+### Goal
+Add a lightweight footer with product identity information and stable page-end layout behavior.
+
+### Requirements
+
+**FF-001.** The application shall display a footer at the bottom of the page.
+
+**FF-002.** The footer shall contain:
+- copyright text,
+- the product name,
+- a short tagline.
+
+**FF-003.** The footer tagline shall be:
+- Ukrainian: `Доглядай за рослинами без зайвого клопоту`
+- English: `Care for your plants with ease`
+
+**FF-004.** Footer text shall follow the currently selected UI language.
+
+**FF-005.** The footer shall use a lightweight, brand-aligned visual style and shall not distract from the main application content.
+
+**FF-006.** The footer shall remain readable and responsive on desktop and mobile screen sizes.
+
+**FF-007.** When page content is shorter than the viewport height, the footer shall remain visually attached to the bottom of the screen.
+
+**FF-008.** When page content exceeds the viewport height, the footer shall appear below the page content and shall not overlap it.
+
+**FF-009.** The footer shall not obscure interactive content, modal content, or the bulk action bar.
+
+### Acceptance Criteria
+
+**AC-F-01.** A footer is visible at the bottom of the page.
+
+**AC-F-02.** The footer displays copyright text with the product name.
+
+**AC-F-03.** The footer displays the approved tagline in the currently selected language.
+
+**AC-F-04.** Footer content switches together with the selected UI language.
+
+**AC-F-05.** The footer remains readable and visually stable across supported screen sizes.
+
+**AC-F-06.** If the page contains little or no plant content, the footer remains positioned at the bottom of the viewport.
+
+**AC-F-07.** If the page contains enough content to scroll, the footer appears after the content and does not overlap it.
