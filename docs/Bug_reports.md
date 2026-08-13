@@ -19,8 +19,8 @@ Fertilizing checkbox label uses unclear wording in Add Plant and Edit Plant form
 
 ### Expected Result
 - The checkbox label should be renamed in both Add Plant and Edit Plant forms
--- Ukrainian label should be: **"Увімкнути підживлення"**
--- English label should be: **"Fertilizing enabled"**
+  - Ukrainian label should be: **"Увімкнути підживлення"**
+  - English label should be: **"Fertilizing enabled"**
 
 ### Attachment
 ![BR-001 screenshot](../assets/screenshots/br-001-checkbox-label.png)
