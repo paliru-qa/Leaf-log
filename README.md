@@ -1,6 +1,6 @@
-# LOGLeaf QA Portfolio Project
+# LeafLOG QA Portfolio Project
 
-Manual QA portfolio project based on a live web application: **LOGLeaf** — a plant care tracker for watering, fertilizing, shared plant lists, and AI-assisted care features.
+Manual QA portfolio project based on a live web application: **LeafLOG** — a plant care tracker for watering, fertilizing, shared plant lists, and AI-assisted care features.
 
 **Live app:** https://leaf-log-six.vercel.app  
 **Note:** Personal shared-list links are omitted for privacy.
