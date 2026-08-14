@@ -37,13 +37,15 @@
 }
 
 *{ box-sizing:border-box; }
-html,body{ margin:0; padding:0; }
+html,body{ margin:0; padding:0; min-height:100%; }
 body{
   font-family:'Manrope', sans-serif;
   background:var(--bg);
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 h1,h2,h3,h4{ font-family:'Manrope', sans-serif; font-weight:700; margin:0; }
 p{ margin:0; }
@@ -295,7 +297,13 @@ input,textarea{ font-family:'Manrope', sans-serif; }
   }
 }
 
-main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
+main{
+  padding:22px 28px 60px;
+  max-width:1200px;
+  margin:0 auto;
+  width:100%;
+  flex:1;
+}
 
 .legend{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 14px; padding:12px 14px; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-sm); }
 .legend-chip{ font-size:12.5px; padding:4px 10px; border-radius:999px; font-weight:700; white-space:nowrap; border:2px solid transparent; cursor:pointer; opacity:.85; transition:opacity .15s ease, border-color .15s ease, transform .1s ease; }
@@ -500,8 +508,74 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .btn-secondary{ background:none; border:1px solid var(--border); padding:10px 18px; border-radius:999px; font-weight:600; font-size:14px; color:var(--text); }
 .btn-danger{ background:none; border:none; color:#b3391c; font-size:13px; font-weight:600; padding:6px 0; }
 
-.footer-note{ text-align:center; padding:22px; font-size:12px; color:var(--text-muted); }
-.footer-note button{ background:none; border:none; color:var(--text-muted); text-decoration:underline; font-size:12px; cursor:pointer; padding:0; margin-left:4px; }
+.footer{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  background:var(--surface);
+  padding:18px 28px 22px;
+}
+
+.footer-inner{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.footer-left,
+.footer-right{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.footer-copy{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+}
+
+.footer-tagline{
+  font-size:13px;
+  color:var(--text-muted);
+}
+
+.footer-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  justify-content:flex-end;
+}
+
+.footer-actions button{
+  background:none;
+  border:none;
+  padding:0;
+  color:var(--accent-dark);
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  text-decoration:underline;
+}
+
+@media(max-width:760px){
+  .footer{
+    padding:16px 16px 20px;
+  }
+
+  .footer-inner{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:14px;
+  }
+
+  .footer-actions{
+    justify-content:flex-start;
+  }
+}
 
 [hidden]{ display:none !important; }
 </style>
@@ -729,12 +803,21 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   </div>
 </div>
 
-<div class="footer-note">
-  Дані зберігаються у спільній базі за твоїм посиланням.
-  <button type="button" id="shareLinkBtn">Скопіювати посилання для доступу</button>
-  ·
-  <button type="button" id="newListBtn">Створити свій окремий список</button>
-</div>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-copy">© 2026 LeafLOG</div>
+      <div class="footer-tagline">Доглядай за рослинами без зайвого клопоту</div>
+    </div>
+
+    <div class="footer-right">
+      <div class="footer-actions">
+        <button type="button" id="shareLinkBtn">Скопіювати посилання</button>
+        <button type="button" id="newListBtn">Створити свій список</button>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script>
 (function(){
