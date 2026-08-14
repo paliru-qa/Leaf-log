@@ -1327,8 +1327,8 @@ main{
     ds.active = true;
   }
 
-  // Пересуває плейсхолдер до найближчої картки під точкою (x, y)
-  function repositionPlaceholder(x, y){
+// Пересуває плейсхолдер до найближчої картки під точкою (x, y)
+function repositionPlaceholder(x, y){
   var ds = dragState;
   if(!ds || !ds.active) return;
 
@@ -1355,10 +1355,20 @@ main{
     }
   });
 
-  if(!closest || closest === ds.placeholder) return;
+  if(!closest) return;
 
   var rect = closest.getBoundingClientRect();
-  var before = (y < rect.top + rect.height / 2);
+
+  // ВАЖЛИВО: це сітка з кількома колонками (2-4 в ряд), а не список в один стовпчик.
+  // Якщо курсор вертикально перебуває в межах рядка цільової картки — порівнюємо по X (ліво/право).
+  // Якщо курсор явно вище/нижче рядка картки — тоді вже по Y (інший рядок).
+  var sameRow = (y >= rect.top && y <= rect.bottom);
+  var before;
+  if(sameRow){
+    before = x < (rect.left + rect.width / 2);
+  } else {
+    before = y < (rect.top + rect.height / 2);
+  }
 
   if(before){
     if(ds.placeholder !== closest.previousSibling){
