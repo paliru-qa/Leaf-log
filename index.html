@@ -297,8 +297,11 @@ input,textarea{ font-family:'Manrope', sans-serif; }
 
 main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
-.legend{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 22px; padding:12px 14px; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-sm); }
-.legend-chip{ font-size:12.5px; padding:4px 10px; border-radius:999px; font-weight:700; white-space:nowrap; }
+.legend{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 14px; padding:12px 14px; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-sm); }
+.legend-chip{ font-size:12.5px; padding:4px 10px; border-radius:999px; font-weight:700; white-space:nowrap; border:2px solid transparent; cursor:pointer; opacity:.85; transition:opacity .15s ease, border-color .15s ease, transform .1s ease; }
+.legend-chip:hover{ opacity:1; }
+.legend-chip.active{ opacity:1; border-color:currentColor; transform:translateY(-1px); }
+.filter-empty-state{ text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; margin-bottom:22px; }
 
 .plant-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
 @media(min-width:780px){ .plant-grid{ grid-template-columns:repeat(4,1fr); gap:22px; } }
@@ -520,13 +523,14 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 <main>
   <div class="legend" id="legend">
-    <span class="legend-chip" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</span>
-    <span class="legend-chip" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</span>
-    <span class="legend-chip" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</span>
-    <span class="legend-chip" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</span>
-    <span class="legend-chip" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</span>
-    <span class="legend-chip" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</span>
+    <button type="button" class="legend-chip" data-key="water-ok" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</button>
+    <button type="button" class="legend-chip" data-key="water-today" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</button>
+    <button type="button" class="legend-chip" data-key="water-overdue" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</button>
+    <button type="button" class="legend-chip" data-key="fert-ok" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
+    <button type="button" class="legend-chip" data-key="fert-due" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
+    <button type="button" class="legend-chip" data-key="fert-off" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
   </div>
+  <div class="filter-empty-state" id="filterEmptyState" hidden>Немає рослин із таким статусом.</div>
 
   <div class="empty-state" id="emptyState">
     <h3>Поки що немає жодної рослини</h3>
@@ -732,6 +736,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var caretakerMode = false;
   var bulkMode = false;
   var reorderMode = false;
+  var activeStatusFilter = null;
   var selectedIds = {};
   var activeDatePopover = { type:null, id:null, btnEl:null };
   var currentDetailId = null;
@@ -741,6 +746,23 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var grid = document.getElementById('plantGrid');
   var reorderListEl = document.getElementById('reorderList');
   var emptyState = document.getElementById('emptyState');
+  var filterEmptyState = document.getElementById('filterEmptyState');
+  var legendEl = document.getElementById('legend');
+
+  legendEl.querySelectorAll('.legend-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var key = chip.dataset.key;
+      if(activeStatusFilter === key){
+        activeStatusFilter = null;
+      } else {
+        activeStatusFilter = key;
+      }
+      legendEl.querySelectorAll('.legend-chip').forEach(function(c){
+        c.classList.toggle('active', c.dataset.key === activeStatusFilter);
+      });
+      render();
+    });
+  });
 
   var SEED_DATE = '2026-07-01';
   var SEED_PLANTS = [
@@ -829,16 +851,16 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   function waterStatus(plant){
     var freq = plant.waterFreq || 7;
     var d = daysBetween(plant.lastWatered);
-    if(d < freq) return {label:'Полито', bg:'var(--water-ok-bg)', text:'var(--water-ok-text)'};
-    if(d === freq) return {label:'Полити сьогодні', bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
-    return {label:'Полив прострочено', bg:'var(--water-overdue-bg)', text:'var(--water-overdue-text)'};
+    if(d < freq) return {key:'water-ok', label:'Полито', bg:'var(--water-ok-bg)', text:'var(--water-ok-text)'};
+    if(d === freq) return {key:'water-today', label:'Полити сьогодні', bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
+    return {key:'water-overdue', label:'Полив прострочено', bg:'var(--water-overdue-bg)', text:'var(--water-overdue-text)'};
   }
   function fertStatus(plant){
-    if(!plant.fertEnabled) return {label:'Не удобрювати', bg:'var(--fert-off-bg)', text:'var(--fert-off-text)'};
+    if(!plant.fertEnabled) return {key:'fert-off', label:'Не удобрювати', bg:'var(--fert-off-bg)', text:'var(--fert-off-text)'};
     var freq = plant.fertFreq || 30;
     var d = daysBetween(plant.lastFertilized);
-    if(d < freq) return {label:'Удобрено', bg:'var(--fert-ok-bg)', text:'var(--fert-ok-text)'};
-    return {label:'Удобрити', bg:'var(--fert-due-bg)', text:'var(--fert-due-text)'};
+    if(d < freq) return {key:'fert-ok', label:'Удобрено', bg:'var(--fert-ok-bg)', text:'var(--fert-ok-text)'};
+    return {key:'fert-due', label:'Удобрити', bg:'var(--fert-due-bg)', text:'var(--fert-due-text)'};
   }
   function badgeEl(status){
     var span = document.createElement('span');
@@ -983,6 +1005,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       emptyState.hidden = false;
       grid.hidden = true;
       reorderListEl.hidden = true;
+      filterEmptyState.hidden = true;
       return;
     }
     emptyState.hidden = true;
@@ -990,15 +1013,32 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     if(reorderMode){
       grid.hidden = true;
       grid.innerHTML = '';
+      filterEmptyState.hidden = true;
       reorderListEl.hidden = false;
       renderReorderList();
       return;
     }
 
     reorderListEl.hidden = true;
+
+    var visiblePlants = plants;
+    if(activeStatusFilter){
+      visiblePlants = plants.filter(function(p){
+        return waterStatus(p).key === activeStatusFilter || fertStatus(p).key === activeStatusFilter;
+      });
+    }
+
+    if(visiblePlants.length === 0){
+      grid.hidden = true;
+      grid.innerHTML = '';
+      filterEmptyState.hidden = false;
+      return;
+    }
+
+    filterEmptyState.hidden = true;
     grid.hidden = false;
     grid.innerHTML = '';
-    plants.forEach(function(p){ grid.appendChild(renderCard(p)); });
+    visiblePlants.forEach(function(p){ grid.appendChild(renderCard(p)); });
   }
 
   function renderReorderList(){
@@ -1610,12 +1650,27 @@ caretakerToggle.addEventListener('click', function(){
 
 if(homeLogoBtn){
   homeLogoBtn.addEventListener('click', function(){
+    var changed = false;
     if(caretakerMode){
       caretakerMode = false;
       caretakerToggle.classList.remove('active');
       syncAddPlantVisibility();
-      render();
+      changed = true;
     }
+    if(bulkMode){
+      exitBulkMode();
+      changed = true;
+    }
+    if(reorderMode){
+      exitReorderMode();
+      changed = true;
+    }
+    if(activeStatusFilter){
+      activeStatusFilter = null;
+      legendEl.querySelectorAll('.legend-chip').forEach(function(c){ c.classList.remove('active'); });
+      changed = true;
+    }
+    if(changed) render();
   });
 }
   
