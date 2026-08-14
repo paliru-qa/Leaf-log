@@ -388,6 +388,7 @@ main{
   border:2px dashed var(--accent);
   background:rgba(63,95,147,.08);
   box-shadow:none;
+  min-height:100%;
 }
 
 .plant-card.reorder-placeholder *{
@@ -1328,22 +1329,48 @@ main{
 
   // Пересуває плейсхолдер до найближчої картки під точкою (x, y)
   function repositionPlaceholder(x, y){
-    var ds = dragState;
-    if(!ds || !ds.active) return;
-    ds.card.style.pointerEvents = 'none';
-    var elUnder = document.elementFromPoint(x, y);
-    ds.card.style.pointerEvents = '';
-    var targetCard = elUnder ? elUnder.closest('.plant-card:not(.dragging-card):not(.reorder-placeholder)') : null;
-    if(targetCard && targetCard.parentNode === ds.placeholder.parentNode){
-      var targetRect = targetCard.getBoundingClientRect();
-      var insertAfter = y > (targetRect.top + targetRect.height / 2);
-      if(insertAfter){
-        targetCard.parentNode.insertBefore(ds.placeholder, targetCard.nextSibling);
-      } else {
-        targetCard.parentNode.insertBefore(ds.placeholder, targetCard);
-      }
+  var ds = dragState;
+  if(!ds || !ds.active) return;
+
+  ds.card.style.pointerEvents = 'none';
+  var cards = Array.from(grid.querySelectorAll('.plant-card:not(.dragging-card):not(.reorder-placeholder)'));
+  ds.card.style.pointerEvents = '';
+
+  if(!cards.length) return;
+
+  var closest = null;
+  var closestDistance = Infinity;
+
+  cards.forEach(function(cardEl){
+    var rect = cardEl.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var dx = x - cx;
+    var dy = y - cy;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+
+    if(distance < closestDistance){
+      closestDistance = distance;
+      closest = cardEl;
+    }
+  });
+
+  if(!closest || closest === ds.placeholder) return;
+
+  var rect = closest.getBoundingClientRect();
+  var before = (y < rect.top + rect.height / 2);
+
+  if(before){
+    if(ds.placeholder !== closest.previousSibling){
+      grid.insertBefore(ds.placeholder, closest);
+    }
+  } else {
+    if(closest.nextSibling !== ds.placeholder){
+      grid.insertBefore(ds.placeholder, closest.nextSibling);
     }
   }
+}
+
 
   function onCardDragMove(e){
   var ds = dragState;
