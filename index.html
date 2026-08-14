@@ -1279,12 +1279,9 @@ main{
   var dragState = null;
   var autoScrollTimer = null;
   var autoScrollSpeed = 0;
-  var dragHoldTimer = null;
-  var DRAG_HOLD_MS = 200;
-  var DRAG_MOVE_TOLERANCE = 10;
 
-  function initCardDrag(card, plantId){
-handle.addEventListener('pointerdown', function(e){
+ function initCardDrag(handle, card, plantId){
+  handle.addEventListener('pointerdown', function(e){
     if(e.button !== undefined && e.button !== 0) return; // тільки ліва кнопка миші
 
     var rect = card.getBoundingClientRect();
@@ -1292,7 +1289,6 @@ handle.addEventListener('pointerdown', function(e){
       id: plantId,
       pointerId: e.pointerId,
       active: false,
-      holdReady: false,
       startX: e.clientX,
       startY: e.clientY,
       lastX: e.clientX,
@@ -1301,20 +1297,13 @@ handle.addEventListener('pointerdown', function(e){
       grabOffsetY: e.clientY - rect.top,
       card: card,
       handle: handle,
-      placeholder: null,
-      cancelled: false
+      placeholder: null
     };
 
-    card.addEventListener('pointermove', onCardDragMove);
-    card.addEventListener('pointerup', onCardDragEnd);
-    card.addEventListener('pointercancel', onCardDragEnd);
-
-    dragHoldTimer = setTimeout(function(){
-      if(!dragState || dragState.cancelled) return;
-      dragState.holdReady = true;
-      try{ card.setPointerCapture(e.pointerId); }catch(err){}
-      activateDrag();
-    }, DRAG_HOLD_MS);
+    try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+    handle.addEventListener('pointermove', onCardDragMove);
+    handle.addEventListener('pointerup', onCardDragEnd);
+    handle.addEventListener('pointercancel', onCardDragEnd);
   });
 }
 
@@ -1360,28 +1349,14 @@ handle.addEventListener('pointerdown', function(e){
   var ds = dragState;
   if(!ds || e.pointerId !== ds.pointerId) return;
 
-  ds.lastX = e.clientX;
-  ds.lastY = e.clientY;
-
   if(!ds.active){
-    var dx0 = e.clientX - ds.startX;
-    var dy0 = e.clientY - ds.startY;
-    var moved = Math.sqrt(dx0*dx0 + dy0*dy0);
-
-    // якщо юзер почав рухати пальцем до long press — це scroll intent, drag не стартує
-    if(moved > DRAG_MOVE_TOLERANCE && !ds.holdReady){
-      ds.cancelled = true;
-      if(dragHoldTimer){
-        clearTimeout(dragHoldTimer);
-        dragHoldTimer = null;
-      }
-      return;
-    }
-
-    // long press ще не спрацював — нічого не робимо, дозволяємо сторінці скролитись
-    if(!ds.active) return;
+    var dx0 = e.clientX - ds.startX, dy0 = e.clientY - ds.startY;
+    if(Math.sqrt(dx0*dx0 + dy0*dy0) < 6) return;
+    activateDrag();
   }
 
+  ds.lastX = e.clientX;
+  ds.lastY = e.clientY;
   ds.card.style.left = (e.clientX - ds.grabOffsetX) + 'px';
   ds.card.style.top = (e.clientY - ds.grabOffsetY) + 'px';
 
