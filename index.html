@@ -1600,7 +1600,6 @@ caretakerToggle.addEventListener('click', function(){
   caretakerMode = !caretakerMode;
   caretakerToggle.classList.toggle('active', caretakerMode);
   syncAddPlantVisibility();
-  if(caretakerMode && bulkMode) exitBulkMode();
   if(caretakerMode && reorderMode) exitReorderMode();
   render();
 });
@@ -1696,11 +1695,6 @@ syncAddPlantVisibility();
     bulkMode = !bulkMode;
     selectedIds = {};
     bulkToggle.classList.toggle('active', bulkMode);
-    if(bulkMode && caretakerMode){
-      caretakerMode = false;
-      caretakerToggle.classList.remove('active');
-      syncAddPlantVisibility();
-    }
     if(bulkMode && reorderMode) exitReorderMode();
     updateBulkBar();
     render();
