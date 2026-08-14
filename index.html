@@ -353,6 +353,27 @@ main{
   user-select:none;
 }
 
+.card-drag-handle{
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  background:rgba(255,255,255,.92);
+  border:1px solid var(--border);
+  color:var(--text-muted);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  line-height:1;
+  z-index:6;
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+}
+
 .plant-card.dragging-card{
   position:fixed;
   z-index:90;
@@ -372,6 +393,7 @@ main{
 .plant-card.reorder-placeholder *{
   visibility:hidden;
 }
+
 .card-photo-wrap{ position:relative; aspect-ratio:1/1; background:var(--accent-soft); overflow:hidden; }
 .card-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
 .card-photo-wrap .no-photo{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:34px; }
@@ -1262,7 +1284,7 @@ main{
   var DRAG_MOVE_TOLERANCE = 10;
 
   function initCardDrag(card, plantId){
-  card.addEventListener('pointerdown', function(e){
+handle.addEventListener('pointerdown', function(e){
     if(e.button !== undefined && e.button !== 0) return; // тільки ліва кнопка миші
 
     var rect = card.getBoundingClientRect();
@@ -1278,6 +1300,7 @@ main{
       grabOffsetX: e.clientX - rect.left,
       grabOffsetY: e.clientY - rect.top,
       card: card,
+      handle: handle,
       placeholder: null,
       cancelled: false
     };
@@ -1408,10 +1431,10 @@ main{
 
   stopAutoScroll();
 
-  ds.card.removeEventListener('pointermove', onCardDragMove);
-  ds.card.removeEventListener('pointerup', onCardDragEnd);
-  ds.card.removeEventListener('pointercancel', onCardDragEnd);
-  try{ ds.card.releasePointerCapture(ds.pointerId); }catch(err){}
+  ds.handle.removeEventListener('pointermove', onCardDragMove);
+ds.handle.removeEventListener('pointerup', onCardDragEnd);
+ds.handle.removeEventListener('pointercancel', onCardDragEnd);
+try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
 
   if(ds.active){
     ds.placeholder.parentNode.insertBefore(ds.card, ds.placeholder);
@@ -1437,6 +1460,12 @@ main{
     var card = document.createElement('div');
     card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '') + (reorderMode ? ' reorder-active' : '');
     card.dataset.id = plant.id;
+    if(reorderMode){
+  var dragHandle = document.createElement('div');
+  dragHandle.className = 'card-drag-handle';
+  dragHandle.textContent = '☰';
+  card.appendChild(dragHandle);
+}
 
     if(bulkMode){
       var checkbox = document.createElement('div');
@@ -1522,8 +1551,12 @@ main{
       }
     });
     if(reorderMode){
-      initCardDrag(card, plant.id);
-    }
+  var handleEl = card.querySelector('.card-drag-handle');
+  if(handleEl){
+    initCardDrag(handleEl, card, plant.id);
+  }
+}
+
     return card;
   }
 
