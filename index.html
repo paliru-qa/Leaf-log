@@ -342,7 +342,6 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 }
 
 .plant-card.reorder-active{
-  touch-action:none;
   user-select:none;
 }
 
@@ -1164,33 +1163,47 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var dragState = null;
   var autoScrollTimer = null;
   var autoScrollSpeed = 0;
+  var dragHoldTimer = null;
+  var DRAG_HOLD_MS = 200;
+  var DRAG_MOVE_TOLERANCE = 10;
 
   function initCardDrag(card, plantId){
-    card.addEventListener('pointerdown', function(e){
-      if(e.button !== undefined && e.button !== 0) return; // тільки ліва кнопка миші
-      var rect = card.getBoundingClientRect();
-      dragState = {
-        id: plantId,
-        pointerId: e.pointerId,
-        active: false,
-        startX: e.clientX,
-        startY: e.clientY,
-        lastX: e.clientX,
-        lastY: e.clientY,
-        grabOffsetX: e.clientX - rect.left,
-        grabOffsetY: e.clientY - rect.top,
-        card: card,
-        placeholder: null
-      };
-      card.setPointerCapture(e.pointerId);
-      card.addEventListener('pointermove', onCardDragMove);
-      card.addEventListener('pointerup', onCardDragEnd);
-      card.addEventListener('pointercancel', onCardDragEnd);
-    });
-  }
+  card.addEventListener('pointerdown', function(e){
+    if(e.button !== undefined && e.button !== 0) return; // тільки ліва кнопка миші
+
+    var rect = card.getBoundingClientRect();
+    dragState = {
+      id: plantId,
+      pointerId: e.pointerId,
+      active: false,
+      holdReady: false,
+      startX: e.clientX,
+      startY: e.clientY,
+      lastX: e.clientX,
+      lastY: e.clientY,
+      grabOffsetX: e.clientX - rect.left,
+      grabOffsetY: e.clientY - rect.top,
+      card: card,
+      placeholder: null,
+      cancelled: false
+    };
+
+    card.addEventListener('pointermove', onCardDragMove);
+    card.addEventListener('pointerup', onCardDragEnd);
+    card.addEventListener('pointercancel', onCardDragEnd);
+
+    dragHoldTimer = setTimeout(function(){
+      if(!dragState || dragState.cancelled) return;
+      dragState.holdReady = true;
+      try{ card.setPointerCapture(e.pointerId); }catch(err){}
+      activateDrag();
+    }, DRAG_HOLD_MS);
+  });
+}
 
   function activateDrag(){
     var ds = dragState;
+    if(!ds || ds.active) return;
     var rect = ds.card.getBoundingClientRect();
 
     ds.placeholder = document.createElement('div');
@@ -1227,24 +1240,37 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   }
 
   function onCardDragMove(e){
-    var ds = dragState;
-    if(!ds || e.pointerId !== ds.pointerId) return;
+  var ds = dragState;
+  if(!ds || e.pointerId !== ds.pointerId) return;
 
-    if(!ds.active){
-      var dx0 = e.clientX - ds.startX, dy0 = e.clientY - ds.startY;
-      if(Math.sqrt(dx0*dx0 + dy0*dy0) < 6) return;
-      activateDrag();
+  ds.lastX = e.clientX;
+  ds.lastY = e.clientY;
+
+  if(!ds.active){
+    var dx0 = e.clientX - ds.startX;
+    var dy0 = e.clientY - ds.startY;
+    var moved = Math.sqrt(dx0*dx0 + dy0*dy0);
+
+    // якщо юзер почав рухати пальцем до long press — це scroll intent, drag не стартує
+    if(moved > DRAG_MOVE_TOLERANCE && !ds.holdReady){
+      ds.cancelled = true;
+      if(dragHoldTimer){
+        clearTimeout(dragHoldTimer);
+        dragHoldTimer = null;
+      }
+      return;
     }
 
-    ds.lastX = e.clientX;
-    ds.lastY = e.clientY;
-    // Картка position:fixed — просто слідує за пальцем/курсором у координатах вікна
-    ds.card.style.left = (e.clientX - ds.grabOffsetX) + 'px';
-    ds.card.style.top = (e.clientY - ds.grabOffsetY) + 'px';
-
-    repositionPlaceholder(e.clientX, e.clientY);
-    updateAutoScroll(e.clientY);
+    // long press ще не спрацював — нічого не робимо, дозволяємо сторінці скролитись
+    if(!ds.active) return;
   }
+
+  ds.card.style.left = (e.clientX - ds.grabOffsetX) + 'px';
+  ds.card.style.top = (e.clientY - ds.grabOffsetY) + 'px';
+
+  repositionPlaceholder(e.clientX, e.clientY);
+  updateAutoScroll(e.clientY);
+}
 
   function updateAutoScroll(clientY){
     var EDGE = 90, MAX_SPEED = 16;
@@ -1278,33 +1304,38 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   }
 
   async function onCardDragEnd(e){
-    var ds = dragState;
-    if(!ds || e.pointerId !== ds.pointerId) return;
-    stopAutoScroll();
+  var ds = dragState;
+  if(!ds || e.pointerId !== ds.pointerId) return;
 
-    ds.card.removeEventListener('pointermove', onCardDragMove);
-    ds.card.removeEventListener('pointerup', onCardDragEnd);
-    ds.card.removeEventListener('pointercancel', onCardDragEnd);
-    try{ ds.card.releasePointerCapture(ds.pointerId); }catch(err){}
-
-    if(ds.active){
-      ds.placeholder.parentNode.insertBefore(ds.card, ds.placeholder);
-      ds.placeholder.parentNode.removeChild(ds.placeholder);
-      ds.card.classList.remove('dragging-card');
-      ds.card.style.width = '';
-      ds.card.style.height = '';
-      ds.card.style.left = '';
-      ds.card.style.top = '';
-
-      var newOrderIds = Array.from(grid.querySelectorAll('.plant-card')).map(function(el){ return el.dataset.id; });
-      plants.sort(function(a, b){ return newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id); });
-      dragState = null;
-      await savePlantsMeta();
-    } else {
-      dragState = null;
-    }
+  if(dragHoldTimer){
+    clearTimeout(dragHoldTimer);
+    dragHoldTimer = null;
   }
 
+  stopAutoScroll();
+
+  ds.card.removeEventListener('pointermove', onCardDragMove);
+  ds.card.removeEventListener('pointerup', onCardDragEnd);
+  ds.card.removeEventListener('pointercancel', onCardDragEnd);
+  try{ ds.card.releasePointerCapture(ds.pointerId); }catch(err){}
+
+  if(ds.active){
+    ds.placeholder.parentNode.insertBefore(ds.card, ds.placeholder);
+    ds.placeholder.parentNode.removeChild(ds.placeholder);
+    ds.card.classList.remove('dragging-card');
+    ds.card.style.width = '';
+    ds.card.style.height = '';
+    ds.card.style.left = '';
+    ds.card.style.top = '';
+
+    var newOrderIds = Array.from(grid.querySelectorAll('.plant-card')).map(function(el){ return el.dataset.id; });
+    plants.sort(function(a, b){ return newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id); });
+    dragState = null;
+    await savePlantsMeta();
+  } else {
+    dragState = null;
+  }
+}
 
   function renderCard(plant){
     var ws = waterStatus(plant);
