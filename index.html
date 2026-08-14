@@ -530,8 +530,10 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   <div class="empty-state" id="emptyState">
     <h3>Поки що немає жодної рослини</h3>
     <p>Додай першу — фото, графік поливу та інструкції завжди будуть під рукою.</p>
-    <button type="button" class="btn-primary" id="addFirstPlantBtn" style="margin-top:14px;">+ Додати рослину</button>
-  </div>
+    <button type="button" class="btn-primary add-plant-btn" id="addFirstPlantBtn" aria-label="Нова рослина">
+  <img class="add-plant-btn-icon" src="assets/icons/add-plant-mobile-white.png" alt="">
+  <span>Нова рослина</span>
+    </button>
 
   <div class="plant-grid" id="plantGrid" hidden></div>
   <div class="reorder-list" id="reorderList" hidden></div>
