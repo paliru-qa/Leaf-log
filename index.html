@@ -1006,20 +1006,22 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       grid.hidden = true;
       reorderListEl.hidden = true;
       filterEmptyState.hidden = true;
+      legendEl.hidden = true;
       return;
     }
     emptyState.hidden = true;
+    reorderListEl.hidden = true;
 
     if(reorderMode){
-      grid.hidden = true;
-      grid.innerHTML = '';
+      legendEl.hidden = true;
       filterEmptyState.hidden = true;
-      reorderListEl.hidden = false;
-      renderReorderList();
+      grid.hidden = false;
+      grid.innerHTML = '';
+      plants.forEach(function(p){ grid.appendChild(renderCard(p)); });
       return;
     }
 
-    reorderListEl.hidden = true;
+    legendEl.hidden = false;
 
     var visiblePlants = plants;
     if(activeStatusFilter){
@@ -1130,11 +1132,158 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     render();
   }
 
+  // ---------- Drag-n-drop для режиму "Змінити порядок" ----------
+  var dragState = null;
+  var autoScrollTimer = null;
+  var autoScrollSpeed = 0;
+
+  function initCardDrag(card, plantId){
+    card.addEventListener('pointerdown', function(e){
+      if(e.button !== undefined && e.button !== 0) return; // тільки ліва кнопка миші
+      var rect = card.getBoundingClientRect();
+      dragState = {
+        id: plantId,
+        pointerId: e.pointerId,
+        active: false,
+        startX: e.clientX,
+        startY: e.clientY,
+        lastX: e.clientX,
+        lastY: e.clientY,
+        grabOffsetX: e.clientX - rect.left,
+        grabOffsetY: e.clientY - rect.top,
+        card: card,
+        placeholder: null
+      };
+      card.setPointerCapture(e.pointerId);
+      card.addEventListener('pointermove', onCardDragMove);
+      card.addEventListener('pointerup', onCardDragEnd);
+      card.addEventListener('pointercancel', onCardDragEnd);
+    });
+  }
+
+  function activateDrag(){
+    var ds = dragState;
+    var rect = ds.card.getBoundingClientRect();
+
+    ds.placeholder = document.createElement('div');
+    ds.placeholder.className = 'plant-card reorder-placeholder';
+    ds.placeholder.style.width = rect.width + 'px';
+    ds.placeholder.style.height = rect.height + 'px';
+    ds.card.parentNode.insertBefore(ds.placeholder, ds.card.nextSibling);
+
+    ds.card.classList.add('dragging-card');
+    ds.card.style.width = rect.width + 'px';
+    ds.card.style.height = rect.height + 'px';
+    ds.card.style.left = rect.left + 'px';
+    ds.card.style.top = rect.top + 'px';
+    ds.active = true;
+  }
+
+  // Пересуває плейсхолдер до найближчої картки під точкою (x, y)
+  function repositionPlaceholder(x, y){
+    var ds = dragState;
+    if(!ds || !ds.active) return;
+    ds.card.style.pointerEvents = 'none';
+    var elUnder = document.elementFromPoint(x, y);
+    ds.card.style.pointerEvents = '';
+    var targetCard = elUnder ? elUnder.closest('.plant-card:not(.dragging-card):not(.reorder-placeholder)') : null;
+    if(targetCard && targetCard.parentNode === ds.placeholder.parentNode){
+      var targetRect = targetCard.getBoundingClientRect();
+      var insertAfter = y > (targetRect.top + targetRect.height / 2);
+      if(insertAfter){
+        targetCard.parentNode.insertBefore(ds.placeholder, targetCard.nextSibling);
+      } else {
+        targetCard.parentNode.insertBefore(ds.placeholder, targetCard);
+      }
+    }
+  }
+
+  function onCardDragMove(e){
+    var ds = dragState;
+    if(!ds || e.pointerId !== ds.pointerId) return;
+
+    if(!ds.active){
+      var dx0 = e.clientX - ds.startX, dy0 = e.clientY - ds.startY;
+      if(Math.sqrt(dx0*dx0 + dy0*dy0) < 6) return;
+      activateDrag();
+    }
+
+    ds.lastX = e.clientX;
+    ds.lastY = e.clientY;
+    // Картка position:fixed — просто слідує за пальцем/курсором у координатах вікна
+    ds.card.style.left = (e.clientX - ds.grabOffsetX) + 'px';
+    ds.card.style.top = (e.clientY - ds.grabOffsetY) + 'px';
+
+    repositionPlaceholder(e.clientX, e.clientY);
+    updateAutoScroll(e.clientY);
+  }
+
+  function updateAutoScroll(clientY){
+    var EDGE = 90, MAX_SPEED = 16;
+    var vh = window.innerHeight;
+    var speed = 0;
+    if(clientY < EDGE){
+      speed = -MAX_SPEED * (1 - clientY / EDGE);
+    } else if(clientY > vh - EDGE){
+      speed = MAX_SPEED * (1 - (vh - clientY) / EDGE);
+    }
+    autoScrollSpeed = speed;
+    if(speed !== 0 && !autoScrollTimer){
+      autoScrollTimer = setInterval(function(){
+        if(autoScrollSpeed === 0) return;
+        var before = window.scrollY;
+        window.scrollBy(0, autoScrollSpeed);
+        // Якщо сторінка реально прокрутилась і палець нерухомий — картка (position:fixed)
+        // сама лишається на місці під пальцем, нічого додатково рухати не треба.
+        // Але список карток під нею змінюється, тож треба оновити плейсхолдер.
+        if(window.scrollY !== before && dragState && dragState.active){
+          repositionPlaceholder(dragState.lastX, dragState.lastY);
+        }
+      }, 16);
+    } else if(speed === 0){
+      stopAutoScroll();
+    }
+  }
+  function stopAutoScroll(){
+    if(autoScrollTimer){ clearInterval(autoScrollTimer); autoScrollTimer = null; }
+    autoScrollSpeed = 0;
+  }
+
+  async function onCardDragEnd(e){
+    var ds = dragState;
+    if(!ds || e.pointerId !== ds.pointerId) return;
+    stopAutoScroll();
+
+    ds.card.removeEventListener('pointermove', onCardDragMove);
+    ds.card.removeEventListener('pointerup', onCardDragEnd);
+    ds.card.removeEventListener('pointercancel', onCardDragEnd);
+    try{ ds.card.releasePointerCapture(ds.pointerId); }catch(err){}
+
+    if(ds.active){
+      ds.placeholder.parentNode.insertBefore(ds.card, ds.placeholder);
+      ds.placeholder.parentNode.removeChild(ds.placeholder);
+      ds.card.classList.remove('dragging-card');
+      ds.card.style.width = '';
+      ds.card.style.height = '';
+      ds.card.style.left = '';
+      ds.card.style.top = '';
+
+      var newOrderIds = Array.from(grid.querySelectorAll('.plant-card')).map(function(el){ return el.dataset.id; });
+      plants.sort(function(a, b){ return newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id); });
+      dragState = null;
+      await savePlantsMeta();
+    } else {
+      dragState = null;
+    }
+  }
+
+
   function renderCard(plant){
     var ws = waterStatus(plant);
     var fs = fertStatus(plant);
     var card = document.createElement('div');
-    card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '');
+    card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '') + (reorderMode ? ' reorder-active' : '');
+    card.dataset.id = plant.id;
 
     if(bulkMode){
       var checkbox = document.createElement('div');
@@ -1212,12 +1361,16 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
     card.appendChild(body);
     card.addEventListener('click', function(){
+      if(reorderMode) return;
       if(bulkMode){
         toggleSelected(plant.id);
       } else {
         openDetail(plant.id);
       }
     });
+    if(reorderMode){
+      initCardDrag(card, plant.id);
+    }
     return card;
   }
 
