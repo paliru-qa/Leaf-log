@@ -37,13 +37,15 @@
 }
 
 *{ box-sizing:border-box; }
-html,body{ margin:0; padding:0; }
+html,body{ margin:0; padding:0; min-height:100%; }
 body{
   font-family:'Manrope', sans-serif;
   background:var(--bg);
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 h1,h2,h3,h4{ font-family:'Manrope', sans-serif; font-weight:700; margin:0; }
 p{ margin:0; }
@@ -295,7 +297,13 @@ input,textarea{ font-family:'Manrope', sans-serif; }
   }
 }
 
-main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
+main{
+  padding:22px 28px 60px;
+  max-width:1200px;
+  margin:0 auto;
+  width:100%;
+  flex:1;
+}
 
 .legend{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 14px; padding:12px 14px; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-sm); }
 .legend-chip{ font-size:12.5px; padding:4px 10px; border-radius:999px; font-weight:700; white-space:nowrap; border:2px solid transparent; cursor:pointer; opacity:.85; transition:opacity .15s ease, border-color .15s ease, transform .1s ease; }
@@ -337,6 +345,33 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 #undoToastBtn{ background:#fff; color:#211f1c; border:none; border-radius:999px; padding:7px 14px; font-size:12.5px; font-weight:700; }
 #undoToastClose{ background:none; border:none; color:rgba(255,255,255,.7); font-size:18px; padding:2px 6px; }
 .plant-card:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(30,25,15,.08); }
+.plant-card.reorder-active:hover{
+  transform:none;
+}
+
+.plant-card.reorder-active{
+  user-select:none;
+}
+
+.plant-card.dragging-card{
+  position:fixed;
+  z-index:90;
+  margin:0;
+  pointer-events:none;
+  transform:none;
+  box-shadow:0 16px 32px rgba(0,0,0,.18);
+  opacity:.96;
+}
+
+.plant-card.reorder-placeholder{
+  border:2px dashed var(--accent);
+  background:rgba(63,95,147,.08);
+  box-shadow:none;
+}
+
+.plant-card.reorder-placeholder *{
+  visibility:hidden;
+}
 .card-photo-wrap{ position:relative; aspect-ratio:1/1; background:var(--accent-soft); overflow:hidden; }
 .card-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
 .card-photo-wrap .no-photo{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:34px; }
@@ -473,8 +508,85 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .btn-secondary{ background:none; border:1px solid var(--border); padding:10px 18px; border-radius:999px; font-weight:600; font-size:14px; color:var(--text); }
 .btn-danger{ background:none; border:none; color:#b3391c; font-size:13px; font-weight:600; padding:6px 0; }
 
-.footer-note{ text-align:center; padding:22px; font-size:12px; color:var(--text-muted); }
-.footer-note button{ background:none; border:none; color:var(--text-muted); text-decoration:underline; font-size:12px; cursor:pointer; padding:0; margin-left:4px; }
+.footer{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  background:var(--surface);
+  padding:18px 28px 22px;
+}
+
+.footer-inner{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.footer-left,
+.footer-right{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.footer-copy{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+}
+
+.footer-tagline{
+  font-size:13px;
+  color:var(--text-muted);
+}
+
+.footer-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  justify-content:flex-end;
+}
+
+.footer-actions button{
+  background:none;
+  border:none;
+  padding:0;
+  color:var(--accent-dark);
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  text-decoration:underline;
+}
+
+@media(max-width:760px){
+  .footer{
+    padding:16px 16px 20px;
+  }
+
+  .footer-inner{
+    flex-direction:column-reverse;
+    align-items:center;
+    gap:14px;
+  }
+
+  .footer-left{
+    align-items:center;
+    text-align:center;
+  }
+
+  .footer-right{
+    width:100%;
+    align-items:center;
+  }
+
+  .footer-actions{
+    justify-content:center;
+    width:100%;
+  }
+}
 
 [hidden]{ display:none !important; }
 </style>
@@ -702,12 +814,21 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   </div>
 </div>
 
-<div class="footer-note">
-  Дані зберігаються у спільній базі за твоїм посиланням.
-  <button type="button" id="shareLinkBtn">Скопіювати посилання для доступу</button>
-  ·
-  <button type="button" id="newListBtn">Створити свій окремий список</button>
-</div>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-copy">© 2026 LeafLOG</div>
+      <div class="footer-tagline">Доглядай за рослинами без зайвого клопоту</div>
+    </div>
+
+    <div class="footer-right">
+      <div class="footer-actions">
+        <button type="button" id="shareLinkBtn">Скопіювати посилання</button>
+        <button type="button" id="newListBtn">Створити свій список</button>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script>
 (function(){
@@ -1006,20 +1127,22 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       grid.hidden = true;
       reorderListEl.hidden = true;
       filterEmptyState.hidden = true;
+      legendEl.hidden = true;
       return;
     }
     emptyState.hidden = true;
+    reorderListEl.hidden = true;
 
     if(reorderMode){
-      grid.hidden = true;
-      grid.innerHTML = '';
+      legendEl.hidden = true;
       filterEmptyState.hidden = true;
-      reorderListEl.hidden = false;
-      renderReorderList();
+      grid.hidden = false;
+      grid.innerHTML = '';
+      plants.forEach(function(p){ grid.appendChild(renderCard(p)); });
       return;
     }
 
-    reorderListEl.hidden = true;
+    legendEl.hidden = false;
 
     var visiblePlants = plants;
     if(activeStatusFilter){
@@ -1130,11 +1253,190 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     render();
   }
 
+  // ---------- Drag-n-drop для режиму "Змінити порядок" ----------
+  var dragState = null;
+  var autoScrollTimer = null;
+  var autoScrollSpeed = 0;
+  var dragHoldTimer = null;
+  var DRAG_HOLD_MS = 200;
+  var DRAG_MOVE_TOLERANCE = 10;
+
+  function initCardDrag(card, plantId){
+  card.addEventListener('pointerdown', function(e){
+    if(e.button !== undefined && e.button !== 0) return; // тільки ліва кнопка миші
+
+    var rect = card.getBoundingClientRect();
+    dragState = {
+      id: plantId,
+      pointerId: e.pointerId,
+      active: false,
+      holdReady: false,
+      startX: e.clientX,
+      startY: e.clientY,
+      lastX: e.clientX,
+      lastY: e.clientY,
+      grabOffsetX: e.clientX - rect.left,
+      grabOffsetY: e.clientY - rect.top,
+      card: card,
+      placeholder: null,
+      cancelled: false
+    };
+
+    card.addEventListener('pointermove', onCardDragMove);
+    card.addEventListener('pointerup', onCardDragEnd);
+    card.addEventListener('pointercancel', onCardDragEnd);
+
+    dragHoldTimer = setTimeout(function(){
+      if(!dragState || dragState.cancelled) return;
+      dragState.holdReady = true;
+      try{ card.setPointerCapture(e.pointerId); }catch(err){}
+      activateDrag();
+    }, DRAG_HOLD_MS);
+  });
+}
+
+  function activateDrag(){
+    var ds = dragState;
+    if(!ds || ds.active) return;
+    var rect = ds.card.getBoundingClientRect();
+
+    ds.placeholder = document.createElement('div');
+    ds.placeholder.className = 'plant-card reorder-placeholder';
+    ds.placeholder.style.width = rect.width + 'px';
+    ds.placeholder.style.height = rect.height + 'px';
+    ds.card.parentNode.insertBefore(ds.placeholder, ds.card.nextSibling);
+
+    ds.card.classList.add('dragging-card');
+    ds.card.style.width = rect.width + 'px';
+    ds.card.style.height = rect.height + 'px';
+    ds.card.style.left = rect.left + 'px';
+    ds.card.style.top = rect.top + 'px';
+    ds.active = true;
+  }
+
+  // Пересуває плейсхолдер до найближчої картки під точкою (x, y)
+  function repositionPlaceholder(x, y){
+    var ds = dragState;
+    if(!ds || !ds.active) return;
+    ds.card.style.pointerEvents = 'none';
+    var elUnder = document.elementFromPoint(x, y);
+    ds.card.style.pointerEvents = '';
+    var targetCard = elUnder ? elUnder.closest('.plant-card:not(.dragging-card):not(.reorder-placeholder)') : null;
+    if(targetCard && targetCard.parentNode === ds.placeholder.parentNode){
+      var targetRect = targetCard.getBoundingClientRect();
+      var insertAfter = y > (targetRect.top + targetRect.height / 2);
+      if(insertAfter){
+        targetCard.parentNode.insertBefore(ds.placeholder, targetCard.nextSibling);
+      } else {
+        targetCard.parentNode.insertBefore(ds.placeholder, targetCard);
+      }
+    }
+  }
+
+  function onCardDragMove(e){
+  var ds = dragState;
+  if(!ds || e.pointerId !== ds.pointerId) return;
+
+  ds.lastX = e.clientX;
+  ds.lastY = e.clientY;
+
+  if(!ds.active){
+    var dx0 = e.clientX - ds.startX;
+    var dy0 = e.clientY - ds.startY;
+    var moved = Math.sqrt(dx0*dx0 + dy0*dy0);
+
+    // якщо юзер почав рухати пальцем до long press — це scroll intent, drag не стартує
+    if(moved > DRAG_MOVE_TOLERANCE && !ds.holdReady){
+      ds.cancelled = true;
+      if(dragHoldTimer){
+        clearTimeout(dragHoldTimer);
+        dragHoldTimer = null;
+      }
+      return;
+    }
+
+    // long press ще не спрацював — нічого не робимо, дозволяємо сторінці скролитись
+    if(!ds.active) return;
+  }
+
+  ds.card.style.left = (e.clientX - ds.grabOffsetX) + 'px';
+  ds.card.style.top = (e.clientY - ds.grabOffsetY) + 'px';
+
+  repositionPlaceholder(e.clientX, e.clientY);
+  updateAutoScroll(e.clientY);
+}
+
+  function updateAutoScroll(clientY){
+    var EDGE = 90, MAX_SPEED = 16;
+    var vh = window.innerHeight;
+    var speed = 0;
+    if(clientY < EDGE){
+      speed = -MAX_SPEED * (1 - clientY / EDGE);
+    } else if(clientY > vh - EDGE){
+      speed = MAX_SPEED * (1 - (vh - clientY) / EDGE);
+    }
+    autoScrollSpeed = speed;
+    if(speed !== 0 && !autoScrollTimer){
+      autoScrollTimer = setInterval(function(){
+        if(autoScrollSpeed === 0) return;
+        var before = window.scrollY;
+        window.scrollBy(0, autoScrollSpeed);
+        // Якщо сторінка реально прокрутилась і палець нерухомий — картка (position:fixed)
+        // сама лишається на місці під пальцем, нічого додатково рухати не треба.
+        // Але список карток під нею змінюється, тож треба оновити плейсхолдер.
+        if(window.scrollY !== before && dragState && dragState.active){
+          repositionPlaceholder(dragState.lastX, dragState.lastY);
+        }
+      }, 16);
+    } else if(speed === 0){
+      stopAutoScroll();
+    }
+  }
+  function stopAutoScroll(){
+    if(autoScrollTimer){ clearInterval(autoScrollTimer); autoScrollTimer = null; }
+    autoScrollSpeed = 0;
+  }
+
+  async function onCardDragEnd(e){
+  var ds = dragState;
+  if(!ds || e.pointerId !== ds.pointerId) return;
+
+  if(dragHoldTimer){
+    clearTimeout(dragHoldTimer);
+    dragHoldTimer = null;
+  }
+
+  stopAutoScroll();
+
+  ds.card.removeEventListener('pointermove', onCardDragMove);
+  ds.card.removeEventListener('pointerup', onCardDragEnd);
+  ds.card.removeEventListener('pointercancel', onCardDragEnd);
+  try{ ds.card.releasePointerCapture(ds.pointerId); }catch(err){}
+
+  if(ds.active){
+    ds.placeholder.parentNode.insertBefore(ds.card, ds.placeholder);
+    ds.placeholder.parentNode.removeChild(ds.placeholder);
+    ds.card.classList.remove('dragging-card');
+    ds.card.style.width = '';
+    ds.card.style.height = '';
+    ds.card.style.left = '';
+    ds.card.style.top = '';
+
+    var newOrderIds = Array.from(grid.querySelectorAll('.plant-card')).map(function(el){ return el.dataset.id; });
+    plants.sort(function(a, b){ return newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id); });
+    dragState = null;
+    await savePlantsMeta();
+  } else {
+    dragState = null;
+  }
+}
+
   function renderCard(plant){
     var ws = waterStatus(plant);
     var fs = fertStatus(plant);
     var card = document.createElement('div');
-    card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '');
+    card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '') + (reorderMode ? ' reorder-active' : '');
+    card.dataset.id = plant.id;
 
     if(bulkMode){
       var checkbox = document.createElement('div');
@@ -1212,12 +1514,16 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
     card.appendChild(body);
     card.addEventListener('click', function(){
+      if(reorderMode) return;
       if(bulkMode){
         toggleSelected(plant.id);
       } else {
         openDetail(plant.id);
       }
     });
+    if(reorderMode){
+      initCardDrag(card, plant.id);
+    }
     return card;
   }
 
