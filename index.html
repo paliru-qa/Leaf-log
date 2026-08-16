@@ -1145,6 +1145,16 @@ main{
   }
 
   function render(){
+    // Захист від "привидів" у режимі перетягування: якщо саме зараз триває
+    // drag картки (палець/курсор ще не відпущено), grid.innerHTML='' нижче
+    // видалив би картку просто з-під пальця — pointerup на ній більше не
+    // спрацював би, і прибирання (cleanup) ніколи б не відбулось. Тож поки
+    // triває drag — відкладаємо перерендер і виконуємо його одразу після
+    // завершення drag (див. onCardDragEnd).
+    if(dragState){
+      renderPending = true;
+      return;
+    }
     if(plants.length === 0){
       emptyState.hidden = false;
       grid.hidden = true;
@@ -1278,6 +1288,7 @@ main{
 
   // ---------- Drag-n-drop для режиму "Змінити порядок" ----------
   var dragState = null;
+  var renderPending = false;
   var autoScrollTimer = null;
   var autoScrollSpeed = 0;
 
@@ -1416,9 +1427,6 @@ function repositionPlaceholder(x, y){
         if(autoScrollSpeed === 0) return;
         var before = window.scrollY;
         window.scrollBy(0, autoScrollSpeed);
-        // Якщо сторінка реально прокрутилась і палець нерухомий — картка (position:fixed)
-        // сама лишається на місці під пальцем, нічого додатково рухати не треба.
-        // Але список карток під нею змінюється, тож треба оновити плейсхолдер.
         if(window.scrollY !== before && dragState && dragState.active){
           repositionPlaceholder(dragState.lastX, dragState.lastY);
         }
@@ -1435,11 +1443,6 @@ function repositionPlaceholder(x, y){
   async function onCardDragEnd(e){
   var ds = dragState;
   if(!ds || e.pointerId !== ds.pointerId) return;
-
-  if(dragHoldTimer){
-    clearTimeout(dragHoldTimer);
-    dragHoldTimer = null;
-  }
 
   stopAutoScroll();
 
@@ -1463,6 +1466,11 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     await savePlantsMeta();
   } else {
     dragState = null;
+  }
+
+  if(renderPending){
+    renderPending = false;
+    render();
   }
 }
 
@@ -2261,7 +2269,6 @@ syncAddPlantVisibility();
           var q = quality;
           var dataUrl = canvas.toDataURL('image/jpeg', q);
           var attempts = 0;
-          // Якщо фото все ще завелике — стискаємо агресивніше й зменшуємо розмір
           while(dataUrl.length > targetBytes * 1.37 && attempts < 6){
             if(q > 0.35){
               q -= 0.12;
@@ -2291,7 +2298,6 @@ syncAddPlantVisibility();
   var aiAutoFillDone = false; // щоб не запускати автопідбір повторно для тієї ж форми без потреби
 
   async function runAiSuggest(opts){
-    // opts: { silent: bool } — silent = без alert-попереджень про перезапис (для автозапуску)
     var nameVal = document.getElementById('nameInput').value.trim();
     if(!nameVal) return false;
 
