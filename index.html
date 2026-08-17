@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LeafLOG — догляд за рослинами</title>
-<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAE80lEQVR4nO1WXWwUVRT+zvzsdLbttnRbqFCEQBCjEX+KicSftg8o2j8qmS0JASMxSkIimhAfjMl2fTBGg4agYjEGiAZ0py3IXwE13cUYH7QaHtBITIkRNGxr/+i2Oztz7/Fht6UtG0St+tLvbeaee8833/nOPQPMYhb/M+i6q1ZUBQDYlgSI/wtCWTBhOrkwK/9GJi3HOxr/2ps2dN4DVsxbli04G4/QSIYYAcCMqTGtBExAC5WsKSlIK8EPSS+sZ5GGzzQdXcHWyx/XvY9wWEGkhWeqJFNlDYOAiHSV4DtslNbL1MAx90pfjeOkdjisv1m2vvMjRCISlq1kyzSDyBou0HBgpbnmABetPdS7ZMuXc8eXzdrogmDz6e/mre9sy8SzOhNpryqQKCMAkALNan4ZVFU53fPu/QlYUR8qW/Wx46FLvw/9cJ8U7qJFG09shk1ioktmhEC8WgCA6vOv0gwTzNwNMCFRJtH9jAsrquLkNmfUM2odQdsWNp9YCtuSCIf/UXdkNzMBxCUbTgSY5c3sOdBVLTHFaHZIoKpLSx56JOG53s6kl34BIMb3Lf/IC1PYq+kRP5j9AIOJ9Gui4zUerKjaZ9ftBbi8pKm9AjaJPzckE6yominZ1NgpBAxgSHhiUAoJMJbkPGvOEiXTBRRjUpoBAFWx3F6womrmAiOGHRKwQyKr6gSJ7EVEDDBdtGmsoM7+GURLBeNeAEB1TKI6rCAGBfGIhz0rXQDwHo7uVwp8r0zExKd9cRiECAkAqNj02QLXce6WLAxnLHV2+GjopyyJSXJUdWmI13iBhrbXhWpuV9kdCujq7Rft+kuTjy63omXJpFhGPuNOTqea/a5Xe/nTTclxH2UuqogEgNLQ4YcYxktSiOWA6Cbmb4VI5xHL04NH1p9BmJWrV/HcXgYA0rRT5KW2S0UvGnGdJgBvla7tqHKJn2LQAyOOqCCjUPOgAXIEbvGcYgDJCckjIVHUuLdYMcp3SC1/s3SG2jk9UD10dNOF8VQlaz4IAAAiJK8SsC0JAHl+86vR4eELUsrFruduBPhtSR0lkmlAIXxNknvAo6rKsp81Y7HnpecDuATL1mGH0sGG6HLkBWwyiu+QY73PDbbX75wglygjxKtF/0kaHk871b3ZMhQ1tre4ngwTJPsN36O9HU2ncnmsoPbgG0w4njTVGOyQKF5nrwCZx+ArWqik+57tb2vahaouDdUxOV6WSXkZmD4N4zEJgHQFrR7kVii+YMp1X64Kd30e777ig6cJjJkCy88T9jztkWLPM4iGkrYlimr3VaZT8ogeCMxXnb7d/e1Nu1DZqiNe4yF+zfS8ziCrCmsAUNgYjeTXd3B+nc1zHm9rnh5WYUXN4rVtrxIA/5r9j+Wt3pfIb+rkknWfnKxs/UbP1fO5kCMgs6n8yc7SZN/IOTftBVXyflGN/NcI8se8Ql/PPOQlfh3om++q6l2u465i4HnFXwpNdb8IklnfY68eBsIETJH9RgkgYxg7JILrDm9xPN4tRgeFHihXoehgbxQk3REphMekFkMPQKYGRn2G8Z7fpRd/O9YwOrkV/x6BCSWICxoPPqhLrV8z8zSXeYVIu6tI0W4llqaiKAnPHTsDzzl6pfOJ85P33UjymcUN1nw6cv0TXnvwbecYaAFisczsqI5JRFoYlq0gUUaZ55D4y6RnMQsAfwD0CTgpgP9GYAAAAABJRU5ErkJggg==">
-<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" href="assets/icons/favicon.png">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
@@ -37,18 +37,20 @@
 }
 
 *{ box-sizing:border-box; }
-html,body{ margin:0; padding:0; }
+html,body{ margin:0; padding:0; min-height:100%; }
 body{
-  font-family:'IBM Plex Sans', sans-serif;
+  font-family:'Manrope', sans-serif;
   background:var(--bg);
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
-h1,h2,h3,h4{ font-family:'IBM Plex Sans', sans-serif; font-weight:700; margin:0; }
+h1,h2,h3,h4{ font-family:'Manrope', sans-serif; font-weight:700; margin:0; }
 p{ margin:0; }
-button{ font-family:'IBM Plex Sans', sans-serif; cursor:pointer; }
-input,textarea{ font-family:'IBM Plex Sans', sans-serif; }
+button{ font-family:'Manrope', sans-serif; cursor:pointer; }
+input,textarea{ font-family:'Manrope', sans-serif; }
 
 .topbar{
   display:flex;
@@ -110,7 +112,7 @@ input,textarea{ font-family:'IBM Plex Sans', sans-serif; }
 }
 
 .brand-word{
-  height:30px;
+  height:36px;
   width:auto;
   display:block;
 }
@@ -154,7 +156,7 @@ input,textarea{ font-family:'IBM Plex Sans', sans-serif; }
 
 .mobile-add-btn{
   display:none;
-  width:44px;
+  width:48px;
   height:36px;
   padding:0;
   border-radius:999px;
@@ -171,14 +173,32 @@ input,textarea{ font-family:'IBM Plex Sans', sans-serif; }
   background:var(--accent-dark);
 }
 
+.mobile-add-btn.is-hidden{
+  visibility:hidden;
+}
+
 .mobile-add-btn-icon{
-  width:26px;
-  height:26px;
+  width:36px;
+  height:36px;
   display:block;
   object-fit:contain;
   flex-shrink:0;
 }
 
+  .add-plant-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:1px;
+}
+
+.add-plant-btn-icon{
+  width:36px;
+  height:36px;
+  display:block;
+  object-fit:contain;
+  flex-shrink:0;
+}
+  
 .btn-primary,
 .mode-toggle,
 .lang-switcher{
@@ -189,7 +209,7 @@ input,textarea{ font-family:'IBM Plex Sans', sans-serif; }
   background:var(--accent);
   color:#fff;
   border:1px solid transparent;
-  padding:10px 18px;
+  padding:0 10px 0 4px;
   border-radius:999px;
   font-size:14px;
   font-weight:600;
@@ -221,6 +241,18 @@ input,textarea{ font-family:'IBM Plex Sans', sans-serif; }
   color:var(--accent-dark);
 }
 
+.mt-check{
+  display:inline-block;
+  width:1em;
+  opacity:0;
+  transition:opacity .15s ease;
+}
+
+.mode-toggle.active .mt-check,
+.qa-btn.active .mt-check{
+  opacity:1;
+}
+
 .btn-primary:active,
 .mode-toggle:active,
 .lang-switcher:active{
@@ -248,7 +280,7 @@ input,textarea{ font-family:'IBM Plex Sans', sans-serif; }
   }
 
   .brand-word{
-    height:26px;
+    height:36px;
   }
 
   .mobile-add-btn{
@@ -269,24 +301,23 @@ input,textarea{ font-family:'IBM Plex Sans', sans-serif; }
   }
 }
 
-main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
+main{
+  padding:22px 28px 60px;
+  max-width:1200px;
+  margin:0 auto;
+  width:100%;
+  flex:1;
+}
 
-.legend{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 22px; padding:12px 14px; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-sm); }
-.legend-chip{ font-size:11.5px; padding:4px 10px; border-radius:999px; font-weight:700; white-space:nowrap; }
+.legend{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 14px; padding:12px 14px; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-sm); }
+.legend-chip{ font-size:12.5px; padding:4px 10px; border-radius:999px; font-weight:700; white-space:nowrap; border:2px solid transparent; cursor:pointer; opacity:.85; transition:opacity .15s ease, border-color .15s ease, transform .1s ease; }
+.legend-chip:hover{ opacity:1; }
+.legend-chip.active{ opacity:1; border-color:currentColor; transform:translateY(-1px); }
+.filter-empty-state{ text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; margin-bottom:22px; }
+.filter-reset-btn{ display:block; margin:10px auto 0; background:none; border:none; color:var(--accent-dark); font-size:13px; font-weight:700; text-decoration:underline; cursor:pointer; padding:0; }
 
 .plant-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
 @media(min-width:780px){ .plant-grid{ grid-template-columns:repeat(4,1fr); gap:22px; } }
-
-.reorder-list{ display:flex; flex-direction:column; gap:8px; max-width:640px; margin:0 auto; }
-.reorder-row{ display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:9px 12px; }
-.reorder-row.dragging{ opacity:.4; }
-.reorder-handle{ cursor:grab; touch-action:none; font-size:18px; color:var(--text-muted); flex-shrink:0; padding:4px; user-select:none; }
-.reorder-thumb{ width:40px; height:40px; border-radius:8px; overflow:hidden; flex-shrink:0; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; font-size:18px; }
-.reorder-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
-.reorder-name{ flex:1; min-width:0; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.reorder-arrows{ display:flex; gap:4px; flex-shrink:0; }
-.reorder-arrows button{ width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:#fff; font-size:14px; color:var(--text); display:flex; align-items:center; justify-content:center; }
-.reorder-arrows button:disabled{ opacity:.3; }
 
 .plant-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:flex; flex-direction:column; position:relative; }
 .plant-card.selected{ outline:2px solid var(--accent); outline-offset:-1px; }
@@ -308,17 +339,67 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 #undoToastBtn{ background:#fff; color:#211f1c; border:none; border-radius:999px; padding:7px 14px; font-size:12.5px; font-weight:700; }
 #undoToastClose{ background:none; border:none; color:rgba(255,255,255,.7); font-size:18px; padding:2px 6px; }
 .plant-card:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(30,25,15,.08); }
+.plant-card.reorder-active:hover{
+  transform:none;
+}
+
+.plant-card.reorder-active{
+  user-select:none;
+}
+
+.card-drag-handle{
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  background:rgba(255,255,255,.92);
+  border:1px solid var(--border);
+  color:var(--text-muted);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  line-height:1;
+  z-index:6;
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+}
+
+.plant-card.dragging-card{
+  position:fixed;
+  z-index:90;
+  margin:0;
+  pointer-events:none;
+  transform:none;
+  box-shadow:0 16px 32px rgba(0,0,0,.18);
+  opacity:.96;
+}
+
+.plant-card.reorder-placeholder{
+  border:2px dashed var(--accent);
+  background:rgba(63,95,147,.08);
+  box-shadow:none;
+  min-height:100%;
+}
+
+.plant-card.reorder-placeholder *{
+  visibility:hidden;
+}
+
 .card-photo-wrap{ position:relative; aspect-ratio:1/1; background:var(--accent-soft); overflow:hidden; }
 .card-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
 .card-photo-wrap .no-photo{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:34px; }
-.card-photo-wrap .photo-count{ position:absolute; bottom:8px; right:8px; background:rgba(20,20,18,.62); color:#fff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:999px; }
+.card-photo-wrap .photo-count{ position:absolute; bottom:8px; right:8px; background:rgba(20,20,18,.62); color:#fff; font-size:12px; font-weight:700; padding:2px 7px; border-radius:999px; }
 .card-body{ padding:12px 14px 14px; display:flex; flex-direction:column; gap:7px; flex:1; }
-.card-name{ font-size:15.5px; font-weight:700; font-family:'IBM Plex Sans', sans-serif; line-height:1.25; }
-.card-meta-row{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; font-size:11.5px; }
+.card-name{ font-size:15.5px; font-weight:700; font-family:'Manrope', sans-serif; line-height:1.25; }
+.card-meta-row{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; font-size:12.5px; }
 .card-meta-label{ color:var(--text-muted); }
-.badge{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; align-self:flex-start; }
+.badge{ font-size:12.5px; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; align-self:flex-start; }
 
-.card-instructions{ margin-top:2px; padding:9px 10px; border-radius:var(--radius-sm); background:var(--green-soft); font-size:12.3px; line-height:1.4; color:var(--green-dark); white-space:pre-wrap; }
+.card-instructions{ margin-top:2px; padding:9px 10px; border-radius:var(--radius-sm); background:var(--green-soft); font-size:13px; line-height:1.4; color:var(--green-dark); white-space:pre-wrap; }
 .card-quick-actions{ display:flex; gap:6px; margin-top:4px; }
 .qa-btn{ flex:1; font-size:11.5px; font-weight:700; padding:7px 4px; border-radius:8px; border:1px solid var(--border); background:#fff; }
 .qa-btn.water{ color:var(--water-ok-text); }
@@ -326,6 +407,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 .empty-state{ text-align:center; padding:70px 20px; color:var(--text-muted); }
 .empty-state h3{ margin-bottom:8px; color:var(--text); font-size:19px; }
+.empty-state p{ margin-bottom:18px; }
 
 .overlay{ position:fixed; inset:0; background:rgba(28,26,22,.42); display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; z-index:50; }
 .detail-panel, .form-panel{ background:var(--surface); border-radius:20px; max-width:760px; width:100%; padding:28px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.18); touch-action:pan-y; }
@@ -363,7 +445,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .meta-label{ color:var(--text-muted); }
 .badges-row{ display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
 .info-block{ margin-bottom:14px; }
-.info-block h4{ font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:4px; font-family:'IBM Plex Sans', sans-serif; font-weight:700; }
+.info-block h4{ font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:4px; font-family:'Manrope', sans-serif; font-weight:700; }
 .info-block p{ font-size:14px; line-height:1.5; }
 .instructions-block{ margin-top:8px; padding:14px 16px; border-radius:var(--radius-sm); background:#f6f5f1; transition:background .2s ease; }
 .instructions-block.caretaker-glow{ background:#e3f3d4; }
@@ -372,12 +454,12 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 .question-block{ margin-top:14px; }
 .question-block h4{ font-size:12px; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; font-weight:700; }
-.question-block textarea{ width:100%; min-height:70px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; font-family:'IBM Plex Sans', sans-serif; resize:vertical; background:#fff; color:var(--text); }
+.question-block textarea{ width:100%; min-height:70px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; font-family:'Manrope', sans-serif; resize:vertical; background:#fff; color:var(--text); }
 .question-block .ai-generate-btn{ margin-top:8px; }
 .ai-answer-box{ margin-top:10px; padding:12px 14px; border-radius:var(--radius-sm); background:var(--green-soft); font-size:14px; line-height:1.55; white-space:pre-wrap; color:var(--green-dark); }
 
 .date-popover{ position:fixed; z-index:80; background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.15); padding:10px; display:flex; gap:8px; align-items:center; }
-.date-popover input[type=date]{ border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'IBM Plex Sans', sans-serif; color:var(--text); background:#fff; }
+.date-popover input[type=date]{ border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'Manrope', sans-serif; color:var(--text); background:#fff; }
 .date-popover #datePopoverConfirm{ background:var(--accent); color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:13.5px; font-weight:700; white-space:nowrap; }
 
 .form-panel h2{ margin-bottom:18px; font-size:21px; padding-right:20px; }
@@ -389,7 +471,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .ai-generate-btn:disabled{ opacity:.6; cursor:default; }
 .field input.ai-loading{ background:var(--accent-soft); border-color:var(--accent); transition:background .2s ease; }
 .field input[type=text], .field input[type=number], .field input[type=date], .field textarea{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; background:#fff; color:var(--text); }
-.field textarea{ min-height:120px; resize:vertical; font-family:'IBM Plex Sans', sans-serif; }
+.field textarea{ min-height:120px; resize:vertical; font-family:'Manrope', sans-serif; }
 .field-row{ display:flex; gap:14px; flex-wrap:wrap; }
 .field-row .field{ flex:1; min-width:140px; }
 .photo-upload{ display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; }
@@ -397,7 +479,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .photo-thumb{ position:relative; width:74px; height:74px; border-radius:10px; overflow:hidden; background:var(--accent-soft); flex-shrink:0; }
 .photo-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 .photo-thumb .thumb-remove{ position:absolute; top:2px; right:2px; width:20px; height:20px; border-radius:50%; background:rgba(20,20,18,.7); color:#fff; border:none; font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; }
-.photo-thumb .thumb-date{ position:absolute; bottom:0; left:0; right:0; background:rgba(20,20,18,.6); color:#fff; font-size:9px; text-align:center; padding:1px 0; }
+.photo-thumb .thumb-date{ position:absolute; bottom:0; left:0; right:0; background:rgba(20,20,18,.6); color:#fff; font-size:10px; text-align:center; padding:1px 0; }
 .photo-add-tile{ width:74px; height:74px; border-radius:10px; border:1.5px dashed var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--text-muted); flex-shrink:0; }
 
 .detail-gallery{ display:flex; gap:8px; margin-top:10px; overflow-x:auto; padding-bottom:2px; width:100%; }
@@ -443,8 +525,85 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 .btn-secondary{ background:none; border:1px solid var(--border); padding:10px 18px; border-radius:999px; font-weight:600; font-size:14px; color:var(--text); }
 .btn-danger{ background:none; border:none; color:#b3391c; font-size:13px; font-weight:600; padding:6px 0; }
 
-.footer-note{ text-align:center; padding:22px; font-size:12px; color:var(--text-muted); }
-.footer-note button{ background:none; border:none; color:var(--text-muted); text-decoration:underline; font-size:12px; cursor:pointer; padding:0; margin-left:4px; }
+.footer{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  background:var(--surface);
+  padding:18px 28px 22px;
+}
+
+.footer-inner{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.footer-left,
+.footer-right{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.footer-copy{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+}
+
+.footer-tagline{
+  font-size:13px;
+  color:var(--text-muted);
+}
+
+.footer-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  justify-content:flex-end;
+}
+
+.footer-actions button{
+  background:none;
+  border:none;
+  padding:0;
+  color:var(--accent-dark);
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  text-decoration:underline;
+}
+
+@media(max-width:760px){
+  .footer{
+    padding:16px 16px 20px;
+  }
+
+  .footer-inner{
+    flex-direction:column-reverse;
+    align-items:center;
+    gap:14px;
+  }
+
+  .footer-left{
+    align-items:center;
+    text-align:center;
+  }
+
+  .footer-right{
+    width:100%;
+    align-items:center;
+  }
+
+  .footer-actions{
+    justify-content:center;
+    width:100%;
+  }
+}
 
 [hidden]{ display:none !important; }
 </style>
@@ -454,7 +613,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 <div class="topbar">
   <div class="topbar-row topbar-row-1">
     <div class="topbar-row-side topbar-row-side-left">
-  <button type="button" class="mobile-add-btn" id="addPlantBtnMobile" aria-label="Додати рослину">
+  <button type="button" class="mobile-add-btn" id="addPlantBtnMobile" data-i18n-aria="addPlantAria" aria-label="Додати рослину">
     <img class="mobile-add-btn-icon" src="assets/icons/add-plant-mobile-white.png" alt="">
   </button>
 </div>
@@ -462,90 +621,100 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     <button type="button" class="brand brand-title-only" id="homeLogoBtn" aria-label="LeafLOG">
   <img
     class="brand-word"
-    src="data:image/png;base64,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"
+    src="assets/icons/logo-leaflog.png"
     alt="LeafLOG"
     height="30"
   >
 </button>
 
     <div class="topbar-row-side topbar-row-side-right">
-      <button type="button" class="lang-switcher" id="langSwitcherBtn" aria-label="Змінити мову">
+      <button type="button" class="lang-switcher" id="langSwitcherBtn" data-i18n-aria="langAria" aria-label="Змінити мову">
         UA
       </button>
     </div>
   </div>
 
   <div class="topbar-row topbar-row-2">
-    <div class="topbar-left-slot" id="addPlantSlot">
-      <button type="button" class="btn-primary" id="addPlantBtn">+ Додати рослину</button>
-    </div>
+  <div class="topbar-left-slot" id="addPlantSlot">
+    <button type="button" class="btn-primary add-plant-btn" id="addPlantBtn" data-i18n-aria="addPlantAria" aria-label="Нова рослина">
+      <img class="add-plant-btn-icon" src="assets/icons/add-plant-mobile-white.png" alt="">
+      <span data-i18n="addPlant">Нова рослина</span>
+    </button>
+  </div>
 
     <div class="topbar-actions">
-      <button type="button" class="mode-toggle" id="bulkToggle">Відмітити кілька</button>
-      <button type="button" class="mode-toggle" id="caretakerToggle">Режим доглядача</button>
-      <button type="button" class="mode-toggle" id="reorderToggle">Змінити порядок</button>
+      <button type="button" class="mode-toggle" id="bulkToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="modeBulk">Відмітити кілька</span></button>
+      <button type="button" class="mode-toggle" id="caretakerToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="modeCaretaker">Режим доглядача</span></button>
+      <button type="button" class="mode-toggle" id="reorderToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="modeReorder">Змінити порядок</span></button>
     </div>
   </div>
 </div>
 
 <main>
   <div class="legend" id="legend">
-    <span class="legend-chip" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</span>
-    <span class="legend-chip" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</span>
-    <span class="legend-chip" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</span>
-    <span class="legend-chip" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</span>
-    <span class="legend-chip" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</span>
-    <span class="legend-chip" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</span>
+    <button type="button" class="legend-chip" data-key="water-ok" data-i18n="statusWaterOk" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</button>
+    <button type="button" class="legend-chip" data-key="water-today" data-i18n="statusWaterToday" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</button>
+    <button type="button" class="legend-chip" data-key="water-overdue" data-i18n="statusWaterOverdueChip" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</button>
+    <button type="button" class="legend-chip" data-key="fert-ok" data-i18n="statusFertOk" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
+    <button type="button" class="legend-chip" data-key="fert-due" data-i18n="statusFertDue" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
+    <button type="button" class="legend-chip" data-key="fert-off" data-i18n="statusFertOff" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
+  </div>
+  <div class="filter-empty-state" id="filterEmptyState" hidden>
+    <span data-i18n="filterEmptyText">Немає рослин із таким статусом.</span>
+    <button type="button" class="filter-reset-btn" id="filterResetBtn" data-i18n="filterReset">Скинути фільтр</button>
   </div>
 
   <div class="empty-state" id="emptyState">
-    <h3>Поки що немає жодної рослини</h3>
-    <p>Додай першу — фото, графік поливу та інструкції завжди будуть під рукою.</p>
-    <button type="button" class="btn-primary" id="addFirstPlantBtn" style="margin-top:14px;">+ Додати рослину</button>
+    <h3 data-i18n="emptyTitle">Поки що немає жодної рослини</h3>
+    <p data-i18n="emptyDesc">Додай першу — фото, графік поливу та інструкції завжди будуть під рукою.</p>
+    <button type="button" class="btn-primary add-plant-btn" id="addFirstPlantBtn" data-i18n-aria="addPlantAria" aria-label="Нова рослина">
+  <img class="add-plant-btn-icon" src="assets/icons/add-plant-mobile-white.png" alt="">
+  <span data-i18n="addPlant">Нова рослина</span>
+    </button>
   </div>
 
   <div class="plant-grid" id="plantGrid" hidden></div>
-  <div class="reorder-list" id="reorderList" hidden></div>
 </main>
 
 <!-- Detail overlay -->
 <div class="overlay" id="detailOverlay" hidden>
-  <button type="button" class="nav-arrow nav-arrow-left" id="prevPlantBtn" aria-label="Попередня рослина">‹</button>
-  <button type="button" class="nav-arrow nav-arrow-right" id="nextPlantBtn" aria-label="Наступна рослина">›</button>
+  <button type="button" class="nav-arrow nav-arrow-left" id="prevPlantBtn" data-i18n-aria="prevPlantAria" aria-label="Попередня рослина">‹</button>
+  <button type="button" class="nav-arrow nav-arrow-right" id="nextPlantBtn" data-i18n-aria="nextPlantAria" aria-label="Наступна рослина">›</button>
   <div class="detail-panel" id="detailPanel">
     <span class="swipe-counter" id="swipeCounter"></span>
-    <button type="button" class="close-btn" data-close-detail>×</button>
+    <button type="button" class="close-btn" data-close-detail data-i18n-aria="closeAria" aria-label="Закрити">×</button>
     <div class="detail-content">
       <div class="detail-left">
         <div class="detail-photo-wrap" id="detailPhotoWrap"></div>
         <div class="detail-gallery" id="detailGallery"></div>
-        <button type="button" class="compare-link" id="compareLink" hidden>Порівняти фото до/після</button>
+        <button type="button" class="compare-link" id="compareLink" data-i18n="compareLink" hidden>Порівняти фото до/після</button>
         <div class="detail-actions">
-          <button type="button" class="action-btn water-action" id="waterBtn">Полито</button>
-          <button type="button" class="action-btn fert-action" id="fertBtn">Удобрено</button>
-          <button type="button" class="action-btn edit-action" id="editBtn">Редагувати</button>
+          <button type="button" class="action-btn water-action" id="waterBtn" data-i18n="waterAction">Полито</button>
+          <button type="button" class="action-btn fert-action" id="fertBtn" data-i18n="fertAction">Удобрено</button>
+          <button type="button" class="action-btn edit-action" id="editBtn" data-i18n="editAction">Редагувати</button>
         </div>
       </div>
       <div class="detail-right">
         <h2 id="detailName"></h2>
         <p class="latin" id="detailLatin"></p>
-        <div class="meta-row"><span class="meta-label">Розташування:</span><span id="detailRoom"></span></div>
+        <div class="meta-row"><span class="meta-label" data-i18n="detailRoomLabel">Розташування:</span><span id="detailRoom"></span></div>
         <div class="info-block">
-          <h4>Полив</h4>
+          <h4 data-i18n="detailWaterH4">Полив</h4>
           <p id="detailWaterInfo"></p>
         </div>
         <div class="info-block">
-          <h4>Добриво</h4>
+          <h4 data-i18n="detailFertH4">Добриво</h4>
           <p id="detailFertInfo"></p>
         </div>
         <div class="instructions-block" id="detailInstructionsBlock">
-          <h4>Інструкції з догляду</h4>
+          <h4 data-i18n="detailInstructionsH4">Інструкції з догляду</h4>
           <p id="detailInstructions"></p>
         </div>
         <div class="question-block">
-          <h4>Питання (проблема з рослиною?)</h4>
-          <textarea id="questionInput" placeholder="напр. листя жовтіє, з'явились плями, дрібні жучки, в'яне..."></textarea>
-          <button type="button" class="ai-generate-btn" id="askAiBtn">✨ Запитати ШІ</button>
+          <h4 data-i18n="questionH4">Питання (проблема з рослиною?)</h4>
+          <textarea id="questionInput" data-i18n-placeholder="questionPlaceholder" placeholder="напр. листя жовтіє, з'явились плями, дрібні жучки, в'яне..."></textarea>
+
+          <button type="button" class="ai-generate-btn" id="askAiBtn" data-i18n="askAi">✨ Запитати ШІ</button>
           <div class="ai-answer-box" id="aiAnswerBox" hidden></div>
         </div>
       </div>
@@ -556,11 +725,11 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 <!-- Add / Edit form overlay -->
 <div class="overlay" id="formOverlay" hidden>
   <div class="form-panel">
-    <button type="button" class="close-btn" data-close-form>×</button>
-    <h2 id="formTitle">Додати рослину</h2>
+    <button type="button" class="close-btn" data-close-form data-i18n-aria="closeAria" aria-label="Закрити">×</button>
+    <h2 id="formTitle" data-i18n="formTitleAdd">Додати рослину</h2>
     <form id="plantForm">
       <div class="field">
-        <label>Фото (можна кілька — щоб порівнювати до/після)</label>
+        <label data-i18n="photoFieldLabel">Фото (можна кілька — щоб порівнювати до/після)</label>
         <div class="photo-upload">
           <div class="photo-thumbs" id="photoThumbs"></div>
           <input type="file" id="photoInput" accept="image/*" hidden>
@@ -568,55 +737,55 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
         </div>
       </div>
       <div class="field">
-        <label for="nameInput">Назва рослини *</label>
-        <input type="text" id="nameInput" required placeholder="напр. Monstera">
+        <label for="nameInput" data-i18n="nameLabel">Назва рослини *</label>
+        <input type="text" id="nameInput" required data-i18n-placeholder="namePlaceholder" placeholder="напр. Monstera">
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="latinInput">Латинська назва</label>
-          <input type="text" id="latinInput" placeholder="необов'язково">
+          <label for="latinInput" data-i18n="latinLabel">Латинська назва</label>
+          <input type="text" id="latinInput" data-i18n-placeholder="latinPlaceholder" placeholder="необов'язково">
         </div>
         <div class="field">
-          <label for="roomInput">Кімната / підвіконня</label>
-          <input type="text" id="roomInput" placeholder="напр. вітальня, південне вікно">
+          <label for="roomInput" data-i18n="roomLabel">Кімната / підвіконня</label>
+          <input type="text" id="roomInput" data-i18n-placeholder="roomPlaceholder" placeholder="напр. вітальня, південне вікно">
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="waterFreqInput">Полив кожні (днів)</label>
+          <label for="waterFreqInput" data-i18n="waterFreqLabel">Полив кожні (днів)</label>
           <input type="number" id="waterFreqInput" min="1" value="7">
         </div>
         <div class="field">
-          <label for="lastWateredInput">Востаннє поливали</label>
+          <label for="lastWateredInput" data-i18n="lastWateredLabel">Востаннє поливали</label>
           <input type="date" id="lastWateredInput">
         </div>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="fertEnabled" checked>
-        <label for="fertEnabled">Потрібне добриво зараз</label>
+        <label for="fertEnabled" data-i18n="fertEnabledLabel">Потрібне добриво зараз</label>
       </div>
       <div class="field-row" id="fertFields">
         <div class="field">
-          <label for="fertFreqInput">Добриво кожні (днів)</label>
+          <label for="fertFreqInput" data-i18n="fertFreqLabel">Добриво кожні (днів)</label>
           <input type="number" id="fertFreqInput" min="1" value="30">
         </div>
         <div class="field">
-          <label for="lastFertilizedInput">Востаннє удобрювали</label>
+          <label for="lastFertilizedInput" data-i18n="lastFertilizedLabel">Востаннє удобрювали</label>
           <input type="date" id="lastFertilizedInput">
         </div>
       </div>
       <div class="field">
         <div class="instructions-label-row">
-          <label for="instructionsInput">Інструкції з догляду</label>
-          <button type="button" class="ai-generate-btn" id="aiGenerateBtn">✨ Згенерувати ШІ</button>
+          <label for="instructionsInput" data-i18n="instructionsLabel">Інструкції з догляду</label>
+          <button type="button" class="ai-generate-btn" id="aiGenerateBtn" data-i18n="aiGenerate">✨ Згенерувати ШІ</button>
         </div>
-        <textarea id="instructionsInput" placeholder="напр. перевіряти ґрунт перед поливом, не заливати, не ставити на пряме сонце..."></textarea>
+        <textarea id="instructionsInput" data-i18n-placeholder="instructionsPlaceholder" placeholder="напр. перевіряти ґрунт перед поливом, не заливати, не ставити на пряме сонце..."></textarea>
       </div>
       <div class="form-actions">
-        <button type="button" class="btn-danger" id="deleteBtn" hidden>Видалити рослину</button>
+        <button type="button" class="btn-danger" id="deleteBtn" data-i18n="deletePlant" hidden>Видалити рослину</button>
         <div style="display:flex; gap:10px;">
-          <button type="button" class="btn-secondary" data-close-form>Скасувати</button>
-          <button type="submit" class="btn-primary">Зберегти</button>
+          <button type="button" class="btn-secondary" data-close-form data-i18n="cancel">Скасувати</button>
+          <button type="submit" class="btn-primary" data-i18n="save">Зберегти</button>
         </div>
       </div>
     </form>
@@ -631,46 +800,56 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
 <!-- Full-size single photo view -->
 <div class="lightbox-overlay" id="lightboxOverlay" hidden>
-  <button type="button" class="lightbox-close" id="lightboxClose">×</button>
+  <button type="button" class="lightbox-close" id="lightboxClose" data-i18n-aria="closeAria" aria-label="Закрити">×</button>
   <img id="lightboxImg" alt="">
 </div>
 
 <!-- Before/after comparison -->
 <div class="overlay" id="compareOverlay" hidden>
   <div class="compare-panel" id="comparePanel">
-    <button type="button" class="close-btn" id="compareClose">×</button>
+    <button type="button" class="close-btn" id="compareClose" data-i18n-aria="closeAria" aria-label="Закрити">×</button>
     <div class="compare-header">
       <span class="compare-swipe-counter" id="compareSwipeCounter"></span>
-      <h2 class="compare-title"><span id="compareplantName"></span><span class="compare-subtitle">до і після</span></h2>
+      <h2 class="compare-title"><span id="compareplantName"></span><span class="compare-subtitle" data-i18n="compareSubtitle">до і після</span></h2>
     </div>
     <div class="compare-grid" id="compareGrid"></div>
   </div>
 </div>
 
 <div class="bulk-bar" id="bulkBar" hidden>
-  <span id="bulkCount">0 обрано</span>
+  <span id="bulkCount">0</span>
   <div class="bulk-bar-actions">
-    <button type="button" class="qa-btn water" id="bulkWaterToggle">Полито</button>
-    <button type="button" class="qa-btn fert" id="bulkFertToggle">Удобрено</button>
-    <button type="button" class="btn-primary" id="bulkApplyBtn">Застосувати</button>
-    <button type="button" class="btn-secondary" id="bulkCancelBtn">Скасувати</button>
+    <button type="button" class="qa-btn water" id="bulkWaterToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="waterAction">Полито</span></button>
+    <button type="button" class="qa-btn fert" id="bulkFertToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="fertAction">Удобрено</span></button>
+    <button type="button" class="btn-primary" id="bulkApplyBtn" data-i18n="bulkApply">Застосувати</button>
+    <button type="button" class="btn-secondary" id="bulkCancelBtn" data-i18n="bulkCancel">Скасувати</button>
   </div>
 </div>
 
 <div class="undo-toast" id="undoToast" hidden>
   <span id="undoToastText"></span>
   <div class="undo-toast-actions">
-    <button type="button" id="undoToastBtn">Скасувати дію</button>
-    <button type="button" id="undoToastClose" aria-label="Закрити">×</button>
+    <button type="button" id="undoToastBtn" data-i18n="undoAction">Скасувати дію</button>
+    <button type="button" id="undoToastClose" data-i18n-aria="closeAria" aria-label="Закрити">×</button>
   </div>
 </div>
 
-<div class="footer-note">
-  Дані зберігаються у спільній базі за твоїм посиланням.
-  <button type="button" id="shareLinkBtn">Скопіювати посилання для доступу</button>
-  ·
-  <button type="button" id="newListBtn">Створити свій окремий список</button>
-</div>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-copy">© 2026 LeafLOG</div>
+      <div class="footer-tagline" data-i18n="footerTagline">Доглядай за рослинами без зайвого клопоту</div>
+    </div>
+
+    <div class="footer-right">
+      <div class="footer-actions">
+        <button type="button" id="shareLinkBtn" data-i18n="copyLink">Скопіювати посилання</button>
+        <button type="button" id="newListBtn" data-i18n="newList">Створити свій список</button>
+      </div>
+    </div>
+  </div>
+
+</footer>
 
 <script>
 (function(){
@@ -678,14 +857,26 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
   function getHouseholdId(){
     var params = new URLSearchParams(window.location.search);
-    var id = params.get('id');
-    if(!id){
-      try{ id = localStorage.getItem('leaflog_household_id'); }catch(e){ id = null; }
-    }
+    var idFromUrl = params.get('id');
+    var idFromStorage = null;
+    try{ idFromStorage = localStorage.getItem('leaflog_household_id'); }catch(e){ idFromStorage = null; }
+
+    var id = idFromUrl || idFromStorage;
     if(!id){
       id = Math.random().toString(36).slice(2,10);
     }
-    try{ localStorage.setItem('leaflog_household_id', id); }catch(e){}
+
+    // ВАЖЛИВО: перезаписуємо localStorage лише якщо це "свій" ідентифікатор —
+    // тобто щойно згенерований, або вже й так той, що там лежав. Якщо в URL
+    // прийшов ЧУЖИЙ id (наприклад, хтось поділився посиланням на свій список),
+    // ми відкриваємо цей список на поточний сеанс, але НЕ підміняємо ним
+    // збережений "свій" список — інакше після переходу за чужим посиланням
+    // забудеться, де твій власний список.
+    var isForeignSharedLink = !!idFromUrl && !!idFromStorage && idFromUrl !== idFromStorage;
+    if(!isForeignSharedLink){
+      try{ localStorage.setItem('leaflog_household_id', id); }catch(e){}
+    }
+
     if(params.get('id') !== id){
       params.set('id', id);
       var newUrl = window.location.pathname + '?' + params.toString();
@@ -695,10 +886,260 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   }
   var HOUSEHOLD_ID = getHouseholdId();
 
+  // ---------- Локалізація (UA / EN) ----------
+  var I18N = {
+    uk: {
+      addPlantAria: 'Додати рослину',
+      langAria: 'Змінити мову',
+      addPlant: 'Нова рослина',
+      modeBulk: 'Відмітити кілька',
+      modeCaretaker: 'Режим доглядача',
+      modeReorder: 'Змінити порядок',
+      statusWaterOk: 'Полито',
+      statusWaterToday: 'Полити сьогодні',
+      statusWaterOverdue: 'Полив прострочено',
+      statusWaterOverdueChip: 'Прострочено',
+      statusFertOk: 'Удобрено',
+      statusFertDue: 'Удобрити',
+      statusFertOff: 'Не удобрювати',
+      filterEmptyText: 'Немає рослин із таким статусом.',
+      filterReset: 'Скинути фільтр',
+      emptyTitle: 'Поки що немає жодної рослини',
+      emptyDesc: 'Додай першу — фото, графік поливу та інструкції завжди будуть під рукою.',
+      prevPlantAria: 'Попередня рослина',
+      nextPlantAria: 'Наступна рослина',
+      closeAria: 'Закрити',
+      compareLink: 'Порівняти фото до/після',
+      waterAction: 'Полито',
+      fertAction: 'Удобрено',
+      editAction: 'Редагувати',
+      detailRoomLabel: 'Розташування:',
+      detailWaterH4: 'Полив',
+      detailFertH4: 'Добриво',
+      detailInstructionsH4: 'Інструкції з догляду',
+      detailNoInstructions: 'Інструкцій ще немає — додай їх при редагуванні.',
+      detailFertOffNow: 'Зараз не потрібне',
+      questionH4: 'Питання (проблема з рослиною?)',
+      questionPlaceholder: "напр. листя жовтіє, з'явились плями, дрібні жучки, в'яне...",
+      askAi: '✨ Запитати ШІ',
+      askAiThinking: '✨ Думаю...',
+      formTitleAdd: 'Додати рослину',
+      formTitleEdit: 'Редагувати рослину',
+      photoFieldLabel: 'Фото (можна кілька — щоб порівнювати до/після)',
+      nameLabel: 'Назва рослини *',
+      namePlaceholder: 'напр. Monstera',
+      latinLabel: 'Латинська назва',
+      latinPlaceholder: "необов'язково",
+      roomLabel: 'Кімната / підвіконня',
+      roomPlaceholder: 'напр. вітальня, південне вікно',
+      waterFreqLabel: 'Полив кожні (днів)',
+      lastWateredLabel: 'Востаннє поливали',
+      fertEnabledLabel: 'Потрібне добриво зараз',
+      fertFreqLabel: 'Добриво кожні (днів)',
+      lastFertilizedLabel: 'Востаннє удобрювали',
+      instructionsLabel: 'Інструкції з догляду',
+      instructionsPlaceholder: 'напр. перевіряти ґрунт перед поливом, не заливати, не ставити на пряме сонце...',
+      aiGenerate: '✨ Згенерувати ШІ',
+      aiGenerating: '✨ Генерую...',
+      deletePlant: 'Видалити рослину',
+      cancel: 'Скасувати',
+      save: 'Зберегти',
+      compareSubtitle: 'до і після',
+      compareBefore: 'Було',
+      compareAfter: 'Зараз',
+      bulkApply: 'Застосувати',
+      bulkCancel: 'Скасувати',
+      undoAction: 'Скасувати дію',
+      footerTagline: 'Доглядай за рослинами без зайвого клопоту',
+      copyLink: 'Скопіювати посилання',
+      newList: 'Створити свій список',
+      cardWaterFreq: 'Полив кожні {n} дн.',
+      cardFertFreq: 'Добриво кожні {n} дн.',
+      cardFertOff: 'Добриво не потрібне',
+      detailWaterInfo: 'Кожні {n} дн. · востаннє: {date}',
+      detailFertInfo: 'Кожні {n} дн. · востаннє: {date}',
+      confirmDeletePlant: 'Видалити цю рослину зі списку?',
+      markedDone: 'Відмічено ✓',
+      alertNeedQuestion: 'Опиши проблему з рослиною — наприклад, що саме сталося з листям чи стеблом.',
+      alertDiagnoseFailed: 'Не вдалося отримати відповідь: ',
+      alertAiNetworkError: 'Мережева помилка при звʼязку з ШІ: ',
+      alertNeedName: 'Спочатку впиши назву рослини — за нею ШІ підбере інструкції.',
+      confirmOverwriteInstructions: 'Поле з інструкціями вже не порожнє. Замінити його згенерованим текстом?',
+      alertGenerateFailed: 'Не вдалося згенерувати: ',
+      alertSaveFailed: 'Увага: частину змін не вдалося зберегти у спільній базі. На цьому пристрої все збереглось.',
+      alertSaveFailedDetails: '\n\nДеталі помилки: ',
+      alertPhotoNetworkError: 'Мережева помилка: ',
+      alertBulkNeedChoice: 'Обери хоча б одне — «Полито» або «Удобрено» — перед застосуванням.',
+      confirmNewList: "Це створить твій ВЛАСНИЙ окремий список рослин, не пов'язаний з поточним. Поточний список нікуди не зникне — просто відкриється по-старому за своїм посиланням. Продовжити?",
+      promptCopyManually: 'Скопіюй посилання вручну:',
+      alertLinkCopied: 'Посилання скопійовано! Надішли його тому, з ким хочеш поділитися списком рослин — у нього відкриється той самий список.',
+      bulkSelectedCount: '{n} обрано',
+      bulkWillApply: ' · застосується: ',
+      bulkNothingSelected: 'нічого не вибрано',
+      bulkWater: 'полив',
+      bulkFert: 'добриво',
+      bulkWaterAndFert: 'полив і добриво',
+      undoUpdated: 'Оновлено {what} для {count} {noun}.',
+      plantsFew: 'рослини',
+      plantsMany: 'рослин',
+      dateLocale: 'uk-UA'
+    },
+    en: {
+      addPlantAria: 'Add plant',
+      langAria: 'Change language',
+      addPlant: 'New plant',
+      modeBulk: 'Select multiple',
+      modeCaretaker: 'Caretaker mode',
+      modeReorder: 'Reorder',
+      statusWaterOk: 'Watered',
+      statusWaterToday: 'Water today',
+      statusWaterOverdue: 'Watering overdue',
+      statusWaterOverdueChip: 'Overdue',
+      statusFertOk: 'Fertilized',
+      statusFertDue: 'Needs fertilizer',
+      statusFertOff: "Don't fertilize",
+      filterEmptyText: 'No plants with this status.',
+      filterReset: 'Reset filter',
+      emptyTitle: 'No plants yet',
+      emptyDesc: "Add your first one — photo, watering schedule, and care instructions will always be at hand.",
+      prevPlantAria: 'Previous plant',
+      nextPlantAria: 'Next plant',
+      closeAria: 'Close',
+      compareLink: 'Compare before/after photos',
+      waterAction: 'Watered',
+      fertAction: 'Fertilized',
+      editAction: 'Edit',
+      detailRoomLabel: 'Location:',
+      detailWaterH4: 'Watering',
+      detailFertH4: 'Fertilizing',
+      detailInstructionsH4: 'Care instructions',
+      detailNoInstructions: 'No instructions yet — add them while editing.',
+      detailFertOffNow: 'Not needed right now',
+      questionH4: 'Question (plant problem?)',
+      questionPlaceholder: 'e.g. leaves turning yellow, spots appeared, small bugs, wilting...',
+      askAi: '✨ Ask AI',
+      askAiThinking: '✨ Thinking...',
+      formTitleAdd: 'Add plant',
+      formTitleEdit: 'Edit plant',
+      photoFieldLabel: 'Photos (you can add several — to compare before/after)',
+      nameLabel: 'Plant name *',
+      namePlaceholder: 'e.g. Monstera',
+      latinLabel: 'Latin name',
+      latinPlaceholder: 'optional',
+      roomLabel: 'Room / windowsill',
+      roomPlaceholder: 'e.g. living room, south window',
+      waterFreqLabel: 'Water every (days)',
+      lastWateredLabel: 'Last watered',
+      fertEnabledLabel: 'Needs fertilizer right now',
+      fertFreqLabel: 'Fertilize every (days)',
+      lastFertilizedLabel: 'Last fertilized',
+      instructionsLabel: 'Care instructions',
+      instructionsPlaceholder: "e.g. check soil before watering, don't overwater, avoid direct sun...",
+      aiGenerate: '✨ Generate with AI',
+      aiGenerating: '✨ Generating...',
+      deletePlant: 'Delete plant',
+      cancel: 'Cancel',
+      save: 'Save',
+      compareSubtitle: 'before and after',
+      compareBefore: 'Before',
+      compareAfter: 'Now',
+      bulkApply: 'Apply',
+      bulkCancel: 'Cancel',
+      undoAction: 'Undo',
+      footerTagline: 'Care for your plants with ease',
+      copyLink: 'Copy share link',
+      newList: 'Create your own list',
+      cardWaterFreq: 'Water every {n} days',
+      cardFertFreq: 'Fertilize every {n} days',
+      cardFertOff: 'No fertilizer needed',
+      detailWaterInfo: 'Every {n} days · last: {date}',
+      detailFertInfo: 'Every {n} days · last: {date}',
+      confirmDeletePlant: 'Delete this plant from the list?',
+      markedDone: 'Marked ✓',
+      alertNeedQuestion: 'Describe the problem with the plant — e.g. what happened to the leaves or stem.',
+      alertDiagnoseFailed: "Couldn't get an answer: ",
+      alertAiNetworkError: 'Network error contacting AI: ',
+      alertNeedName: "First enter the plant's name — AI will suggest instructions based on it.",
+      confirmOverwriteInstructions: 'The instructions field is not empty. Replace it with the generated text?',
+      alertGenerateFailed: "Couldn't generate: ",
+      alertSaveFailed: "Note: some changes couldn't be saved to the shared database. Everything was saved on this device.",
+      alertSaveFailedDetails: '\n\nError details: ',
+      alertPhotoNetworkError: 'Network error: ',
+      alertBulkNeedChoice: 'Choose at least one — "Watered" or "Fertilized" — before applying.',
+      confirmNewList: "This will create your OWN separate plant list, unrelated to the current one. The current list won't disappear — it'll still open the same way via its own link. Continue?",
+      promptCopyManually: 'Copy the link manually:',
+      alertLinkCopied: "Link copied! Send it to whoever you want to share your plant list with — they'll see the same list.",
+      bulkSelectedCount: '{n} selected',
+      bulkWillApply: ' · will apply: ',
+      bulkNothingSelected: 'nothing selected',
+      bulkWater: 'watering',
+      bulkFert: 'fertilizing',
+      bulkWaterAndFert: 'watering and fertilizing',
+      undoUpdated: 'Updated {what} for {count} {noun}.',
+      plantsFew: 'plants',
+      plantsMany: 'plants',
+      dateLocale: 'en-US'
+    }
+  };
+
+  var currentLang = 'uk';
+  try{
+    var savedLang = localStorage.getItem('leaflog_lang');
+    if(savedLang === 'uk' || savedLang === 'en') currentLang = savedLang;
+  }catch(e){}
+
+  function t(key, vars){
+    var dict = I18N[currentLang] || I18N.uk;
+    var str = (dict[key] !== undefined) ? dict[key] : (I18N.uk[key] !== undefined ? I18N.uk[key] : key);
+    if(vars){
+      for(var k in vars){
+        str = str.replace('{' + k + '}', vars[k]);
+      }
+    }
+    return str;
+  }
+
+  function applyStaticI18n(){
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+      el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+      el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
+    });
+    document.documentElement.lang = currentLang;
+  }
+
+  function langButtonLabel(lang){
+    return lang === 'en' ? 'EN' : 'UA';
+  }
+
+  function setLanguage(lang){
+    if(lang !== 'uk' && lang !== 'en') return;
+    currentLang = lang;
+    try{ localStorage.setItem('leaflog_lang', lang); }catch(e){}
+
+    if(langSwitcherBtn) langSwitcherBtn.textContent = langButtonLabel(currentLang);
+    applyStaticI18n();
+
+    // Перерендерюємо все, що вже намальовано з текстом попередньої мови
+    render();
+    if(!bulkBar.hidden) updateBulkBar();
+    if(!detailOverlay.hidden && currentDetailId) openDetail(currentDetailId);
+    if(!formOverlay.hidden) formTitle.textContent = editingId ? t('formTitleEdit') : t('formTitleAdd');
+    if(!compareOverlay.hidden && currentComparePlantId){
+      var cp = plants.find(function(p){ return p.id === currentComparePlantId; });
+      if(cp) renderCompare(cp);
+    }
+  }
+
   var plants = [];
   var caretakerMode = false;
   var bulkMode = false;
   var reorderMode = false;
+  var activeStatusFilter = null;
   var selectedIds = {};
   var activeDatePopover = { type:null, id:null, btnEl:null };
   var currentDetailId = null;
@@ -706,78 +1147,34 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   var pendingPhotos = [];
 
   var grid = document.getElementById('plantGrid');
-  var reorderListEl = document.getElementById('reorderList');
   var emptyState = document.getElementById('emptyState');
+  var filterEmptyState = document.getElementById('filterEmptyState');
+  var legendEl = document.getElementById('legend');
+  var filterResetBtn = document.getElementById('filterResetBtn');
 
-  var SEED_DATE = '2026-07-01';
-  var SEED_PLANTS = [
-    ['Сциндапсус сріблястий','Scindapsus pictus','кабінет / яскраве розсіяне світло, недалеко від пн-сх вікна',7,true,21,'Поливати після підсихання верхньої половини горщика, не заливати, без прямого сонця.'],
-    ['Епіпремнум Neon','Epipremnum aureum ‘Neon’','спальня / яскраве розсіяне світло',6,true,21,'Не пересушувати повністю, але й не тримати мокрим; більше світла для яскравого кольору.'],
-    ['Аглаонема Prestige','Aglaonema sp. ‘Prestige’','кабінет / полиця біля вікна, без сонця',8,true,21,'Поливати тільки після підсихання верхніх 3–4 см, не тримати в холоді, без протягів.'],
-    ['Аглаонема Pink','Aglaonema sp.','тепло, біля світлого вікна без сонця',10,false,30,'Ослаблена: не підживлювати, не заливати, тримати в теплому місці, дати ґрунту підсихати зверху.'],
-    ['Драцена marginata','Dracaena marginata','кабінет / розсіяне світло',8,true,30,'Поливати після підсихання 1/2 горщика, не ставити під пряме сонце, не заливати.'],
-    ['Драцена marginata велика темна','Dracaena marginata','світле місце, без полуденного сонця',8,true,30,'Те саме: помірний полив, дати просихати, не тримати в холодному мокрому субстраті.'],
-    ['Фікус Natasha','Ficus benjamina','балкон / яскраве світло',7,true,21,'Не крутити часто, полив після підсихання верхніх 3–4 см, без застою води.'],
-    ['Фікус lyrata','Ficus lyrata','дуже світле місце / біля вікна',7,true,21,'Любить яскраве світло, полив після просихання верхніх 4–5 см, протирати листя.'],
-    ['Гранат Baby','Punica granatum ‘Nana’','найсвітліше місце, бажано балкон',4,true,14,'Багато сонця, полив після підсихання 2–3 см, не переливати, прищипувати витягнуті пагони.'],
-    ['Лимон Меєра','Citrus × meyeri','світлий балкон',5,true,14,'Поливати після просихання верхніх 4–5 см, не тримати воду в піддоні, багато світла.'],
-    ['Кімнатний плодоносний лимон','Citrus limon','світлий балкон / дуже світле вікно',5,true,14,'Те саме: максимум світла, помірний полив, добриво для середземноморських.'],
-    ['Арабіка','Coffea arabica','спальня / світле місце без сонця',6,true,21,'Любить м’яку воду, рівномірний полив без болота, не пересушувати повністю.'],
-    ['Монстера monkey','Monstera adansonii','біля пн-сх вікна',7,true,21,'Полив після підсихання верхньої половини горщика, без прямого сонця, любить опору.'],
-    ['Розмарин','Salvia rosmarinus','найсвітліше місце / балкон',5,true,21,'Багато світла, не заливати, краще трохи підсушити, без оприскування.'],
-    ['Батат гідропоніка','Ipomoea batatas','світле місце',7,true,21,'Міняти воду раз на 7–10 днів, слабке добриво, багато світла.'],
-    ['Haworthia attenuata','Haworthiopsis attenuata','світле вікно',12,false,45,'Полив тільки після повного просихання, не обприскувати, без болота.'],
-    ['Заміокулькас','Zamioculcas zamiifolia','полиця / півтінь',14,true,30,'Поливати лише після повного просихання, краще недолити, ніж перелити.'],
-    ['Красула','Crassula ovata','балкон / дуже світло',14,true,45,'Повне просихання між поливами, не оприскувати, багато світла.'],
-    ['Опунція','Opuntia sp.','найсонячніше місце',21,false,45,'Дуже рідкий полив, повне просихання, максимум сонця.'],
-    ['Авокадо','Persea americana','спальня / світле вікно',5,true,21,'Полив після підсихання 2–3 см, багато світла, прищипувати для кущіння.'],
-    ['Аденіум','Adenium obesum','східне вікно / ранкове сонце',8,false,21,'Повне просихання між поливами, не годувати часто азотом, більше сонця для цвітіння.'],
-    ['Кімнатний інжир','Ficus carica','східний балкон',4,true,14,'Багато світла, без оприскування, полив після підсихання верхніх 2–3 см.'],
-    ['Традесканція рео','Tradescantia spathacea','пн-сх підвіконня',5,true,21,'Яскраве світло, полив після підсихання 2–3 см, не лити воду в центр розетки.'],
-    ['Хойя Crimson Queen','Hoya carnosa ‘Krimson Queen’','найсвітліше пн-сх вікно',8,true,30,'Поливати після просихання мінімум половини горщика, не заливати, без темної полиці.'],
-    ['Бальзамін','Impatiens walleriana','світле місце без полуденного сонця',4,true,14,'Любить рівномірну вологість, не пересушувати повністю, добриво для квітучих.'],
-    ['Бугенвілія на штамбі','Bougainvillea sp.','пд-зх балкон / максимум сонця',2,true,14,'Дуже багато сонця, тісний горщик, полив після сильного просихання, не оприскувати. (Щойно куплена — добриво відкладено на 2 тижні.)'],
-    ['Хлорофітум','Chlorophytum comosum','світле місце / без прямого полуденного сонця',6,true,21,'Невибагливий, полив після підсихання 2–3 см, можна тримати в яскравій півтіні.'],
-    ['Трава Готьє','—','світлий балкон / без жорсткого полуденного сонця',4,true,21,'Не пересушувати повністю, тримати злегка вологим, не заливати.'],
-    ['Перець Peter Pepper','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Багато світла, регулярний полив без застою, підживлення для плодоношення.'],
-    ['Перець Patio Fire and Ice','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Те саме: не пересушувати надовго, але й не заливати, любить тепло.'],
-    ['Перець Red Hot Cherry Pepper','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Багато сонця, регулярне підживлення, вода після легкого підсихання верхнього шару.'],
-    ['Базилік великий горщик','Ocimum basilicum','світлий балкон / сонце',2,true,10,'Не пересушувати, прищипувати верхівки, не тримати мокрим постійно.'],
-    ['Томат у горщику','Solanum lycopersicum','пд-зх балкон / сонце',2,true,7,'Багато сонця, рясний полив після підсихання верху, підв’язка, підживлення регулярно.'],
-    ['Петунія ампельна + Лобелія ампельна','Petunia × hybrida + Lobelia erinus','балконний ящик / багато світла',2,true,7,'Регулярний полив, не пересушувати повністю, відцвіле прибирати, добриво для квітучих.'],
-    ['Чорнобривці','Tagetes sp.','балкон / сонце',3,true,14,'Сонце, помірний полив, краще недолити, ніж перелити, відцвілі кошики знімати.'],
-    ['Балконний ящик 1 — салат + базилік','Lactuca sativa + Ocimum basilicum','пн-сх або східний балкон',2,true,14,'Ґрунт тримати злегка вологим, без пересихання; салат любить прохолоду, базилік — тепло.'],
-    ['Балконний ящик 2 — салат + базилік','Lactuca sativa + Ocimum basilicum','пн-сх або східний балкон',2,true,14,'Те саме: поливати частіше, але потроху; не заливати до болота.']
-  ];
-
-  function buildSeedPlants(){
-    return SEED_PLANTS.map(function(row){
-      return {
-        id: uid(),
-        name: row[0],
-        latin: row[1] === '—' ? '' : row[1],
-        room: row[2],
-        photos: [],
-        waterFreq: row[3],
-        lastWatered: SEED_DATE,
-        fertEnabled: row[4],
-        fertFreq: row[5],
-        lastFertilized: SEED_DATE,
-        instructions: row[6]
-      };
+  function setStatusFilter(key){
+    activeStatusFilter = key;
+    legendEl.querySelectorAll('.legend-chip').forEach(function(c){
+      c.classList.toggle('active', c.dataset.key === activeStatusFilter);
     });
+    render();
   }
+
+  legendEl.querySelectorAll('.legend-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var key = chip.dataset.key;
+      setStatusFilter(activeStatusFilter === key ? null : key);
+    });
+  });
+
+  filterResetBtn.addEventListener('click', function(){
+    setStatusFilter(null);
+  });
 
   function uid(){ return 'p_' + Math.random().toString(36).slice(2,10); }
 
   function todayISO(){
     var d = new Date();
-    var tz = d.getTimezoneOffset() * 60000;
-    return new Date(d - tz).toISOString().slice(0,10);
-  }
-  function daysAgoISO(n){
-    var d = new Date();
-    d.setDate(d.getDate() - n);
     var tz = d.getTimezoneOffset() * 60000;
     return new Date(d - tz).toISOString().slice(0,10);
   }
@@ -790,22 +1187,22 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   function formatDate(iso){
     if(!iso) return '—';
     var d = new Date(iso + 'T00:00:00');
-    return d.toLocaleDateString('uk-UA', {day:'numeric', month:'short'});
+    return d.toLocaleDateString(t('dateLocale'), {day:'numeric', month:'short'});
   }
 
   function waterStatus(plant){
     var freq = plant.waterFreq || 7;
     var d = daysBetween(plant.lastWatered);
-    if(d < freq) return {label:'Полито', bg:'var(--water-ok-bg)', text:'var(--water-ok-text)'};
-    if(d === freq) return {label:'Полити сьогодні', bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
-    return {label:'Полив прострочено', bg:'var(--water-overdue-bg)', text:'var(--water-overdue-text)'};
+    if(d < freq) return {key:'water-ok', label:t('statusWaterOk'), bg:'var(--water-ok-bg)', text:'var(--water-ok-text)'};
+    if(d === freq) return {key:'water-today', label:t('statusWaterToday'), bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
+    return {key:'water-overdue', label:t('statusWaterOverdue'), bg:'var(--water-overdue-bg)', text:'var(--water-overdue-text)'};
   }
   function fertStatus(plant){
-    if(!plant.fertEnabled) return {label:'Не удобрювати', bg:'var(--fert-off-bg)', text:'var(--fert-off-text)'};
+    if(!plant.fertEnabled) return {key:'fert-off', label:t('statusFertOff'), bg:'var(--fert-off-bg)', text:'var(--fert-off-text)'};
     var freq = plant.fertFreq || 30;
     var d = daysBetween(plant.lastFertilized);
-    if(d < freq) return {label:'Удобрено', bg:'var(--fert-ok-bg)', text:'var(--fert-ok-text)'};
-    return {label:'Удобрити', bg:'var(--fert-due-bg)', text:'var(--fert-due-text)'};
+    if(d < freq) return {key:'fert-ok', label:t('statusFertOk'), bg:'var(--fert-ok-bg)', text:'var(--fert-ok-text)'};
+    return {key:'fert-due', label:t('statusFertDue'), bg:'var(--fert-due-bg)', text:'var(--fert-due-text)'};
   }
   function badgeEl(status){
     var span = document.createElement('span');
@@ -906,7 +1303,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       }
       return r.ok;
     }catch(e){
-      lastPhotoError = 'Мережева помилка: ' + e.message;
+      lastPhotoError = t('alertPhotoNetworkError') + e.message;
       return false;
     }
   }
@@ -946,122 +1343,285 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   }
 
   function render(){
+    // Захист від "привидів" у режимі перетягування: якщо саме зараз триває
+    // drag картки (палець/курсор ще не відпущено), grid.innerHTML='' нижче
+    // видалив би картку просто з-під пальця — pointerup на ній більше не
+    // спрацював би, і прибирання (cleanup) ніколи б не відбулось. Тож поки
+    // triває drag — відкладаємо перерендер і виконуємо його одразу після
+    // завершення drag (див. onCardDragEnd).
+    if(dragState){
+      renderPending = true;
+      return;
+    }
     if(plants.length === 0){
       emptyState.hidden = false;
       grid.hidden = true;
-      reorderListEl.hidden = true;
+      filterEmptyState.hidden = true;
+      legendEl.hidden = true;
       return;
     }
     emptyState.hidden = true;
 
     if(reorderMode){
-      grid.hidden = true;
+      legendEl.hidden = true;
+      filterEmptyState.hidden = true;
+      grid.hidden = false;
       grid.innerHTML = '';
-      reorderListEl.hidden = false;
-      renderReorderList();
+      plants.forEach(function(p){ grid.appendChild(renderCard(p)); });
       return;
     }
 
-    reorderListEl.hidden = true;
+    legendEl.hidden = false;
+
+    var visiblePlants = plants;
+    if(activeStatusFilter){
+      visiblePlants = plants.filter(function(p){
+        return waterStatus(p).key === activeStatusFilter || fertStatus(p).key === activeStatusFilter;
+      });
+    }
+
+    if(visiblePlants.length === 0){
+      grid.hidden = true;
+      grid.innerHTML = '';
+      filterEmptyState.hidden = false;
+      return;
+    }
+
+    filterEmptyState.hidden = true;
     grid.hidden = false;
     grid.innerHTML = '';
-    plants.forEach(function(p){ grid.appendChild(renderCard(p)); });
+    visiblePlants.forEach(function(p){ grid.appendChild(renderCard(p)); });
   }
 
-  function renderReorderList(){
-    reorderListEl.innerHTML = '';
-    plants.forEach(function(plant, idx){
-      var row = document.createElement('div');
-      row.className = 'reorder-row';
-      row.draggable = true;
-      row.dataset.id = plant.id;
+  // ---------- Drag-n-drop для режиму "Змінити порядок" ----------
+  var dragState = null;
+  var repositionRafId = null;
+  var pendingPointerX = 0, pendingPointerY = 0;
+  var renderPending = false;
+  var autoScrollTimer = null;
+  var autoScrollSpeed = 0;
 
-      var handle = document.createElement('span');
-      handle.className = 'reorder-handle';
-      handle.textContent = '☰';
-      row.appendChild(handle);
+ function initCardDrag(handle, card, plantId){
+  handle.addEventListener('pointerdown', function(e){
+    if(e.button !== undefined && e.button !== 0) return; // тільки ліва кнопка миші
 
-      var thumb = document.createElement('div');
-      thumb.className = 'reorder-thumb';
-      var url = primaryPhotoUrl(plant);
-      if(url){
-        var img = document.createElement('img');
-        img.src = url; img.alt = plant.name;
-        thumb.appendChild(img);
-      } else {
-        thumb.textContent = '🌿';
-      }
-      row.appendChild(thumb);
+    var rect = card.getBoundingClientRect();
+    dragState = {
+      id: plantId,
+      pointerId: e.pointerId,
+      active: false,
+      startX: e.clientX,
+      startY: e.clientY,
+      lastX: e.clientX,
+      lastY: e.clientY,
+      grabOffsetX: e.clientX - rect.left,
+      grabOffsetY: e.clientY - rect.top,
+      card: card,
+      handle: handle,
+      placeholder: null
+    };
 
-      var name = document.createElement('span');
-      name.className = 'reorder-name';
-      name.textContent = plant.name;
-      row.appendChild(name);
+    try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+    handle.addEventListener('pointermove', onCardDragMove);
+    handle.addEventListener('pointerup', onCardDragEnd);
+    handle.addEventListener('pointercancel', onCardDragEnd);
+  });
+}
 
-      var arrows = document.createElement('div');
-      arrows.className = 'reorder-arrows';
-      var upBtn = document.createElement('button');
-      upBtn.type = 'button'; upBtn.textContent = '↑'; upBtn.disabled = (idx === 0);
-      upBtn.addEventListener('click', function(){ movePlant(idx, idx - 1); });
-      var downBtn = document.createElement('button');
-      downBtn.type = 'button'; downBtn.textContent = '↓'; downBtn.disabled = (idx === plants.length - 1);
-      downBtn.addEventListener('click', function(){ movePlant(idx, idx + 1); });
-      arrows.appendChild(upBtn);
-      arrows.appendChild(downBtn);
-      row.appendChild(arrows);
+  function activateDrag(){
+    var ds = dragState;
+    if(!ds || ds.active) return;
+    var rect = ds.card.getBoundingClientRect();
 
-      row.addEventListener('dragstart', function(){
-        setTimeout(function(){ row.classList.add('dragging'); }, 0);
-      });
-      row.addEventListener('dragend', async function(){
-        row.classList.remove('dragging');
-        var newOrderIds = Array.from(reorderListEl.querySelectorAll('.reorder-row')).map(function(r){ return r.dataset.id; });
-        plants.sort(function(a, b){ return newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id); });
-        await savePlantsMeta();
-        render();
-      });
+    ds.placeholder = document.createElement('div');
+    ds.placeholder.className = 'plant-card reorder-placeholder';
+    ds.placeholder.style.width = rect.width + 'px';
+    ds.placeholder.style.height = rect.height + 'px';
+    ds.card.parentNode.insertBefore(ds.placeholder, ds.card.nextSibling);
 
-      reorderListEl.appendChild(row);
+    ds.card.classList.add('dragging-card');
+    ds.card.style.width = rect.width + 'px';
+    ds.card.style.height = rect.height + 'px';
+    ds.card.style.left = rect.left + 'px';
+    ds.card.style.top = rect.top + 'px';
+    ds.active = true;
+  }
+
+// Пересуває плейсхолдер до найближчої картки під точкою (x, y)
+function repositionPlaceholder(x, y){
+  var ds = dragState;
+  if(!ds || !ds.active) return;
+
+  var cards = Array.from(grid.querySelectorAll('.plant-card:not(.dragging-card):not(.reorder-placeholder)'));
+  if(!cards.length) return;
+
+  // Читаємо всі rect一 РАЗ за виклик (а не по колу всередині forEach з паралельними
+  // записами) — саме почергове читання/запис макета на кожен pixel руху миші
+  // й було головною причиною "смикання": браузер змушений синхронно
+  // перераховувати layout по кілька разів на кожен pointermove.
+  var closest = null;
+  var closestDistance = Infinity;
+  var closestRect = null;
+
+  for(var i = 0; i < cards.length; i++){
+    var rect = cards[i].getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var dx = x - cx;
+    var dy = y - cy;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    if(distance < closestDistance){
+      closestDistance = distance;
+      closest = cards[i];
+      closestRect = rect;
+    }
+  }
+
+  if(!closest) return;
+
+  // ВАЖЛИВО: це сітка з кількома колонками (2-4 в ряд), а не список в один стовпчик.
+  // Якщо курсор вертикально перебуває в межах рядка цільової картки — порівнюємо по X (ліво/право).
+  // Якщо курсор явно вище/нижче рядка картки — тоді вже по Y (інший рядок).
+  var sameRow = (y >= closestRect.top && y <= closestRect.bottom);
+  var before;
+  if(sameRow){
+    // Невеликий "мертвий" буфер навколо середини картки (гістерезис) —
+    // без нього курсор, що стоїть майже точно посередині, перемикав би
+    // "до/після" на кожен субпіксельний рух миші, і плейсхолдер стрибав
+    // би вперед-назад щокадру.
+    var midX = closestRect.left + closestRect.width / 2;
+    var buffer = Math.min(16, closestRect.width * 0.12);
+    if(x < midX - buffer) before = true;
+    else if(x > midX + buffer) before = false;
+    else before = ds.lastBefore !== undefined ? ds.lastBefore : (x < midX);
+  } else {
+    before = y < (closestRect.top + closestRect.height / 2);
+  }
+  ds.lastBefore = before;
+
+  if(before){
+    if(ds.placeholder !== closest.previousSibling){
+      grid.insertBefore(ds.placeholder, closest);
+    }
+  } else {
+    if(closest.nextSibling !== ds.placeholder){
+      grid.insertBefore(ds.placeholder, closest.nextSibling);
+    }
+  }
+}
+
+
+  function onCardDragMove(e){
+  var ds = dragState;
+  if(!ds || e.pointerId !== ds.pointerId) return;
+
+  if(!ds.active){
+    var dx0 = e.clientX - ds.startX, dy0 = e.clientY - ds.startY;
+    if(Math.sqrt(dx0*dx0 + dy0*dy0) < 6) return;
+    activateDrag();
+  }
+
+  ds.lastX = e.clientX;
+  ds.lastY = e.clientY;
+  // Позицію картки, що тягнеться, рухаємо одразу (це просто transform-подібний
+  // стиль, дешево), а важку роботу — пошук найближчої картки й переставляння
+  // плейсхолдера — відкладаємо до наступного кадру замальовки. pointermove
+  // може прилітати десятки разів за секунду; без цього троттлінгу кожен такий
+  // виклик змушував браузер синхронно перераховувати layout, і саме це давало
+  // ефект "смикання/блимання", особливо помітний на картках з фото.
+  pendingPointerX = e.clientX;
+  pendingPointerY = e.clientY;
+  ds.card.style.left = (pendingPointerX - ds.grabOffsetX) + 'px';
+  ds.card.style.top = (pendingPointerY - ds.grabOffsetY) + 'px';
+
+  if(repositionRafId === null){
+    repositionRafId = requestAnimationFrame(function(){
+      repositionRafId = null;
+      if(!dragState || !dragState.active) return;
+      repositionPlaceholder(pendingPointerX, pendingPointerY);
+      updateAutoScroll(pendingPointerY);
     });
   }
+}
 
-  reorderListEl.addEventListener('dragover', function(e){
-    e.preventDefault();
-    var draggingRow = reorderListEl.querySelector('.reorder-row.dragging');
-    if(!draggingRow) return;
-    var afterElement = getDragAfterElement(reorderListEl, e.clientY);
-    if(afterElement == null){
-      reorderListEl.appendChild(draggingRow);
-    } else {
-      reorderListEl.insertBefore(draggingRow, afterElement);
+  function updateAutoScroll(clientY){
+    var EDGE = 90, MAX_SPEED = 16;
+    var vh = window.innerHeight;
+    var speed = 0;
+    if(clientY < EDGE){
+      speed = -MAX_SPEED * (1 - clientY / EDGE);
+    } else if(clientY > vh - EDGE){
+      speed = MAX_SPEED * (1 - (vh - clientY) / EDGE);
     }
-  });
-
-  function getDragAfterElement(container, y){
-    var rows = Array.from(container.querySelectorAll('.reorder-row:not(.dragging)'));
-    return rows.reduce(function(closest, child){
-      var box = child.getBoundingClientRect();
-      var offset = y - box.top - box.height / 2;
-      if(offset < 0 && offset > closest.offset){
-        return { offset: offset, element: child };
-      }
-      return closest;
-    }, { offset: -Infinity, element: null }).element;
+    autoScrollSpeed = speed;
+    if(speed !== 0 && !autoScrollTimer){
+      autoScrollTimer = setInterval(function(){
+        if(autoScrollSpeed === 0) return;
+        var before = window.scrollY;
+        window.scrollBy(0, autoScrollSpeed);
+        if(window.scrollY !== before && dragState && dragState.active){
+          repositionPlaceholder(dragState.lastX, dragState.lastY);
+        }
+      }, 16);
+    } else if(speed === 0){
+      stopAutoScroll();
+    }
+  }
+  function stopAutoScroll(){
+    if(autoScrollTimer){ clearInterval(autoScrollTimer); autoScrollTimer = null; }
+    autoScrollSpeed = 0;
   }
 
-  async function movePlant(fromIdx, toIdx){
-    if(toIdx < 0 || toIdx >= plants.length) return;
-    var moved = plants.splice(fromIdx, 1)[0];
-    plants.splice(toIdx, 0, moved);
+  async function onCardDragEnd(e){
+  var ds = dragState;
+  if(!ds || e.pointerId !== ds.pointerId) return;
+
+  stopAutoScroll();
+  if(repositionRafId !== null){
+    cancelAnimationFrame(repositionRafId);
+    repositionRafId = null;
+  }
+
+  ds.handle.removeEventListener('pointermove', onCardDragMove);
+ds.handle.removeEventListener('pointerup', onCardDragEnd);
+ds.handle.removeEventListener('pointercancel', onCardDragEnd);
+try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
+
+  if(ds.active){
+    ds.placeholder.parentNode.insertBefore(ds.card, ds.placeholder);
+    ds.placeholder.parentNode.removeChild(ds.placeholder);
+    ds.card.classList.remove('dragging-card');
+    ds.card.style.width = '';
+    ds.card.style.height = '';
+    ds.card.style.left = '';
+    ds.card.style.top = '';
+
+    var newOrderIds = Array.from(grid.querySelectorAll('.plant-card')).map(function(el){ return el.dataset.id; });
+    plants.sort(function(a, b){ return newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id); });
+    dragState = null;
     await savePlantsMeta();
+  } else {
+    dragState = null;
+  }
+
+  if(renderPending){
+    renderPending = false;
     render();
   }
+}
 
   function renderCard(plant){
     var ws = waterStatus(plant);
     var fs = fertStatus(plant);
     var card = document.createElement('div');
-    card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '');
+    card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '') + (reorderMode ? ' reorder-active' : '');
+    card.dataset.id = plant.id;
+    if(reorderMode){
+  var dragHandle = document.createElement('div');
+  dragHandle.className = 'card-drag-handle';
+  dragHandle.textContent = '☰';
+  card.appendChild(dragHandle);
+}
 
     if(bulkMode){
       var checkbox = document.createElement('div');
@@ -1103,7 +1663,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     waterRow.className = 'card-meta-row';
     var waterLabel = document.createElement('span');
     waterLabel.className = 'card-meta-label';
-    waterLabel.textContent = 'Полив кожні ' + (plant.waterFreq || 7) + ' дн.';
+    waterLabel.textContent = t('cardWaterFreq', {n: plant.waterFreq || 7});
     waterRow.appendChild(waterLabel);
     waterRow.appendChild(badgeEl(ws));
     body.appendChild(waterRow);
@@ -1112,7 +1672,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     fertRow.className = 'card-meta-row';
     var fertLabel = document.createElement('span');
     fertLabel.className = 'card-meta-label';
-    fertLabel.textContent = plant.fertEnabled ? ('Добриво кожні ' + (plant.fertFreq || 30) + ' дн.') : 'Добриво не потрібне';
+    fertLabel.textContent = plant.fertEnabled ? t('cardFertFreq', {n: plant.fertFreq || 30}) : t('cardFertOff');
     fertRow.appendChild(fertLabel);
     fertRow.appendChild(badgeEl(fs));
     body.appendChild(fertRow);
@@ -1127,11 +1687,11 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       var qa = document.createElement('div');
       qa.className = 'card-quick-actions';
       var wBtn = document.createElement('button');
-      wBtn.type = 'button'; wBtn.className = 'qa-btn water'; wBtn.textContent = 'Полито';
+      wBtn.type = 'button'; wBtn.className = 'qa-btn water'; wBtn.textContent = t('waterAction');
       wBtn.addEventListener('click', function(e){ e.stopPropagation(); openDatePopover('water', plant.id, wBtn); });
       qa.appendChild(wBtn);
       var fBtn = document.createElement('button');
-      fBtn.type = 'button'; fBtn.className = 'qa-btn fert'; fBtn.textContent = 'Удобрено';
+      fBtn.type = 'button'; fBtn.className = 'qa-btn fert'; fBtn.textContent = t('fertAction');
       fBtn.addEventListener('click', function(e){ e.stopPropagation(); openDatePopover('fert', plant.id, fBtn); });
       qa.appendChild(fBtn);
       body.appendChild(qa);
@@ -1139,12 +1699,20 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
 
     card.appendChild(body);
     card.addEventListener('click', function(){
+      if(reorderMode) return;
       if(bulkMode){
         toggleSelected(plant.id);
       } else {
         openDetail(plant.id);
       }
     });
+    if(reorderMode){
+  var handleEl = card.querySelector('.card-drag-handle');
+  if(handleEl){
+    initCardDrag(handleEl, card, plant.id);
+  }
+}
+
     return card;
   }
 
@@ -1159,11 +1727,11 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     var count = Object.keys(selectedIds).length;
     bulkBar.hidden = !bulkMode || count === 0;
     var summary;
-    if(bulkApplyWater && bulkApplyFert) summary = 'полив і добриво';
-    else if(bulkApplyWater) summary = 'полив';
-    else if(bulkApplyFert) summary = 'добриво';
-    else summary = 'нічого не вибрано';
-    bulkCount.textContent = count + (count === 1 ? ' обрано' : ' обрано') + ' · застосується: ' + summary;
+    if(bulkApplyWater && bulkApplyFert) summary = t('bulkWaterAndFert');
+    else if(bulkApplyWater) summary = t('bulkWater');
+    else if(bulkApplyFert) summary = t('bulkFert');
+    else summary = t('bulkNothingSelected');
+    bulkCount.textContent = t('bulkSelectedCount', {n: count}) + t('bulkWillApply') + summary;
   }
 
   // ---------- Detail overlay ----------
@@ -1243,16 +1811,16 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     detailLatin.style.display = plant.latin ? 'block' : 'none';
     detailRoom.textContent = plant.room || '—';
 
-    detailWaterInfo.textContent = 'Кожні ' + (plant.waterFreq || 7) + ' дн. · востаннє: ' + formatDate(plant.lastWatered);
+    detailWaterInfo.textContent = t('detailWaterInfo', {n: plant.waterFreq || 7, date: formatDate(plant.lastWatered)});
     detailFertInfo.textContent = plant.fertEnabled
-      ? ('Кожні ' + (plant.fertFreq || 30) + ' дн. · востаннє: ' + formatDate(plant.lastFertilized))
-      : 'Зараз не потрібне';
+      ? t('detailFertInfo', {n: plant.fertFreq || 30, date: formatDate(plant.lastFertilized)})
+      : t('detailFertOffNow');
 
-    detailInstructions.textContent = plant.instructions || 'Інструкцій ще немає — додай їх при редагуванні.';
+    detailInstructions.textContent = plant.instructions || t('detailNoInstructions');
     detailInstructionsBlock.classList.toggle('caretaker-glow', caretakerMode);
 
-    waterBtn.textContent = 'Полито';
-    fertBtn.textContent = 'Удобрено';
+    waterBtn.textContent = t('waterAction');
+    fertBtn.textContent = t('fertAction');
     editBtn.style.display = caretakerMode ? 'none' : 'block';
 
     var pos = plants.findIndex(function(p){ return p.id === id; });
@@ -1299,7 +1867,7 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     var before = plant.photos[0];
     var after = plant.photos[plant.photos.length - 1];
     compareGrid.innerHTML = '';
-    [ {photo: before, label: 'Було'}, {photo: after, label: 'Зараз'} ].forEach(function(entry, idx){
+    [ {photo: before, label: t('compareBefore')}, {photo: after, label: t('compareAfter')} ].forEach(function(entry, idx){
       var col = document.createElement('div');
       col.className = 'compare-col';
       var img = document.createElement('img');
@@ -1386,13 +1954,13 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
     if(!plant) return;
     var question = questionInput.value.trim();
     if(!question){
-      alert('Опиши проблему з рослиною — наприклад, що саме сталося з листям чи стеблом.');
+      alert(t('alertNeedQuestion'));
       questionInput.focus();
       return;
     }
     var originalLabel = askAiBtn.textContent;
     askAiBtn.disabled = true;
-    askAiBtn.textContent = '✨ Думаю...';
+    askAiBtn.textContent = t('askAiThinking');
     aiAnswerBox.hidden = true;
     try{
       var r = await fetch('/api/diagnose', {
@@ -1407,13 +1975,13 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
       });
       var data = await r.json();
       if(!r.ok){
-        alert('Не вдалося отримати відповідь: ' + (data.error || ('HTTP ' + r.status)));
+        alert(t('alertDiagnoseFailed') + (data.error || ('HTTP ' + r.status)));
         return;
       }
       aiAnswerBox.textContent = data.answer || '';
       aiAnswerBox.hidden = false;
     }catch(e){
-      alert('Мережева помилка при звʼязку з ШІ: ' + e.message);
+      alert(t('alertAiNetworkError') + e.message);
     }finally{
       askAiBtn.disabled = false;
       askAiBtn.textContent = originalLabel;
@@ -1546,8 +2114,8 @@ main{ padding:22px 28px 60px; max-width:1200px; margin:0 auto; }
   });
   function flashBtnLabel(btn, type){
     if(btn === waterBtn || btn === fertBtn){
-      btn.textContent = 'Відмічено ✓';
-      setTimeout(function(){ btn.textContent = type === 'water' ? 'Полито' : 'Удобрено'; }, 1400);
+      btn.textContent = t('markedDone');
+      setTimeout(function(){ btn.textContent = type === 'water' ? t('waterAction') : t('fertAction'); }, 1400);
     }
   }
 
@@ -1557,35 +2125,52 @@ var addPlantBtn = document.getElementById('addPlantBtn');
 var addPlantBtnMobile = document.getElementById('addPlantBtnMobile');
 var addPlantSlot = document.getElementById('addPlantSlot');
 var homeLogoBtn = document.getElementById('homeLogoBtn');
+var langSwitcherBtn = document.getElementById('langSwitcherBtn');
+langSwitcherBtn.textContent = langButtonLabel(currentLang);
+applyStaticI18n();
+langSwitcherBtn.addEventListener('click', function(){
+  setLanguage(currentLang === 'uk' ? 'en' : 'uk');
+});
 
 function syncAddPlantVisibility(){
   if(addPlantSlot){
     addPlantSlot.classList.toggle('is-hidden', caretakerMode);
   }
   if(addPlantBtnMobile){
-    addPlantBtnMobile.style.display = caretakerMode ? 'none' : '';
+    addPlantBtnMobile.classList.toggle('is-hidden', caretakerMode);
   }
 }
 
 caretakerToggle.addEventListener('click', function(){
   caretakerMode = !caretakerMode;
   caretakerToggle.classList.toggle('active', caretakerMode);
-  caretakerToggle.textContent = caretakerMode ? '✓ Режим доглядача' : 'Режим доглядача';
   syncAddPlantVisibility();
-  if(caretakerMode && bulkMode) exitBulkMode();
   if(caretakerMode && reorderMode) exitReorderMode();
   render();
 });
 
 if(homeLogoBtn){
   homeLogoBtn.addEventListener('click', function(){
+    var changed = false;
     if(caretakerMode){
       caretakerMode = false;
       caretakerToggle.classList.remove('active');
-      caretakerToggle.textContent = 'Режим доглядача';
       syncAddPlantVisibility();
-      render();
+      changed = true;
     }
+    if(bulkMode){
+      exitBulkMode();
+      changed = true;
+    }
+    if(reorderMode){
+      exitReorderMode();
+      changed = true;
+    }
+    if(activeStatusFilter){
+      setStatusFilter(null);
+      changed = true;
+    }
+    if(changed) render();
   });
 }
   
@@ -1596,18 +2181,15 @@ syncAddPlantVisibility();
   function exitReorderMode(){
     reorderMode = false;
     reorderToggle.classList.remove('active');
-    reorderToggle.textContent = 'Змінити порядок';
   }
   reorderToggle.addEventListener('click', function(){
     reorderMode = !reorderMode;
     reorderToggle.classList.toggle('active', reorderMode);
-    reorderToggle.textContent = reorderMode ? '✓ Змінити порядок' : 'Змінити порядок';
     if(reorderMode){
       if(bulkMode) exitBulkMode();
       if(caretakerMode){
         caretakerMode = false;
         caretakerToggle.classList.remove('active');
-        caretakerToggle.textContent = 'Режим доглядача';
         syncAddPlantVisibility();
       }
     }
@@ -1629,8 +2211,9 @@ syncAddPlantVisibility();
 
   function showUndoToast(snapshot, count, appliedWater, appliedFert){
     lastBulkSnapshot = snapshot;
-    var what = (appliedWater && appliedFert) ? 'полив і добриво' : (appliedWater ? 'полив' : 'добриво');
-    undoToastText.textContent = 'Оновлено ' + what + ' для ' + count + (count === 1 ? ' рослини' : ' рослин') + '.';
+    var what = (appliedWater && appliedFert) ? t('bulkWaterAndFert') : (appliedWater ? t('bulkWater') : t('bulkFert'));
+    var noun = count === 1 ? t('plantsFew') : t('plantsMany');
+    undoToastText.textContent = t('undoUpdated', {what: what, count: count, noun: noun});
     undoToast.hidden = false;
     if(undoToastTimer) clearTimeout(undoToastTimer);
     undoToastTimer = setTimeout(function(){ undoToast.hidden = true; }, 15000);
@@ -1661,27 +2244,17 @@ syncAddPlantVisibility();
     bulkMode = false;
     selectedIds = {};
     bulkToggle.classList.remove('active');
-    bulkToggle.textContent = 'Відмітити кілька';
     bulkBar.hidden = true;
     bulkApplyWater = false;
     bulkApplyFert = false;
     bulkWaterToggle.classList.remove('active');
-    bulkWaterToggle.textContent = 'Полито';
     bulkFertToggle.classList.remove('active');
-    bulkFertToggle.textContent = 'Удобрено';
   }
 
   bulkToggle.addEventListener('click', function(){
     bulkMode = !bulkMode;
     selectedIds = {};
     bulkToggle.classList.toggle('active', bulkMode);
-    bulkToggle.textContent = bulkMode ? '✓ Відмітити кілька' : 'Відмітити кілька';
-    if(bulkMode && caretakerMode){
-      caretakerMode = false;
-      caretakerToggle.classList.remove('active');
-      caretakerToggle.textContent = 'Режим доглядача';
-      syncAddPlantVisibility();
-    }
     if(bulkMode && reorderMode) exitReorderMode();
     updateBulkBar();
     render();
@@ -1700,25 +2273,22 @@ syncAddPlantVisibility();
   bulkWaterToggle.addEventListener('click', function(){
     bulkApplyWater = !bulkApplyWater;
     bulkWaterToggle.classList.toggle('active', bulkApplyWater);
-    bulkWaterToggle.textContent = (bulkApplyWater ? '✓ ' : '') + 'Полито';
     updateBulkBar();
   });
   bulkFertToggle.addEventListener('click', function(){
     bulkApplyFert = !bulkApplyFert;
     bulkFertToggle.classList.toggle('active', bulkApplyFert);
-    bulkFertToggle.textContent = (bulkApplyFert ? '✓ ' : '') + 'Удобрено';
     // добриво рідке — удобрення завжди означає й полив
     if(bulkApplyFert && !bulkApplyWater){
       bulkApplyWater = true;
       bulkWaterToggle.classList.add('active');
-      bulkWaterToggle.textContent = '✓ Полито';
     }
     updateBulkBar();
   });
 
   document.getElementById('bulkApplyBtn').addEventListener('click', function(e){
     if(!bulkApplyWater && !bulkApplyFert){
-      alert('Обери хоча б одне — «Полито» або «Удобрено» — перед застосуванням.');
+      alert(t('alertBulkNeedChoice'));
       return;
     }
     openBulkDatePopover(e.currentTarget);
@@ -1768,7 +2338,7 @@ syncAddPlantVisibility();
   function openForm(plant){
     editingId = plant ? plant.id : null;
     pendingPhotos = plant && plant.photos ? plant.photos.slice() : [];
-    formTitle.textContent = plant ? 'Редагувати рослину' : 'Додати рослину';
+    formTitle.textContent = plant ? t('formTitleEdit') : t('formTitleAdd');
     document.getElementById('nameInput').value = plant ? plant.name : '';
     document.getElementById('latinInput').value = plant ? (plant.latin || '') : '';
     document.getElementById('roomInput').value = plant ? (plant.room || '') : '';
@@ -1841,7 +2411,6 @@ syncAddPlantVisibility();
           var q = quality;
           var dataUrl = canvas.toDataURL('image/jpeg', q);
           var attempts = 0;
-          // Якщо фото все ще завелике — стискаємо агресивніше й зменшуємо розмір
           while(dataUrl.length > targetBytes * 1.37 && attempts < 6){
             if(q > 0.35){
               q -= 0.12;
@@ -1871,7 +2440,6 @@ syncAddPlantVisibility();
   var aiAutoFillDone = false; // щоб не запускати автопідбір повторно для тієї ж форми без потреби
 
   async function runAiSuggest(opts){
-    // opts: { silent: bool } — silent = без alert-попереджень про перезапис (для автозапуску)
     var nameVal = document.getElementById('nameInput').value.trim();
     if(!nameVal) return false;
 
@@ -1879,12 +2447,12 @@ syncAddPlantVisibility();
     var waterInput = document.getElementById('waterFreqInput');
     var fertInput = document.getElementById('fertFreqInput');
 
-    if(!opts.silent && textarea.value.trim() && !confirm('Поле з інструкціями вже не порожнє. Замінити його згенерованим текстом?')) return false;
+    if(!opts.silent && textarea.value.trim() && !confirm(t('confirmOverwriteInstructions'))) return false;
 
     var btn = document.getElementById('aiGenerateBtn');
     var originalLabel = btn.textContent;
     btn.disabled = true;
-    btn.textContent = '✨ Генерую...';
+    btn.textContent = t('aiGenerating');
     if(opts.silent){
       waterInput.classList.add('ai-loading');
       fertInput.classList.add('ai-loading');
@@ -1901,7 +2469,7 @@ syncAddPlantVisibility();
       });
       var data = await r.json();
       if(!r.ok){
-        if(!opts.silent) alert('Не вдалося згенерувати: ' + (data.error || ('HTTP ' + r.status)));
+        if(!opts.silent) alert(t('alertGenerateFailed') + (data.error || ('HTTP ' + r.status)));
         return false;
       }
       textarea.value = data.instructions || '';
@@ -1909,7 +2477,7 @@ syncAddPlantVisibility();
       if(data.fertDays) fertInput.value = data.fertDays;
       return true;
     }catch(e){
-      if(!opts.silent) alert('Мережева помилка при звʼязку з ШІ: ' + e.message);
+      if(!opts.silent) alert(t('alertAiNetworkError') + e.message);
       return false;
     }finally{
       btn.disabled = false;
@@ -1931,7 +2499,7 @@ syncAddPlantVisibility();
   document.getElementById('aiGenerateBtn').addEventListener('click', function(){
     var nameVal = document.getElementById('nameInput').value.trim();
     if(!nameVal){
-      alert('Спочатку впиши назву рослини — за нею ШІ підбере інструкції.');
+      alert(t('alertNeedName'));
       document.getElementById('nameInput').focus();
       return;
     }
@@ -1966,14 +2534,14 @@ syncAddPlantVisibility();
     closeForm();
     render();
     if(!metaOk || !photoOk){
-      var details = !photoOk && lastPhotoError ? ('\n\nДеталі помилки: ' + lastPhotoError) : '';
-      alert('Увага: частину змін не вдалося зберегти у спільній базі. На цьому пристрої все збереглось.' + details);
+      var details = !photoOk && lastPhotoError ? (t('alertSaveFailedDetails') + lastPhotoError) : '';
+      alert(t('alertSaveFailed') + details);
     }
   });
 
   deleteBtn.addEventListener('click', async function(){
     if(!editingId) return;
-    if(!confirm('Видалити цю рослину зі списку?')) return;
+    if(!confirm(t('confirmDeletePlant'))) return;
     var removedId = editingId;
     plants = plants.filter(function(p){ return p.id !== removedId; });
     await savePlantsMeta();
@@ -1986,17 +2554,17 @@ syncAddPlantVisibility();
     var url = window.location.href;
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(url).then(function(){
-        alert('Посилання скопійовано! Надішли його тому, з ким хочеш поділитися списком рослин — у нього відкриється той самий список.');
+        alert(t('alertLinkCopied'));
       }).catch(function(){
-        prompt('Скопіюй посилання вручну:', url);
+        prompt(t('promptCopyManually'), url);
       });
     } else {
-      prompt('Скопіюй посилання вручну:', url);
+      prompt(t('promptCopyManually'), url);
     }
   });
 
   document.getElementById('newListBtn').addEventListener('click', function(){
-    if(!confirm('Це створить твій ВЛАСНИЙ окремий список рослин, не пов\'язаний з поточним. Поточний список нікуди не зникне — просто відкриється по-старому за своїм посиланням. Продовжити?')) return;
+    if(!confirm(t('confirmNewList'))) return;
     var newId = Math.random().toString(36).slice(2,10);
     try{ localStorage.setItem('leaflog_household_id', newId); }catch(e){}
     var url = window.location.pathname + '?id=' + newId;

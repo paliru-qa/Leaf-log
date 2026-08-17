@@ -1,5 +1,5 @@
-# Feature Requirements v2.0
-## Status Filters and Fertilizing Calendar
+# Feature Requirements v2.1
+## Status Filters, Fertilizing Calendar and Reorder Mode Update
 
 ---
 
@@ -138,3 +138,72 @@ Provide a calendar-based sidebar view for reviewing recorded fertilizing dates a
 **AC-FC-10.** Calendar labels follow the selected UI language.
 
 **AC-FC-11.** The Fertilizing Calendar uses data from the current shared list only.
+
+---
+
+## Feature 6. Reorder Mode Update
+
+### Goal
+Improve plant reordering usability by preserving the existing tile/card layout and enabling drag-and-drop through a dedicated drag handle.
+
+### Requirements
+
+**RF-001.** Reorder mode shall preserve the existing tile/card view of the plant list instead of switching to a compact list layout.
+
+**RF-002.** In reorder mode, plant cards shall remain visually recognizable by photo and plant name.
+
+**RF-003.** In reorder mode, filter labels shall be hidden.
+
+**RF-004.** Enabling reorder mode shall automatically exit Caretaker mode.
+
+**RF-005.** Enabling reorder mode shall automatically exit bulk-select mode.
+
+**RF-006.** In reorder mode, clicking or tapping a plant card shall not open the plant detail view.
+
+**RF-007.** In reorder mode, each plant tile shall provide a dedicated drag handle.
+
+**RF-008.** Reordering shall start only when the user drags the dedicated handle.
+
+**RF-009.** Reordering shall not start when the user touches or swipes other areas of the plant tile.
+
+**RF-010.** Standard page scrolling on mobile shall remain available outside the drag handle interaction.
+
+**RF-011.** The system shall allow the user to change plant order by dragging a plant tile to a new position.
+
+**RF-012.** While dragging a plant tile near the top or bottom edge of the viewport, the page shall auto-scroll in the corresponding direction.
+
+**RF-013.** Auto-scroll during drag shall allow the user to continue moving the same tile without releasing it.
+
+**RF-014.** The user shall be able to move a tile across long lists in one continuous drag action.
+
+**RF-015.** After drag-and-drop is completed, the updated plant order shall be saved.
+
+**RF-016.** The saved plant order shall persist after page refresh.
+
+**RF-017.** Exiting reorder mode shall restore normal plant card interaction, including opening the detail view on card click.
+
+### Acceptance Criteria
+
+**AC-R-01.** When reorder mode is enabled, the plant list remains in tile/card view.
+
+**AC-R-02.** Filter labels are hidden while reorder mode is active.
+
+**AC-R-03.** Caretaker mode and bulk-select mode are exited when reorder mode is enabled.
+
+**AC-R-04.** Tapping or clicking a plant card in reorder mode does not open the detail view.
+
+**AC-R-05.** Each plant tile shows a visible drag handle in reorder mode.
+
+**AC-R-06.** Dragging starts only from the drag handle.
+
+**AC-R-07.** Swiping outside the drag handle still allows normal page scrolling on mobile.
+
+**AC-R-08.** The user can drag a plant tile to a different position.
+
+**AC-R-09.** When the dragged tile approaches the top edge of the screen, the list auto-scrolls upward.
+
+**AC-R-10.** When the dragged tile approaches the bottom edge of the screen, the list auto-scrolls downward.
+
+**AC-R-11.** The user can move a plant tile from a low position to a much higher position in one continuous drag action.
+
+**AC-R-12.** After drop, the new order is saved and remains after page refresh.
