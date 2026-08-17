@@ -353,6 +353,27 @@ main{
   user-select:none;
 }
 
+.card-drag-handle{
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  background:rgba(255,255,255,.92);
+  border:1px solid var(--border);
+  color:var(--text-muted);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  line-height:1;
+  z-index:6;
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+}
+
 .plant-card.dragging-card{
   position:fixed;
   z-index:90;
@@ -367,11 +388,13 @@ main{
   border:2px dashed var(--accent);
   background:rgba(63,95,147,.08);
   box-shadow:none;
+  min-height:100%;
 }
 
 .plant-card.reorder-placeholder *{
   visibility:hidden;
 }
+
 .card-photo-wrap{ position:relative; aspect-ratio:1/1; background:var(--accent-soft); overflow:hidden; }
 .card-photo-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
 .card-photo-wrap .no-photo{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:34px; }
@@ -1122,6 +1145,16 @@ main{
   }
 
   function render(){
+    // Захист від "привидів" у режимі перетягування: якщо саме зараз триває
+    // drag картки (палець/курсор ще не відпущено), grid.innerHTML='' нижче
+    // видалив би картку просто з-під пальця — pointerup на ній більше не
+    // спрацював би, і прибирання (cleanup) ніколи б не відбулось. Тож поки
+    // triває drag — відкладаємо перерендер і виконуємо його одразу після
+    // завершення drag (див. onCardDragEnd).
+    if(dragState){
+      renderPending = true;
+      return;
+    }
     if(plants.length === 0){
       emptyState.hidden = false;
       grid.hidden = true;
@@ -1255,14 +1288,12 @@ main{
 
   // ---------- Drag-n-drop для режиму "Змінити порядок" ----------
   var dragState = null;
+  var renderPending = false;
   var autoScrollTimer = null;
   var autoScrollSpeed = 0;
-  var dragHoldTimer = null;
-  var DRAG_HOLD_MS = 200;
-  var DRAG_MOVE_TOLERANCE = 10;
 
-  function initCardDrag(card, plantId){
-  card.addEventListener('pointerdown', function(e){
+ function initCardDrag(handle, card, plantId){
+  handle.addEventListener('pointerdown', function(e){
     if(e.button !== undefined && e.button !== 0) return; // тільки ліва кнопка миші
 
     var rect = card.getBoundingClientRect();
@@ -1270,7 +1301,6 @@ main{
       id: plantId,
       pointerId: e.pointerId,
       active: false,
-      holdReady: false,
       startX: e.clientX,
       startY: e.clientY,
       lastX: e.clientX,
@@ -1278,20 +1308,14 @@ main{
       grabOffsetX: e.clientX - rect.left,
       grabOffsetY: e.clientY - rect.top,
       card: card,
-      placeholder: null,
-      cancelled: false
+      handle: handle,
+      placeholder: null
     };
 
-    card.addEventListener('pointermove', onCardDragMove);
-    card.addEventListener('pointerup', onCardDragEnd);
-    card.addEventListener('pointercancel', onCardDragEnd);
-
-    dragHoldTimer = setTimeout(function(){
-      if(!dragState || dragState.cancelled) return;
-      dragState.holdReady = true;
-      try{ card.setPointerCapture(e.pointerId); }catch(err){}
-      activateDrag();
-    }, DRAG_HOLD_MS);
+    try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+    handle.addEventListener('pointermove', onCardDragMove);
+    handle.addEventListener('pointerup', onCardDragEnd);
+    handle.addEventListener('pointercancel', onCardDragEnd);
   });
 }
 
@@ -1314,51 +1338,73 @@ main{
     ds.active = true;
   }
 
-  // Пересуває плейсхолдер до найближчої картки під точкою (x, y)
-  function repositionPlaceholder(x, y){
-    var ds = dragState;
-    if(!ds || !ds.active) return;
-    ds.card.style.pointerEvents = 'none';
-    var elUnder = document.elementFromPoint(x, y);
-    ds.card.style.pointerEvents = '';
-    var targetCard = elUnder ? elUnder.closest('.plant-card:not(.dragging-card):not(.reorder-placeholder)') : null;
-    if(targetCard && targetCard.parentNode === ds.placeholder.parentNode){
-      var targetRect = targetCard.getBoundingClientRect();
-      var insertAfter = y > (targetRect.top + targetRect.height / 2);
-      if(insertAfter){
-        targetCard.parentNode.insertBefore(ds.placeholder, targetCard.nextSibling);
-      } else {
-        targetCard.parentNode.insertBefore(ds.placeholder, targetCard);
-      }
+// Пересуває плейсхолдер до найближчої картки під точкою (x, y)
+function repositionPlaceholder(x, y){
+  var ds = dragState;
+  if(!ds || !ds.active) return;
+
+  ds.card.style.pointerEvents = 'none';
+  var cards = Array.from(grid.querySelectorAll('.plant-card:not(.dragging-card):not(.reorder-placeholder)'));
+  ds.card.style.pointerEvents = '';
+
+  if(!cards.length) return;
+
+  var closest = null;
+  var closestDistance = Infinity;
+
+  cards.forEach(function(cardEl){
+    var rect = cardEl.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var dx = x - cx;
+    var dy = y - cy;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+
+    if(distance < closestDistance){
+      closestDistance = distance;
+      closest = cardEl;
+    }
+  });
+
+  if(!closest) return;
+
+  var rect = closest.getBoundingClientRect();
+
+  // ВАЖЛИВО: це сітка з кількома колонками (2-4 в ряд), а не список в один стовпчик.
+  // Якщо курсор вертикально перебуває в межах рядка цільової картки — порівнюємо по X (ліво/право).
+  // Якщо курсор явно вище/нижче рядка картки — тоді вже по Y (інший рядок).
+  var sameRow = (y >= rect.top && y <= rect.bottom);
+  var before;
+  if(sameRow){
+    before = x < (rect.left + rect.width / 2);
+  } else {
+    before = y < (rect.top + rect.height / 2);
+  }
+
+  if(before){
+    if(ds.placeholder !== closest.previousSibling){
+      grid.insertBefore(ds.placeholder, closest);
+    }
+  } else {
+    if(closest.nextSibling !== ds.placeholder){
+      grid.insertBefore(ds.placeholder, closest.nextSibling);
     }
   }
+}
+
 
   function onCardDragMove(e){
   var ds = dragState;
   if(!ds || e.pointerId !== ds.pointerId) return;
 
-  ds.lastX = e.clientX;
-  ds.lastY = e.clientY;
-
   if(!ds.active){
-    var dx0 = e.clientX - ds.startX;
-    var dy0 = e.clientY - ds.startY;
-    var moved = Math.sqrt(dx0*dx0 + dy0*dy0);
-
-    // якщо юзер почав рухати пальцем до long press — це scroll intent, drag не стартує
-    if(moved > DRAG_MOVE_TOLERANCE && !ds.holdReady){
-      ds.cancelled = true;
-      if(dragHoldTimer){
-        clearTimeout(dragHoldTimer);
-        dragHoldTimer = null;
-      }
-      return;
-    }
-
-    // long press ще не спрацював — нічого не робимо, дозволяємо сторінці скролитись
-    if(!ds.active) return;
+    var dx0 = e.clientX - ds.startX, dy0 = e.clientY - ds.startY;
+    if(Math.sqrt(dx0*dx0 + dy0*dy0) < 6) return;
+    activateDrag();
   }
 
+  ds.lastX = e.clientX;
+  ds.lastY = e.clientY;
   ds.card.style.left = (e.clientX - ds.grabOffsetX) + 'px';
   ds.card.style.top = (e.clientY - ds.grabOffsetY) + 'px';
 
@@ -1381,9 +1427,6 @@ main{
         if(autoScrollSpeed === 0) return;
         var before = window.scrollY;
         window.scrollBy(0, autoScrollSpeed);
-        // Якщо сторінка реально прокрутилась і палець нерухомий — картка (position:fixed)
-        // сама лишається на місці під пальцем, нічого додатково рухати не треба.
-        // Але список карток під нею змінюється, тож треба оновити плейсхолдер.
         if(window.scrollY !== before && dragState && dragState.active){
           repositionPlaceholder(dragState.lastX, dragState.lastY);
         }
@@ -1401,17 +1444,12 @@ main{
   var ds = dragState;
   if(!ds || e.pointerId !== ds.pointerId) return;
 
-  if(dragHoldTimer){
-    clearTimeout(dragHoldTimer);
-    dragHoldTimer = null;
-  }
-
   stopAutoScroll();
 
-  ds.card.removeEventListener('pointermove', onCardDragMove);
-  ds.card.removeEventListener('pointerup', onCardDragEnd);
-  ds.card.removeEventListener('pointercancel', onCardDragEnd);
-  try{ ds.card.releasePointerCapture(ds.pointerId); }catch(err){}
+  ds.handle.removeEventListener('pointermove', onCardDragMove);
+ds.handle.removeEventListener('pointerup', onCardDragEnd);
+ds.handle.removeEventListener('pointercancel', onCardDragEnd);
+try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
 
   if(ds.active){
     ds.placeholder.parentNode.insertBefore(ds.card, ds.placeholder);
@@ -1429,6 +1467,11 @@ main{
   } else {
     dragState = null;
   }
+
+  if(renderPending){
+    renderPending = false;
+    render();
+  }
 }
 
   function renderCard(plant){
@@ -1437,6 +1480,12 @@ main{
     var card = document.createElement('div');
     card.className = 'plant-card' + (bulkMode && selectedIds[plant.id] ? ' selected' : '') + (reorderMode ? ' reorder-active' : '');
     card.dataset.id = plant.id;
+    if(reorderMode){
+  var dragHandle = document.createElement('div');
+  dragHandle.className = 'card-drag-handle';
+  dragHandle.textContent = '☰';
+  card.appendChild(dragHandle);
+}
 
     if(bulkMode){
       var checkbox = document.createElement('div');
@@ -1522,8 +1571,12 @@ main{
       }
     });
     if(reorderMode){
-      initCardDrag(card, plant.id);
-    }
+  var handleEl = card.querySelector('.card-drag-handle');
+  if(handleEl){
+    initCardDrag(handleEl, card, plant.id);
+  }
+}
+
     return card;
   }
 
@@ -2216,7 +2269,6 @@ syncAddPlantVisibility();
           var q = quality;
           var dataUrl = canvas.toDataURL('image/jpeg', q);
           var attempts = 0;
-          // Якщо фото все ще завелике — стискаємо агресивніше й зменшуємо розмір
           while(dataUrl.length > targetBytes * 1.37 && attempts < 6){
             if(q > 0.35){
               q -= 0.12;
@@ -2246,7 +2298,6 @@ syncAddPlantVisibility();
   var aiAutoFillDone = false; // щоб не запускати автопідбір повторно для тієї ж форми без потреби
 
   async function runAiSuggest(opts){
-    // opts: { silent: bool } — silent = без alert-попереджень про перезапис (для автозапуску)
     var nameVal = document.getElementById('nameInput').value.trim();
     if(!nameVal) return false;
 
