@@ -173,6 +173,10 @@ input,textarea{ font-family:'Manrope', sans-serif; }
   background:var(--accent-dark);
 }
 
+.mobile-add-btn.is-hidden{
+  visibility:hidden;
+}
+
 .mobile-add-btn-icon{
   width:36px;
   height:36px;
@@ -310,20 +314,10 @@ main{
 .legend-chip:hover{ opacity:1; }
 .legend-chip.active{ opacity:1; border-color:currentColor; transform:translateY(-1px); }
 .filter-empty-state{ text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; margin-bottom:22px; }
+.filter-reset-btn{ display:block; margin:10px auto 0; background:none; border:none; color:var(--accent-dark); font-size:13px; font-weight:700; text-decoration:underline; cursor:pointer; padding:0; }
 
 .plant-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
 @media(min-width:780px){ .plant-grid{ grid-template-columns:repeat(4,1fr); gap:22px; } }
-
-.reorder-list{ display:flex; flex-direction:column; gap:8px; max-width:640px; margin:0 auto; }
-.reorder-row{ display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:9px 12px; }
-.reorder-row.dragging{ opacity:.4; }
-.reorder-handle{ cursor:grab; touch-action:none; font-size:18px; color:var(--text-muted); flex-shrink:0; padding:4px; user-select:none; }
-.reorder-thumb{ width:40px; height:40px; border-radius:8px; overflow:hidden; flex-shrink:0; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; font-size:18px; }
-.reorder-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
-.reorder-name{ flex:1; min-width:0; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.reorder-arrows{ display:flex; gap:4px; flex-shrink:0; }
-.reorder-arrows button{ width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:#fff; font-size:14px; color:var(--text); display:flex; align-items:center; justify-content:center; }
-.reorder-arrows button:disabled{ opacity:.3; }
 
 .plant-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:flex; flex-direction:column; position:relative; }
 .plant-card.selected{ outline:2px solid var(--accent); outline-offset:-1px; }
@@ -619,7 +613,7 @@ main{
 <div class="topbar">
   <div class="topbar-row topbar-row-1">
     <div class="topbar-row-side topbar-row-side-left">
-  <button type="button" class="mobile-add-btn" id="addPlantBtnMobile" aria-label="Додати рослину">
+  <button type="button" class="mobile-add-btn" id="addPlantBtnMobile" data-i18n-aria="addPlantAria" aria-label="Додати рослину">
     <img class="mobile-add-btn-icon" src="assets/icons/add-plant-mobile-white.png" alt="">
   </button>
 </div>
@@ -634,7 +628,7 @@ main{
 </button>
 
     <div class="topbar-row-side topbar-row-side-right">
-      <button type="button" class="lang-switcher" id="langSwitcherBtn" aria-label="Змінити мову">
+      <button type="button" class="lang-switcher" id="langSwitcherBtn" data-i18n-aria="langAria" aria-label="Змінити мову">
         UA
       </button>
     </div>
@@ -642,82 +636,85 @@ main{
 
   <div class="topbar-row topbar-row-2">
   <div class="topbar-left-slot" id="addPlantSlot">
-    <button type="button" class="btn-primary add-plant-btn" id="addPlantBtn" aria-label="Нова рослина">
+    <button type="button" class="btn-primary add-plant-btn" id="addPlantBtn" data-i18n-aria="addPlantAria" aria-label="Нова рослина">
       <img class="add-plant-btn-icon" src="assets/icons/add-plant-mobile-white.png" alt="">
-      <span>Нова рослина</span>
+      <span data-i18n="addPlant">Нова рослина</span>
     </button>
   </div>
 
     <div class="topbar-actions">
-      <button type="button" class="mode-toggle" id="bulkToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label">Відмітити кілька</span></button>
-      <button type="button" class="mode-toggle" id="caretakerToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label">Режим доглядача</span></button>
-      <button type="button" class="mode-toggle" id="reorderToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label">Змінити порядок</span></button>
+      <button type="button" class="mode-toggle" id="bulkToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="modeBulk">Відмітити кілька</span></button>
+      <button type="button" class="mode-toggle" id="caretakerToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="modeCaretaker">Режим доглядача</span></button>
+      <button type="button" class="mode-toggle" id="reorderToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="modeReorder">Змінити порядок</span></button>
     </div>
   </div>
 </div>
 
 <main>
   <div class="legend" id="legend">
-    <button type="button" class="legend-chip" data-key="water-ok" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</button>
-    <button type="button" class="legend-chip" data-key="water-today" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</button>
-    <button type="button" class="legend-chip" data-key="water-overdue" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</button>
-    <button type="button" class="legend-chip" data-key="fert-ok" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
-    <button type="button" class="legend-chip" data-key="fert-due" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
-    <button type="button" class="legend-chip" data-key="fert-off" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
+    <button type="button" class="legend-chip" data-key="water-ok" data-i18n="statusWaterOk" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</button>
+    <button type="button" class="legend-chip" data-key="water-today" data-i18n="statusWaterToday" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</button>
+    <button type="button" class="legend-chip" data-key="water-overdue" data-i18n="statusWaterOverdueChip" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</button>
+    <button type="button" class="legend-chip" data-key="fert-ok" data-i18n="statusFertOk" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
+    <button type="button" class="legend-chip" data-key="fert-due" data-i18n="statusFertDue" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
+    <button type="button" class="legend-chip" data-key="fert-off" data-i18n="statusFertOff" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
   </div>
-  <div class="filter-empty-state" id="filterEmptyState" hidden>Немає рослин із таким статусом.</div>
+  <div class="filter-empty-state" id="filterEmptyState" hidden>
+    <span data-i18n="filterEmptyText">Немає рослин із таким статусом.</span>
+    <button type="button" class="filter-reset-btn" id="filterResetBtn" data-i18n="filterReset">Скинути фільтр</button>
+  </div>
 
   <div class="empty-state" id="emptyState">
-    <h3>Поки що немає жодної рослини</h3>
-    <p>Додай першу — фото, графік поливу та інструкції завжди будуть під рукою.</p>
-    <button type="button" class="btn-primary add-plant-btn" id="addFirstPlantBtn" aria-label="Нова рослина">
+    <h3 data-i18n="emptyTitle">Поки що немає жодної рослини</h3>
+    <p data-i18n="emptyDesc">Додай першу — фото, графік поливу та інструкції завжди будуть під рукою.</p>
+    <button type="button" class="btn-primary add-plant-btn" id="addFirstPlantBtn" data-i18n-aria="addPlantAria" aria-label="Нова рослина">
   <img class="add-plant-btn-icon" src="assets/icons/add-plant-mobile-white.png" alt="">
-  <span>Нова рослина</span>
+  <span data-i18n="addPlant">Нова рослина</span>
     </button>
   </div>
 
   <div class="plant-grid" id="plantGrid" hidden></div>
-  <div class="reorder-list" id="reorderList" hidden></div>
 </main>
 
 <!-- Detail overlay -->
 <div class="overlay" id="detailOverlay" hidden>
-  <button type="button" class="nav-arrow nav-arrow-left" id="prevPlantBtn" aria-label="Попередня рослина">‹</button>
-  <button type="button" class="nav-arrow nav-arrow-right" id="nextPlantBtn" aria-label="Наступна рослина">›</button>
+  <button type="button" class="nav-arrow nav-arrow-left" id="prevPlantBtn" data-i18n-aria="prevPlantAria" aria-label="Попередня рослина">‹</button>
+  <button type="button" class="nav-arrow nav-arrow-right" id="nextPlantBtn" data-i18n-aria="nextPlantAria" aria-label="Наступна рослина">›</button>
   <div class="detail-panel" id="detailPanel">
     <span class="swipe-counter" id="swipeCounter"></span>
-    <button type="button" class="close-btn" data-close-detail>×</button>
+    <button type="button" class="close-btn" data-close-detail data-i18n-aria="closeAria" aria-label="Закрити">×</button>
     <div class="detail-content">
       <div class="detail-left">
         <div class="detail-photo-wrap" id="detailPhotoWrap"></div>
         <div class="detail-gallery" id="detailGallery"></div>
-        <button type="button" class="compare-link" id="compareLink" hidden>Порівняти фото до/після</button>
+        <button type="button" class="compare-link" id="compareLink" data-i18n="compareLink" hidden>Порівняти фото до/після</button>
         <div class="detail-actions">
-          <button type="button" class="action-btn water-action" id="waterBtn">Полито</button>
-          <button type="button" class="action-btn fert-action" id="fertBtn">Удобрено</button>
-          <button type="button" class="action-btn edit-action" id="editBtn">Редагувати</button>
+          <button type="button" class="action-btn water-action" id="waterBtn" data-i18n="waterAction">Полито</button>
+          <button type="button" class="action-btn fert-action" id="fertBtn" data-i18n="fertAction">Удобрено</button>
+          <button type="button" class="action-btn edit-action" id="editBtn" data-i18n="editAction">Редагувати</button>
         </div>
       </div>
       <div class="detail-right">
         <h2 id="detailName"></h2>
         <p class="latin" id="detailLatin"></p>
-        <div class="meta-row"><span class="meta-label">Розташування:</span><span id="detailRoom"></span></div>
+        <div class="meta-row"><span class="meta-label" data-i18n="detailRoomLabel">Розташування:</span><span id="detailRoom"></span></div>
         <div class="info-block">
-          <h4>Полив</h4>
+          <h4 data-i18n="detailWaterH4">Полив</h4>
           <p id="detailWaterInfo"></p>
         </div>
         <div class="info-block">
-          <h4>Добриво</h4>
+          <h4 data-i18n="detailFertH4">Добриво</h4>
           <p id="detailFertInfo"></p>
         </div>
         <div class="instructions-block" id="detailInstructionsBlock">
-          <h4>Інструкції з догляду</h4>
+          <h4 data-i18n="detailInstructionsH4">Інструкції з догляду</h4>
           <p id="detailInstructions"></p>
         </div>
         <div class="question-block">
-          <h4>Питання (проблема з рослиною?)</h4>
-          <textarea id="questionInput" placeholder="напр. листя жовтіє, з'явились плями, дрібні жучки, в'яне..."></textarea>
-          <button type="button" class="ai-generate-btn" id="askAiBtn">✨ Запитати ШІ</button>
+          <h4 data-i18n="questionH4">Питання (проблема з рослиною?)</h4>
+          <textarea id="questionInput" data-i18n-placeholder="questionPlaceholder" placeholder="напр. листя жовтіє, з'явились плями, дрібні жучки, в'яне..."></textarea>
+
+          <button type="button" class="ai-generate-btn" id="askAiBtn" data-i18n="askAi">✨ Запитати ШІ</button>
           <div class="ai-answer-box" id="aiAnswerBox" hidden></div>
         </div>
       </div>
@@ -728,11 +725,11 @@ main{
 <!-- Add / Edit form overlay -->
 <div class="overlay" id="formOverlay" hidden>
   <div class="form-panel">
-    <button type="button" class="close-btn" data-close-form>×</button>
-    <h2 id="formTitle">Додати рослину</h2>
+    <button type="button" class="close-btn" data-close-form data-i18n-aria="closeAria" aria-label="Закрити">×</button>
+    <h2 id="formTitle" data-i18n="formTitleAdd">Додати рослину</h2>
     <form id="plantForm">
       <div class="field">
-        <label>Фото (можна кілька — щоб порівнювати до/після)</label>
+        <label data-i18n="photoFieldLabel">Фото (можна кілька — щоб порівнювати до/після)</label>
         <div class="photo-upload">
           <div class="photo-thumbs" id="photoThumbs"></div>
           <input type="file" id="photoInput" accept="image/*" hidden>
@@ -740,55 +737,55 @@ main{
         </div>
       </div>
       <div class="field">
-        <label for="nameInput">Назва рослини *</label>
-        <input type="text" id="nameInput" required placeholder="напр. Monstera">
+        <label for="nameInput" data-i18n="nameLabel">Назва рослини *</label>
+        <input type="text" id="nameInput" required data-i18n-placeholder="namePlaceholder" placeholder="напр. Monstera">
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="latinInput">Латинська назва</label>
-          <input type="text" id="latinInput" placeholder="необов'язково">
+          <label for="latinInput" data-i18n="latinLabel">Латинська назва</label>
+          <input type="text" id="latinInput" data-i18n-placeholder="latinPlaceholder" placeholder="необов'язково">
         </div>
         <div class="field">
-          <label for="roomInput">Кімната / підвіконня</label>
-          <input type="text" id="roomInput" placeholder="напр. вітальня, південне вікно">
+          <label for="roomInput" data-i18n="roomLabel">Кімната / підвіконня</label>
+          <input type="text" id="roomInput" data-i18n-placeholder="roomPlaceholder" placeholder="напр. вітальня, південне вікно">
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="waterFreqInput">Полив кожні (днів)</label>
+          <label for="waterFreqInput" data-i18n="waterFreqLabel">Полив кожні (днів)</label>
           <input type="number" id="waterFreqInput" min="1" value="7">
         </div>
         <div class="field">
-          <label for="lastWateredInput">Востаннє поливали</label>
+          <label for="lastWateredInput" data-i18n="lastWateredLabel">Востаннє поливали</label>
           <input type="date" id="lastWateredInput">
         </div>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="fertEnabled" checked>
-        <label for="fertEnabled">Потрібне добриво зараз</label>
+        <label for="fertEnabled" data-i18n="fertEnabledLabel">Потрібне добриво зараз</label>
       </div>
       <div class="field-row" id="fertFields">
         <div class="field">
-          <label for="fertFreqInput">Добриво кожні (днів)</label>
+          <label for="fertFreqInput" data-i18n="fertFreqLabel">Добриво кожні (днів)</label>
           <input type="number" id="fertFreqInput" min="1" value="30">
         </div>
         <div class="field">
-          <label for="lastFertilizedInput">Востаннє удобрювали</label>
+          <label for="lastFertilizedInput" data-i18n="lastFertilizedLabel">Востаннє удобрювали</label>
           <input type="date" id="lastFertilizedInput">
         </div>
       </div>
       <div class="field">
         <div class="instructions-label-row">
-          <label for="instructionsInput">Інструкції з догляду</label>
-          <button type="button" class="ai-generate-btn" id="aiGenerateBtn">✨ Згенерувати ШІ</button>
+          <label for="instructionsInput" data-i18n="instructionsLabel">Інструкції з догляду</label>
+          <button type="button" class="ai-generate-btn" id="aiGenerateBtn" data-i18n="aiGenerate">✨ Згенерувати ШІ</button>
         </div>
-        <textarea id="instructionsInput" placeholder="напр. перевіряти ґрунт перед поливом, не заливати, не ставити на пряме сонце..."></textarea>
+        <textarea id="instructionsInput" data-i18n-placeholder="instructionsPlaceholder" placeholder="напр. перевіряти ґрунт перед поливом, не заливати, не ставити на пряме сонце..."></textarea>
       </div>
       <div class="form-actions">
-        <button type="button" class="btn-danger" id="deleteBtn" hidden>Видалити рослину</button>
+        <button type="button" class="btn-danger" id="deleteBtn" data-i18n="deletePlant" hidden>Видалити рослину</button>
         <div style="display:flex; gap:10px;">
-          <button type="button" class="btn-secondary" data-close-form>Скасувати</button>
-          <button type="submit" class="btn-primary">Зберегти</button>
+          <button type="button" class="btn-secondary" data-close-form data-i18n="cancel">Скасувати</button>
+          <button type="submit" class="btn-primary" data-i18n="save">Зберегти</button>
         </div>
       </div>
     </form>
@@ -803,37 +800,37 @@ main{
 
 <!-- Full-size single photo view -->
 <div class="lightbox-overlay" id="lightboxOverlay" hidden>
-  <button type="button" class="lightbox-close" id="lightboxClose">×</button>
+  <button type="button" class="lightbox-close" id="lightboxClose" data-i18n-aria="closeAria" aria-label="Закрити">×</button>
   <img id="lightboxImg" alt="">
 </div>
 
 <!-- Before/after comparison -->
 <div class="overlay" id="compareOverlay" hidden>
   <div class="compare-panel" id="comparePanel">
-    <button type="button" class="close-btn" id="compareClose">×</button>
+    <button type="button" class="close-btn" id="compareClose" data-i18n-aria="closeAria" aria-label="Закрити">×</button>
     <div class="compare-header">
       <span class="compare-swipe-counter" id="compareSwipeCounter"></span>
-      <h2 class="compare-title"><span id="compareplantName"></span><span class="compare-subtitle">до і після</span></h2>
+      <h2 class="compare-title"><span id="compareplantName"></span><span class="compare-subtitle" data-i18n="compareSubtitle">до і після</span></h2>
     </div>
     <div class="compare-grid" id="compareGrid"></div>
   </div>
 </div>
 
 <div class="bulk-bar" id="bulkBar" hidden>
-  <span id="bulkCount">0 обрано</span>
+  <span id="bulkCount">0</span>
   <div class="bulk-bar-actions">
-    <button type="button" class="qa-btn water" id="bulkWaterToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label">Полито</span></button>
-    <button type="button" class="qa-btn fert" id="bulkFertToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label">Удобрено</span></button>
-    <button type="button" class="btn-primary" id="bulkApplyBtn">Застосувати</button>
-    <button type="button" class="btn-secondary" id="bulkCancelBtn">Скасувати</button>
+    <button type="button" class="qa-btn water" id="bulkWaterToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="waterAction">Полито</span></button>
+    <button type="button" class="qa-btn fert" id="bulkFertToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="fertAction">Удобрено</span></button>
+    <button type="button" class="btn-primary" id="bulkApplyBtn" data-i18n="bulkApply">Застосувати</button>
+    <button type="button" class="btn-secondary" id="bulkCancelBtn" data-i18n="bulkCancel">Скасувати</button>
   </div>
 </div>
 
 <div class="undo-toast" id="undoToast" hidden>
   <span id="undoToastText"></span>
   <div class="undo-toast-actions">
-    <button type="button" id="undoToastBtn">Скасувати дію</button>
-    <button type="button" id="undoToastClose" aria-label="Закрити">×</button>
+    <button type="button" id="undoToastBtn" data-i18n="undoAction">Скасувати дію</button>
+    <button type="button" id="undoToastClose" data-i18n-aria="closeAria" aria-label="Закрити">×</button>
   </div>
 </div>
 
@@ -841,16 +838,17 @@ main{
   <div class="footer-inner">
     <div class="footer-left">
       <div class="footer-copy">© 2026 LeafLOG</div>
-      <div class="footer-tagline">Доглядай за рослинами без зайвого клопоту</div>
+      <div class="footer-tagline" data-i18n="footerTagline">Доглядай за рослинами без зайвого клопоту</div>
     </div>
 
     <div class="footer-right">
       <div class="footer-actions">
-        <button type="button" id="shareLinkBtn">Скопіювати посилання</button>
-        <button type="button" id="newListBtn">Створити свій список</button>
+        <button type="button" id="shareLinkBtn" data-i18n="copyLink">Скопіювати посилання</button>
+        <button type="button" id="newListBtn" data-i18n="newList">Створити свій список</button>
       </div>
     </div>
   </div>
+
 </footer>
 
 <script>
@@ -859,14 +857,26 @@ main{
 
   function getHouseholdId(){
     var params = new URLSearchParams(window.location.search);
-    var id = params.get('id');
-    if(!id){
-      try{ id = localStorage.getItem('leaflog_household_id'); }catch(e){ id = null; }
-    }
+    var idFromUrl = params.get('id');
+    var idFromStorage = null;
+    try{ idFromStorage = localStorage.getItem('leaflog_household_id'); }catch(e){ idFromStorage = null; }
+
+    var id = idFromUrl || idFromStorage;
     if(!id){
       id = Math.random().toString(36).slice(2,10);
     }
-    try{ localStorage.setItem('leaflog_household_id', id); }catch(e){}
+
+    // ВАЖЛИВО: перезаписуємо localStorage лише якщо це "свій" ідентифікатор —
+    // тобто щойно згенерований, або вже й так той, що там лежав. Якщо в URL
+    // прийшов ЧУЖИЙ id (наприклад, хтось поділився посиланням на свій список),
+    // ми відкриваємо цей список на поточний сеанс, але НЕ підміняємо ним
+    // збережений "свій" список — інакше після переходу за чужим посиланням
+    // забудеться, де твій власний список.
+    var isForeignSharedLink = !!idFromUrl && !!idFromStorage && idFromUrl !== idFromStorage;
+    if(!isForeignSharedLink){
+      try{ localStorage.setItem('leaflog_household_id', id); }catch(e){}
+    }
+
     if(params.get('id') !== id){
       params.set('id', id);
       var newUrl = window.location.pathname + '?' + params.toString();
@@ -875,6 +885,255 @@ main{
     return id;
   }
   var HOUSEHOLD_ID = getHouseholdId();
+
+  // ---------- Локалізація (UA / EN) ----------
+  var I18N = {
+    uk: {
+      addPlantAria: 'Додати рослину',
+      langAria: 'Змінити мову',
+      addPlant: 'Нова рослина',
+      modeBulk: 'Відмітити кілька',
+      modeCaretaker: 'Режим доглядача',
+      modeReorder: 'Змінити порядок',
+      statusWaterOk: 'Полито',
+      statusWaterToday: 'Полити сьогодні',
+      statusWaterOverdue: 'Полив прострочено',
+      statusWaterOverdueChip: 'Прострочено',
+      statusFertOk: 'Удобрено',
+      statusFertDue: 'Удобрити',
+      statusFertOff: 'Не удобрювати',
+      filterEmptyText: 'Немає рослин із таким статусом.',
+      filterReset: 'Скинути фільтр',
+      emptyTitle: 'Поки що немає жодної рослини',
+      emptyDesc: 'Додай першу — фото, графік поливу та інструкції завжди будуть під рукою.',
+      prevPlantAria: 'Попередня рослина',
+      nextPlantAria: 'Наступна рослина',
+      closeAria: 'Закрити',
+      compareLink: 'Порівняти фото до/після',
+      waterAction: 'Полито',
+      fertAction: 'Удобрено',
+      editAction: 'Редагувати',
+      detailRoomLabel: 'Розташування:',
+      detailWaterH4: 'Полив',
+      detailFertH4: 'Добриво',
+      detailInstructionsH4: 'Інструкції з догляду',
+      detailNoInstructions: 'Інструкцій ще немає — додай їх при редагуванні.',
+      detailFertOffNow: 'Зараз не потрібне',
+      questionH4: 'Питання (проблема з рослиною?)',
+      questionPlaceholder: "напр. листя жовтіє, з'явились плями, дрібні жучки, в'яне...",
+      askAi: '✨ Запитати ШІ',
+      askAiThinking: '✨ Думаю...',
+      formTitleAdd: 'Додати рослину',
+      formTitleEdit: 'Редагувати рослину',
+      photoFieldLabel: 'Фото (можна кілька — щоб порівнювати до/після)',
+      nameLabel: 'Назва рослини *',
+      namePlaceholder: 'напр. Monstera',
+      latinLabel: 'Латинська назва',
+      latinPlaceholder: "необов'язково",
+      roomLabel: 'Кімната / підвіконня',
+      roomPlaceholder: 'напр. вітальня, південне вікно',
+      waterFreqLabel: 'Полив кожні (днів)',
+      lastWateredLabel: 'Востаннє поливали',
+      fertEnabledLabel: 'Потрібне добриво зараз',
+      fertFreqLabel: 'Добриво кожні (днів)',
+      lastFertilizedLabel: 'Востаннє удобрювали',
+      instructionsLabel: 'Інструкції з догляду',
+      instructionsPlaceholder: 'напр. перевіряти ґрунт перед поливом, не заливати, не ставити на пряме сонце...',
+      aiGenerate: '✨ Згенерувати ШІ',
+      aiGenerating: '✨ Генерую...',
+      deletePlant: 'Видалити рослину',
+      cancel: 'Скасувати',
+      save: 'Зберегти',
+      compareSubtitle: 'до і після',
+      compareBefore: 'Було',
+      compareAfter: 'Зараз',
+      bulkApply: 'Застосувати',
+      bulkCancel: 'Скасувати',
+      undoAction: 'Скасувати дію',
+      footerTagline: 'Доглядай за рослинами без зайвого клопоту',
+      copyLink: 'Скопіювати посилання',
+      newList: 'Створити свій список',
+      cardWaterFreq: 'Полив кожні {n} дн.',
+      cardFertFreq: 'Добриво кожні {n} дн.',
+      cardFertOff: 'Добриво не потрібне',
+      detailWaterInfo: 'Кожні {n} дн. · востаннє: {date}',
+      detailFertInfo: 'Кожні {n} дн. · востаннє: {date}',
+      confirmDeletePlant: 'Видалити цю рослину зі списку?',
+      markedDone: 'Відмічено ✓',
+      alertNeedQuestion: 'Опиши проблему з рослиною — наприклад, що саме сталося з листям чи стеблом.',
+      alertDiagnoseFailed: 'Не вдалося отримати відповідь: ',
+      alertAiNetworkError: 'Мережева помилка при звʼязку з ШІ: ',
+      alertNeedName: 'Спочатку впиши назву рослини — за нею ШІ підбере інструкції.',
+      confirmOverwriteInstructions: 'Поле з інструкціями вже не порожнє. Замінити його згенерованим текстом?',
+      alertGenerateFailed: 'Не вдалося згенерувати: ',
+      alertSaveFailed: 'Увага: частину змін не вдалося зберегти у спільній базі. На цьому пристрої все збереглось.',
+      alertSaveFailedDetails: '\n\nДеталі помилки: ',
+      alertPhotoNetworkError: 'Мережева помилка: ',
+      alertBulkNeedChoice: 'Обери хоча б одне — «Полито» або «Удобрено» — перед застосуванням.',
+      confirmNewList: "Це створить твій ВЛАСНИЙ окремий список рослин, не пов'язаний з поточним. Поточний список нікуди не зникне — просто відкриється по-старому за своїм посиланням. Продовжити?",
+      promptCopyManually: 'Скопіюй посилання вручну:',
+      alertLinkCopied: 'Посилання скопійовано! Надішли його тому, з ким хочеш поділитися списком рослин — у нього відкриється той самий список.',
+      bulkSelectedCount: '{n} обрано',
+      bulkWillApply: ' · застосується: ',
+      bulkNothingSelected: 'нічого не вибрано',
+      bulkWater: 'полив',
+      bulkFert: 'добриво',
+      bulkWaterAndFert: 'полив і добриво',
+      undoUpdated: 'Оновлено {what} для {count} {noun}.',
+      plantsFew: 'рослини',
+      plantsMany: 'рослин',
+      dateLocale: 'uk-UA'
+    },
+    en: {
+      addPlantAria: 'Add plant',
+      langAria: 'Change language',
+      addPlant: 'New plant',
+      modeBulk: 'Select multiple',
+      modeCaretaker: 'Caretaker mode',
+      modeReorder: 'Reorder',
+      statusWaterOk: 'Watered',
+      statusWaterToday: 'Water today',
+      statusWaterOverdue: 'Watering overdue',
+      statusWaterOverdueChip: 'Overdue',
+      statusFertOk: 'Fertilized',
+      statusFertDue: 'Needs fertilizer',
+      statusFertOff: "Don't fertilize",
+      filterEmptyText: 'No plants with this status.',
+      filterReset: 'Reset filter',
+      emptyTitle: 'No plants yet',
+      emptyDesc: "Add your first one — photo, watering schedule, and care instructions will always be at hand.",
+      prevPlantAria: 'Previous plant',
+      nextPlantAria: 'Next plant',
+      closeAria: 'Close',
+      compareLink: 'Compare before/after photos',
+      waterAction: 'Watered',
+      fertAction: 'Fertilized',
+      editAction: 'Edit',
+      detailRoomLabel: 'Location:',
+      detailWaterH4: 'Watering',
+      detailFertH4: 'Fertilizing',
+      detailInstructionsH4: 'Care instructions',
+      detailNoInstructions: 'No instructions yet — add them while editing.',
+      detailFertOffNow: 'Not needed right now',
+      questionH4: 'Question (plant problem?)',
+      questionPlaceholder: 'e.g. leaves turning yellow, spots appeared, small bugs, wilting...',
+      askAi: '✨ Ask AI',
+      askAiThinking: '✨ Thinking...',
+      formTitleAdd: 'Add plant',
+      formTitleEdit: 'Edit plant',
+      photoFieldLabel: 'Photos (you can add several — to compare before/after)',
+      nameLabel: 'Plant name *',
+      namePlaceholder: 'e.g. Monstera',
+      latinLabel: 'Latin name',
+      latinPlaceholder: 'optional',
+      roomLabel: 'Room / windowsill',
+      roomPlaceholder: 'e.g. living room, south window',
+      waterFreqLabel: 'Water every (days)',
+      lastWateredLabel: 'Last watered',
+      fertEnabledLabel: 'Needs fertilizer right now',
+      fertFreqLabel: 'Fertilize every (days)',
+      lastFertilizedLabel: 'Last fertilized',
+      instructionsLabel: 'Care instructions',
+      instructionsPlaceholder: "e.g. check soil before watering, don't overwater, avoid direct sun...",
+      aiGenerate: '✨ Generate with AI',
+      aiGenerating: '✨ Generating...',
+      deletePlant: 'Delete plant',
+      cancel: 'Cancel',
+      save: 'Save',
+      compareSubtitle: 'before and after',
+      compareBefore: 'Before',
+      compareAfter: 'Now',
+      bulkApply: 'Apply',
+      bulkCancel: 'Cancel',
+      undoAction: 'Undo',
+      footerTagline: 'Care for your plants with ease',
+      copyLink: 'Copy share link',
+      newList: 'Create your own list',
+      cardWaterFreq: 'Water every {n} days',
+      cardFertFreq: 'Fertilize every {n} days',
+      cardFertOff: 'No fertilizer needed',
+      detailWaterInfo: 'Every {n} days · last: {date}',
+      detailFertInfo: 'Every {n} days · last: {date}',
+      confirmDeletePlant: 'Delete this plant from the list?',
+      markedDone: 'Marked ✓',
+      alertNeedQuestion: 'Describe the problem with the plant — e.g. what happened to the leaves or stem.',
+      alertDiagnoseFailed: "Couldn't get an answer: ",
+      alertAiNetworkError: 'Network error contacting AI: ',
+      alertNeedName: "First enter the plant's name — AI will suggest instructions based on it.",
+      confirmOverwriteInstructions: 'The instructions field is not empty. Replace it with the generated text?',
+      alertGenerateFailed: "Couldn't generate: ",
+      alertSaveFailed: "Note: some changes couldn't be saved to the shared database. Everything was saved on this device.",
+      alertSaveFailedDetails: '\n\nError details: ',
+      alertPhotoNetworkError: 'Network error: ',
+      alertBulkNeedChoice: 'Choose at least one — "Watered" or "Fertilized" — before applying.',
+      confirmNewList: "This will create your OWN separate plant list, unrelated to the current one. The current list won't disappear — it'll still open the same way via its own link. Continue?",
+      promptCopyManually: 'Copy the link manually:',
+      alertLinkCopied: "Link copied! Send it to whoever you want to share your plant list with — they'll see the same list.",
+      bulkSelectedCount: '{n} selected',
+      bulkWillApply: ' · will apply: ',
+      bulkNothingSelected: 'nothing selected',
+      bulkWater: 'watering',
+      bulkFert: 'fertilizing',
+      bulkWaterAndFert: 'watering and fertilizing',
+      undoUpdated: 'Updated {what} for {count} {noun}.',
+      plantsFew: 'plants',
+      plantsMany: 'plants',
+      dateLocale: 'en-US'
+    }
+  };
+
+  var currentLang = 'uk';
+  try{
+    var savedLang = localStorage.getItem('leaflog_lang');
+    if(savedLang === 'uk' || savedLang === 'en') currentLang = savedLang;
+  }catch(e){}
+
+  function t(key, vars){
+    var dict = I18N[currentLang] || I18N.uk;
+    var str = (dict[key] !== undefined) ? dict[key] : (I18N.uk[key] !== undefined ? I18N.uk[key] : key);
+    if(vars){
+      for(var k in vars){
+        str = str.replace('{' + k + '}', vars[k]);
+      }
+    }
+    return str;
+  }
+
+  function applyStaticI18n(){
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+      el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+      el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
+    });
+    document.documentElement.lang = currentLang;
+  }
+
+  function langButtonLabel(lang){
+    return lang === 'en' ? 'EN' : 'UA';
+  }
+
+  function setLanguage(lang){
+    if(lang !== 'uk' && lang !== 'en') return;
+    currentLang = lang;
+    try{ localStorage.setItem('leaflog_lang', lang); }catch(e){}
+
+    if(langSwitcherBtn) langSwitcherBtn.textContent = langButtonLabel(currentLang);
+    applyStaticI18n();
+
+    // Перерендерюємо все, що вже намальовано з текстом попередньої мови
+    render();
+    if(!bulkBar.hidden) updateBulkBar();
+    if(!detailOverlay.hidden && currentDetailId) openDetail(currentDetailId);
+    if(!formOverlay.hidden) formTitle.textContent = editingId ? t('formTitleEdit') : t('formTitleAdd');
+    if(!compareOverlay.hidden && currentComparePlantId){
+      var cp = plants.find(function(p){ return p.id === currentComparePlantId; });
+      if(cp) renderCompare(cp);
+    }
+  }
 
   var plants = [];
   var caretakerMode = false;
@@ -888,95 +1147,34 @@ main{
   var pendingPhotos = [];
 
   var grid = document.getElementById('plantGrid');
-  var reorderListEl = document.getElementById('reorderList');
   var emptyState = document.getElementById('emptyState');
   var filterEmptyState = document.getElementById('filterEmptyState');
   var legendEl = document.getElementById('legend');
+  var filterResetBtn = document.getElementById('filterResetBtn');
+
+  function setStatusFilter(key){
+    activeStatusFilter = key;
+    legendEl.querySelectorAll('.legend-chip').forEach(function(c){
+      c.classList.toggle('active', c.dataset.key === activeStatusFilter);
+    });
+    render();
+  }
 
   legendEl.querySelectorAll('.legend-chip').forEach(function(chip){
     chip.addEventListener('click', function(){
       var key = chip.dataset.key;
-      if(activeStatusFilter === key){
-        activeStatusFilter = null;
-      } else {
-        activeStatusFilter = key;
-      }
-      legendEl.querySelectorAll('.legend-chip').forEach(function(c){
-        c.classList.toggle('active', c.dataset.key === activeStatusFilter);
-      });
-      render();
+      setStatusFilter(activeStatusFilter === key ? null : key);
     });
   });
 
-  var SEED_DATE = '2026-07-01';
-  var SEED_PLANTS = [
-    ['Сциндапсус сріблястий','Scindapsus pictus','кабінет / яскраве розсіяне світло, недалеко від пн-сх вікна',7,true,21,'Поливати після підсихання верхньої половини горщика, не заливати, без прямого сонця.'],
-    ['Епіпремнум Neon','Epipremnum aureum ‘Neon’','спальня / яскраве розсіяне світло',6,true,21,'Не пересушувати повністю, але й не тримати мокрим; більше світла для яскравого кольору.'],
-    ['Аглаонема Prestige','Aglaonema sp. ‘Prestige’','кабінет / полиця біля вікна, без сонця',8,true,21,'Поливати тільки після підсихання верхніх 3–4 см, не тримати в холоді, без протягів.'],
-    ['Аглаонема Pink','Aglaonema sp.','тепло, біля світлого вікна без сонця',10,false,30,'Ослаблена: не підживлювати, не заливати, тримати в теплому місці, дати ґрунту підсихати зверху.'],
-    ['Драцена marginata','Dracaena marginata','кабінет / розсіяне світло',8,true,30,'Поливати після підсихання 1/2 горщика, не ставити під пряме сонце, не заливати.'],
-    ['Драцена marginata велика темна','Dracaena marginata','світле місце, без полуденного сонця',8,true,30,'Те саме: помірний полив, дати просихати, не тримати в холодному мокрому субстраті.'],
-    ['Фікус Natasha','Ficus benjamina','балкон / яскраве світло',7,true,21,'Не крутити часто, полив після підсихання верхніх 3–4 см, без застою води.'],
-    ['Фікус lyrata','Ficus lyrata','дуже світле місце / біля вікна',7,true,21,'Любить яскраве світло, полив після просихання верхніх 4–5 см, протирати листя.'],
-    ['Гранат Baby','Punica granatum ‘Nana’','найсвітліше місце, бажано балкон',4,true,14,'Багато сонця, полив після підсихання 2–3 см, не переливати, прищипувати витягнуті пагони.'],
-    ['Лимон Меєра','Citrus × meyeri','світлий балкон',5,true,14,'Поливати після просихання верхніх 4–5 см, не тримати воду в піддоні, багато світла.'],
-    ['Кімнатний плодоносний лимон','Citrus limon','світлий балкон / дуже світле вікно',5,true,14,'Те саме: максимум світла, помірний полив, добриво для середземноморських.'],
-    ['Арабіка','Coffea arabica','спальня / світле місце без сонця',6,true,21,'Любить м’яку воду, рівномірний полив без болота, не пересушувати повністю.'],
-    ['Монстера monkey','Monstera adansonii','біля пн-сх вікна',7,true,21,'Полив після підсихання верхньої половини горщика, без прямого сонця, любить опору.'],
-    ['Розмарин','Salvia rosmarinus','найсвітліше місце / балкон',5,true,21,'Багато світла, не заливати, краще трохи підсушити, без оприскування.'],
-    ['Батат гідропоніка','Ipomoea batatas','світле місце',7,true,21,'Міняти воду раз на 7–10 днів, слабке добриво, багато світла.'],
-    ['Haworthia attenuata','Haworthiopsis attenuata','світле вікно',12,false,45,'Полив тільки після повного просихання, не обприскувати, без болота.'],
-    ['Заміокулькас','Zamioculcas zamiifolia','полиця / півтінь',14,true,30,'Поливати лише після повного просихання, краще недолити, ніж перелити.'],
-    ['Красула','Crassula ovata','балкон / дуже світло',14,true,45,'Повне просихання між поливами, не оприскувати, багато світла.'],
-    ['Опунція','Opuntia sp.','найсонячніше місце',21,false,45,'Дуже рідкий полив, повне просихання, максимум сонця.'],
-    ['Авокадо','Persea americana','спальня / світле вікно',5,true,21,'Полив після підсихання 2–3 см, багато світла, прищипувати для кущіння.'],
-    ['Аденіум','Adenium obesum','східне вікно / ранкове сонце',8,false,21,'Повне просихання між поливами, не годувати часто азотом, більше сонця для цвітіння.'],
-    ['Кімнатний інжир','Ficus carica','східний балкон',4,true,14,'Багато світла, без оприскування, полив після підсихання верхніх 2–3 см.'],
-    ['Традесканція рео','Tradescantia spathacea','пн-сх підвіконня',5,true,21,'Яскраве світло, полив після підсихання 2–3 см, не лити воду в центр розетки.'],
-    ['Хойя Crimson Queen','Hoya carnosa ‘Krimson Queen’','найсвітліше пн-сх вікно',8,true,30,'Поливати після просихання мінімум половини горщика, не заливати, без темної полиці.'],
-    ['Бальзамін','Impatiens walleriana','світле місце без полуденного сонця',4,true,14,'Любить рівномірну вологість, не пересушувати повністю, добриво для квітучих.'],
-    ['Бугенвілія на штамбі','Bougainvillea sp.','пд-зх балкон / максимум сонця',2,true,14,'Дуже багато сонця, тісний горщик, полив після сильного просихання, не оприскувати. (Щойно куплена — добриво відкладено на 2 тижні.)'],
-    ['Хлорофітум','Chlorophytum comosum','світле місце / без прямого полуденного сонця',6,true,21,'Невибагливий, полив після підсихання 2–3 см, можна тримати в яскравій півтіні.'],
-    ['Трава Готьє','—','світлий балкон / без жорсткого полуденного сонця',4,true,21,'Не пересушувати повністю, тримати злегка вологим, не заливати.'],
-    ['Перець Peter Pepper','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Багато світла, регулярний полив без застою, підживлення для плодоношення.'],
-    ['Перець Patio Fire and Ice','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Те саме: не пересушувати надовго, але й не заливати, любить тепло.'],
-    ['Перець Red Hot Cherry Pepper','Capsicum annuum','пд-зх балкон / сонце',3,true,7,'Багато сонця, регулярне підживлення, вода після легкого підсихання верхнього шару.'],
-    ['Базилік великий горщик','Ocimum basilicum','світлий балкон / сонце',2,true,10,'Не пересушувати, прищипувати верхівки, не тримати мокрим постійно.'],
-    ['Томат у горщику','Solanum lycopersicum','пд-зх балкон / сонце',2,true,7,'Багато сонця, рясний полив після підсихання верху, підв’язка, підживлення регулярно.'],
-    ['Петунія ампельна + Лобелія ампельна','Petunia × hybrida + Lobelia erinus','балконний ящик / багато світла',2,true,7,'Регулярний полив, не пересушувати повністю, відцвіле прибирати, добриво для квітучих.'],
-    ['Чорнобривці','Tagetes sp.','балкон / сонце',3,true,14,'Сонце, помірний полив, краще недолити, ніж перелити, відцвілі кошики знімати.'],
-    ['Балконний ящик 1 — салат + базилік','Lactuca sativa + Ocimum basilicum','пн-сх або східний балкон',2,true,14,'Ґрунт тримати злегка вологим, без пересихання; салат любить прохолоду, базилік — тепло.'],
-    ['Балконний ящик 2 — салат + базилік','Lactuca sativa + Ocimum basilicum','пн-сх або східний балкон',2,true,14,'Те саме: поливати частіше, але потроху; не заливати до болота.']
-  ];
-
-  function buildSeedPlants(){
-    return SEED_PLANTS.map(function(row){
-      return {
-        id: uid(),
-        name: row[0],
-        latin: row[1] === '—' ? '' : row[1],
-        room: row[2],
-        photos: [],
-        waterFreq: row[3],
-        lastWatered: SEED_DATE,
-        fertEnabled: row[4],
-        fertFreq: row[5],
-        lastFertilized: SEED_DATE,
-        instructions: row[6]
-      };
-    });
-  }
+  filterResetBtn.addEventListener('click', function(){
+    setStatusFilter(null);
+  });
 
   function uid(){ return 'p_' + Math.random().toString(36).slice(2,10); }
 
   function todayISO(){
     var d = new Date();
-    var tz = d.getTimezoneOffset() * 60000;
-    return new Date(d - tz).toISOString().slice(0,10);
-  }
-  function daysAgoISO(n){
-    var d = new Date();
-    d.setDate(d.getDate() - n);
     var tz = d.getTimezoneOffset() * 60000;
     return new Date(d - tz).toISOString().slice(0,10);
   }
@@ -989,22 +1187,22 @@ main{
   function formatDate(iso){
     if(!iso) return '—';
     var d = new Date(iso + 'T00:00:00');
-    return d.toLocaleDateString('uk-UA', {day:'numeric', month:'short'});
+    return d.toLocaleDateString(t('dateLocale'), {day:'numeric', month:'short'});
   }
 
   function waterStatus(plant){
     var freq = plant.waterFreq || 7;
     var d = daysBetween(plant.lastWatered);
-    if(d < freq) return {key:'water-ok', label:'Полито', bg:'var(--water-ok-bg)', text:'var(--water-ok-text)'};
-    if(d === freq) return {key:'water-today', label:'Полити сьогодні', bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
-    return {key:'water-overdue', label:'Полив прострочено', bg:'var(--water-overdue-bg)', text:'var(--water-overdue-text)'};
+    if(d < freq) return {key:'water-ok', label:t('statusWaterOk'), bg:'var(--water-ok-bg)', text:'var(--water-ok-text)'};
+    if(d === freq) return {key:'water-today', label:t('statusWaterToday'), bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
+    return {key:'water-overdue', label:t('statusWaterOverdue'), bg:'var(--water-overdue-bg)', text:'var(--water-overdue-text)'};
   }
   function fertStatus(plant){
-    if(!plant.fertEnabled) return {key:'fert-off', label:'Не удобрювати', bg:'var(--fert-off-bg)', text:'var(--fert-off-text)'};
+    if(!plant.fertEnabled) return {key:'fert-off', label:t('statusFertOff'), bg:'var(--fert-off-bg)', text:'var(--fert-off-text)'};
     var freq = plant.fertFreq || 30;
     var d = daysBetween(plant.lastFertilized);
-    if(d < freq) return {key:'fert-ok', label:'Удобрено', bg:'var(--fert-ok-bg)', text:'var(--fert-ok-text)'};
-    return {key:'fert-due', label:'Удобрити', bg:'var(--fert-due-bg)', text:'var(--fert-due-text)'};
+    if(d < freq) return {key:'fert-ok', label:t('statusFertOk'), bg:'var(--fert-ok-bg)', text:'var(--fert-ok-text)'};
+    return {key:'fert-due', label:t('statusFertDue'), bg:'var(--fert-due-bg)', text:'var(--fert-due-text)'};
   }
   function badgeEl(status){
     var span = document.createElement('span');
@@ -1105,7 +1303,7 @@ main{
       }
       return r.ok;
     }catch(e){
-      lastPhotoError = 'Мережева помилка: ' + e.message;
+      lastPhotoError = t('alertPhotoNetworkError') + e.message;
       return false;
     }
   }
@@ -1158,13 +1356,11 @@ main{
     if(plants.length === 0){
       emptyState.hidden = false;
       grid.hidden = true;
-      reorderListEl.hidden = true;
       filterEmptyState.hidden = true;
       legendEl.hidden = true;
       return;
     }
     emptyState.hidden = true;
-    reorderListEl.hidden = true;
 
     if(reorderMode){
       legendEl.hidden = true;
@@ -1197,97 +1393,10 @@ main{
     visiblePlants.forEach(function(p){ grid.appendChild(renderCard(p)); });
   }
 
-  function renderReorderList(){
-    reorderListEl.innerHTML = '';
-    plants.forEach(function(plant, idx){
-      var row = document.createElement('div');
-      row.className = 'reorder-row';
-      row.draggable = true;
-      row.dataset.id = plant.id;
-
-      var handle = document.createElement('span');
-      handle.className = 'reorder-handle';
-      handle.textContent = '☰';
-      row.appendChild(handle);
-
-      var thumb = document.createElement('div');
-      thumb.className = 'reorder-thumb';
-      var url = primaryPhotoUrl(plant);
-      if(url){
-        var img = document.createElement('img');
-        img.src = url; img.alt = plant.name;
-        thumb.appendChild(img);
-      } else {
-        thumb.textContent = '🌿';
-      }
-      row.appendChild(thumb);
-
-      var name = document.createElement('span');
-      name.className = 'reorder-name';
-      name.textContent = plant.name;
-      row.appendChild(name);
-
-      var arrows = document.createElement('div');
-      arrows.className = 'reorder-arrows';
-      var upBtn = document.createElement('button');
-      upBtn.type = 'button'; upBtn.textContent = '↑'; upBtn.disabled = (idx === 0);
-      upBtn.addEventListener('click', function(){ movePlant(idx, idx - 1); });
-      var downBtn = document.createElement('button');
-      downBtn.type = 'button'; downBtn.textContent = '↓'; downBtn.disabled = (idx === plants.length - 1);
-      downBtn.addEventListener('click', function(){ movePlant(idx, idx + 1); });
-      arrows.appendChild(upBtn);
-      arrows.appendChild(downBtn);
-      row.appendChild(arrows);
-
-      row.addEventListener('dragstart', function(){
-        setTimeout(function(){ row.classList.add('dragging'); }, 0);
-      });
-      row.addEventListener('dragend', async function(){
-        row.classList.remove('dragging');
-        var newOrderIds = Array.from(reorderListEl.querySelectorAll('.reorder-row')).map(function(r){ return r.dataset.id; });
-        plants.sort(function(a, b){ return newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id); });
-        await savePlantsMeta();
-        render();
-      });
-
-      reorderListEl.appendChild(row);
-    });
-  }
-
-  reorderListEl.addEventListener('dragover', function(e){
-    e.preventDefault();
-    var draggingRow = reorderListEl.querySelector('.reorder-row.dragging');
-    if(!draggingRow) return;
-    var afterElement = getDragAfterElement(reorderListEl, e.clientY);
-    if(afterElement == null){
-      reorderListEl.appendChild(draggingRow);
-    } else {
-      reorderListEl.insertBefore(draggingRow, afterElement);
-    }
-  });
-
-  function getDragAfterElement(container, y){
-    var rows = Array.from(container.querySelectorAll('.reorder-row:not(.dragging)'));
-    return rows.reduce(function(closest, child){
-      var box = child.getBoundingClientRect();
-      var offset = y - box.top - box.height / 2;
-      if(offset < 0 && offset > closest.offset){
-        return { offset: offset, element: child };
-      }
-      return closest;
-    }, { offset: -Infinity, element: null }).element;
-  }
-
-  async function movePlant(fromIdx, toIdx){
-    if(toIdx < 0 || toIdx >= plants.length) return;
-    var moved = plants.splice(fromIdx, 1)[0];
-    plants.splice(toIdx, 0, moved);
-    await savePlantsMeta();
-    render();
-  }
-
   // ---------- Drag-n-drop для режиму "Змінити порядок" ----------
   var dragState = null;
+  var repositionRafId = null;
+  var pendingPointerX = 0, pendingPointerY = 0;
   var renderPending = false;
   var autoScrollTimer = null;
   var autoScrollSpeed = 0;
@@ -1343,43 +1452,52 @@ function repositionPlaceholder(x, y){
   var ds = dragState;
   if(!ds || !ds.active) return;
 
-  ds.card.style.pointerEvents = 'none';
   var cards = Array.from(grid.querySelectorAll('.plant-card:not(.dragging-card):not(.reorder-placeholder)'));
-  ds.card.style.pointerEvents = '';
-
   if(!cards.length) return;
 
+  // Читаємо всі rect一 РАЗ за виклик (а не по колу всередині forEach з паралельними
+  // записами) — саме почергове читання/запис макета на кожен pixel руху миші
+  // й було головною причиною "смикання": браузер змушений синхронно
+  // перераховувати layout по кілька разів на кожен pointermove.
   var closest = null;
   var closestDistance = Infinity;
+  var closestRect = null;
 
-  cards.forEach(function(cardEl){
-    var rect = cardEl.getBoundingClientRect();
+  for(var i = 0; i < cards.length; i++){
+    var rect = cards[i].getBoundingClientRect();
     var cx = rect.left + rect.width / 2;
     var cy = rect.top + rect.height / 2;
     var dx = x - cx;
     var dy = y - cy;
     var distance = Math.sqrt(dx * dx + dy * dy);
-
     if(distance < closestDistance){
       closestDistance = distance;
-      closest = cardEl;
+      closest = cards[i];
+      closestRect = rect;
     }
-  });
+  }
 
   if(!closest) return;
-
-  var rect = closest.getBoundingClientRect();
 
   // ВАЖЛИВО: це сітка з кількома колонками (2-4 в ряд), а не список в один стовпчик.
   // Якщо курсор вертикально перебуває в межах рядка цільової картки — порівнюємо по X (ліво/право).
   // Якщо курсор явно вище/нижче рядка картки — тоді вже по Y (інший рядок).
-  var sameRow = (y >= rect.top && y <= rect.bottom);
+  var sameRow = (y >= closestRect.top && y <= closestRect.bottom);
   var before;
   if(sameRow){
-    before = x < (rect.left + rect.width / 2);
+    // Невеликий "мертвий" буфер навколо середини картки (гістерезис) —
+    // без нього курсор, що стоїть майже точно посередині, перемикав би
+    // "до/після" на кожен субпіксельний рух миші, і плейсхолдер стрибав
+    // би вперед-назад щокадру.
+    var midX = closestRect.left + closestRect.width / 2;
+    var buffer = Math.min(16, closestRect.width * 0.12);
+    if(x < midX - buffer) before = true;
+    else if(x > midX + buffer) before = false;
+    else before = ds.lastBefore !== undefined ? ds.lastBefore : (x < midX);
   } else {
-    before = y < (rect.top + rect.height / 2);
+    before = y < (closestRect.top + closestRect.height / 2);
   }
+  ds.lastBefore = before;
 
   if(before){
     if(ds.placeholder !== closest.previousSibling){
@@ -1405,11 +1523,25 @@ function repositionPlaceholder(x, y){
 
   ds.lastX = e.clientX;
   ds.lastY = e.clientY;
-  ds.card.style.left = (e.clientX - ds.grabOffsetX) + 'px';
-  ds.card.style.top = (e.clientY - ds.grabOffsetY) + 'px';
+  // Позицію картки, що тягнеться, рухаємо одразу (це просто transform-подібний
+  // стиль, дешево), а важку роботу — пошук найближчої картки й переставляння
+  // плейсхолдера — відкладаємо до наступного кадру замальовки. pointermove
+  // може прилітати десятки разів за секунду; без цього троттлінгу кожен такий
+  // виклик змушував браузер синхронно перераховувати layout, і саме це давало
+  // ефект "смикання/блимання", особливо помітний на картках з фото.
+  pendingPointerX = e.clientX;
+  pendingPointerY = e.clientY;
+  ds.card.style.left = (pendingPointerX - ds.grabOffsetX) + 'px';
+  ds.card.style.top = (pendingPointerY - ds.grabOffsetY) + 'px';
 
-  repositionPlaceholder(e.clientX, e.clientY);
-  updateAutoScroll(e.clientY);
+  if(repositionRafId === null){
+    repositionRafId = requestAnimationFrame(function(){
+      repositionRafId = null;
+      if(!dragState || !dragState.active) return;
+      repositionPlaceholder(pendingPointerX, pendingPointerY);
+      updateAutoScroll(pendingPointerY);
+    });
+  }
 }
 
   function updateAutoScroll(clientY){
@@ -1445,6 +1577,10 @@ function repositionPlaceholder(x, y){
   if(!ds || e.pointerId !== ds.pointerId) return;
 
   stopAutoScroll();
+  if(repositionRafId !== null){
+    cancelAnimationFrame(repositionRafId);
+    repositionRafId = null;
+  }
 
   ds.handle.removeEventListener('pointermove', onCardDragMove);
 ds.handle.removeEventListener('pointerup', onCardDragEnd);
@@ -1527,7 +1663,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     waterRow.className = 'card-meta-row';
     var waterLabel = document.createElement('span');
     waterLabel.className = 'card-meta-label';
-    waterLabel.textContent = 'Полив кожні ' + (plant.waterFreq || 7) + ' дн.';
+    waterLabel.textContent = t('cardWaterFreq', {n: plant.waterFreq || 7});
     waterRow.appendChild(waterLabel);
     waterRow.appendChild(badgeEl(ws));
     body.appendChild(waterRow);
@@ -1536,7 +1672,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     fertRow.className = 'card-meta-row';
     var fertLabel = document.createElement('span');
     fertLabel.className = 'card-meta-label';
-    fertLabel.textContent = plant.fertEnabled ? ('Добриво кожні ' + (plant.fertFreq || 30) + ' дн.') : 'Добриво не потрібне';
+    fertLabel.textContent = plant.fertEnabled ? t('cardFertFreq', {n: plant.fertFreq || 30}) : t('cardFertOff');
     fertRow.appendChild(fertLabel);
     fertRow.appendChild(badgeEl(fs));
     body.appendChild(fertRow);
@@ -1551,11 +1687,11 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
       var qa = document.createElement('div');
       qa.className = 'card-quick-actions';
       var wBtn = document.createElement('button');
-      wBtn.type = 'button'; wBtn.className = 'qa-btn water'; wBtn.textContent = 'Полито';
+      wBtn.type = 'button'; wBtn.className = 'qa-btn water'; wBtn.textContent = t('waterAction');
       wBtn.addEventListener('click', function(e){ e.stopPropagation(); openDatePopover('water', plant.id, wBtn); });
       qa.appendChild(wBtn);
       var fBtn = document.createElement('button');
-      fBtn.type = 'button'; fBtn.className = 'qa-btn fert'; fBtn.textContent = 'Удобрено';
+      fBtn.type = 'button'; fBtn.className = 'qa-btn fert'; fBtn.textContent = t('fertAction');
       fBtn.addEventListener('click', function(e){ e.stopPropagation(); openDatePopover('fert', plant.id, fBtn); });
       qa.appendChild(fBtn);
       body.appendChild(qa);
@@ -1591,11 +1727,11 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     var count = Object.keys(selectedIds).length;
     bulkBar.hidden = !bulkMode || count === 0;
     var summary;
-    if(bulkApplyWater && bulkApplyFert) summary = 'полив і добриво';
-    else if(bulkApplyWater) summary = 'полив';
-    else if(bulkApplyFert) summary = 'добриво';
-    else summary = 'нічого не вибрано';
-    bulkCount.textContent = count + (count === 1 ? ' обрано' : ' обрано') + ' · застосується: ' + summary;
+    if(bulkApplyWater && bulkApplyFert) summary = t('bulkWaterAndFert');
+    else if(bulkApplyWater) summary = t('bulkWater');
+    else if(bulkApplyFert) summary = t('bulkFert');
+    else summary = t('bulkNothingSelected');
+    bulkCount.textContent = t('bulkSelectedCount', {n: count}) + t('bulkWillApply') + summary;
   }
 
   // ---------- Detail overlay ----------
@@ -1675,16 +1811,16 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     detailLatin.style.display = plant.latin ? 'block' : 'none';
     detailRoom.textContent = plant.room || '—';
 
-    detailWaterInfo.textContent = 'Кожні ' + (plant.waterFreq || 7) + ' дн. · востаннє: ' + formatDate(plant.lastWatered);
+    detailWaterInfo.textContent = t('detailWaterInfo', {n: plant.waterFreq || 7, date: formatDate(plant.lastWatered)});
     detailFertInfo.textContent = plant.fertEnabled
-      ? ('Кожні ' + (plant.fertFreq || 30) + ' дн. · востаннє: ' + formatDate(plant.lastFertilized))
-      : 'Зараз не потрібне';
+      ? t('detailFertInfo', {n: plant.fertFreq || 30, date: formatDate(plant.lastFertilized)})
+      : t('detailFertOffNow');
 
-    detailInstructions.textContent = plant.instructions || 'Інструкцій ще немає — додай їх при редагуванні.';
+    detailInstructions.textContent = plant.instructions || t('detailNoInstructions');
     detailInstructionsBlock.classList.toggle('caretaker-glow', caretakerMode);
 
-    waterBtn.textContent = 'Полито';
-    fertBtn.textContent = 'Удобрено';
+    waterBtn.textContent = t('waterAction');
+    fertBtn.textContent = t('fertAction');
     editBtn.style.display = caretakerMode ? 'none' : 'block';
 
     var pos = plants.findIndex(function(p){ return p.id === id; });
@@ -1731,7 +1867,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     var before = plant.photos[0];
     var after = plant.photos[plant.photos.length - 1];
     compareGrid.innerHTML = '';
-    [ {photo: before, label: 'Було'}, {photo: after, label: 'Зараз'} ].forEach(function(entry, idx){
+    [ {photo: before, label: t('compareBefore')}, {photo: after, label: t('compareAfter')} ].forEach(function(entry, idx){
       var col = document.createElement('div');
       col.className = 'compare-col';
       var img = document.createElement('img');
@@ -1818,13 +1954,13 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     if(!plant) return;
     var question = questionInput.value.trim();
     if(!question){
-      alert('Опиши проблему з рослиною — наприклад, що саме сталося з листям чи стеблом.');
+      alert(t('alertNeedQuestion'));
       questionInput.focus();
       return;
     }
     var originalLabel = askAiBtn.textContent;
     askAiBtn.disabled = true;
-    askAiBtn.textContent = '✨ Думаю...';
+    askAiBtn.textContent = t('askAiThinking');
     aiAnswerBox.hidden = true;
     try{
       var r = await fetch('/api/diagnose', {
@@ -1839,13 +1975,13 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
       });
       var data = await r.json();
       if(!r.ok){
-        alert('Не вдалося отримати відповідь: ' + (data.error || ('HTTP ' + r.status)));
+        alert(t('alertDiagnoseFailed') + (data.error || ('HTTP ' + r.status)));
         return;
       }
       aiAnswerBox.textContent = data.answer || '';
       aiAnswerBox.hidden = false;
     }catch(e){
-      alert('Мережева помилка при звʼязку з ШІ: ' + e.message);
+      alert(t('alertAiNetworkError') + e.message);
     }finally{
       askAiBtn.disabled = false;
       askAiBtn.textContent = originalLabel;
@@ -1978,8 +2114,8 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
   });
   function flashBtnLabel(btn, type){
     if(btn === waterBtn || btn === fertBtn){
-      btn.textContent = 'Відмічено ✓';
-      setTimeout(function(){ btn.textContent = type === 'water' ? 'Полито' : 'Удобрено'; }, 1400);
+      btn.textContent = t('markedDone');
+      setTimeout(function(){ btn.textContent = type === 'water' ? t('waterAction') : t('fertAction'); }, 1400);
     }
   }
 
@@ -1989,13 +2125,19 @@ var addPlantBtn = document.getElementById('addPlantBtn');
 var addPlantBtnMobile = document.getElementById('addPlantBtnMobile');
 var addPlantSlot = document.getElementById('addPlantSlot');
 var homeLogoBtn = document.getElementById('homeLogoBtn');
+var langSwitcherBtn = document.getElementById('langSwitcherBtn');
+langSwitcherBtn.textContent = langButtonLabel(currentLang);
+applyStaticI18n();
+langSwitcherBtn.addEventListener('click', function(){
+  setLanguage(currentLang === 'uk' ? 'en' : 'uk');
+});
 
 function syncAddPlantVisibility(){
   if(addPlantSlot){
     addPlantSlot.classList.toggle('is-hidden', caretakerMode);
   }
   if(addPlantBtnMobile){
-    addPlantBtnMobile.style.display = caretakerMode ? 'none' : '';
+    addPlantBtnMobile.classList.toggle('is-hidden', caretakerMode);
   }
 }
 
@@ -2025,8 +2167,7 @@ if(homeLogoBtn){
       changed = true;
     }
     if(activeStatusFilter){
-      activeStatusFilter = null;
-      legendEl.querySelectorAll('.legend-chip').forEach(function(c){ c.classList.remove('active'); });
+      setStatusFilter(null);
       changed = true;
     }
     if(changed) render();
@@ -2070,8 +2211,9 @@ syncAddPlantVisibility();
 
   function showUndoToast(snapshot, count, appliedWater, appliedFert){
     lastBulkSnapshot = snapshot;
-    var what = (appliedWater && appliedFert) ? 'полив і добриво' : (appliedWater ? 'полив' : 'добриво');
-    undoToastText.textContent = 'Оновлено ' + what + ' для ' + count + (count === 1 ? ' рослини' : ' рослин') + '.';
+    var what = (appliedWater && appliedFert) ? t('bulkWaterAndFert') : (appliedWater ? t('bulkWater') : t('bulkFert'));
+    var noun = count === 1 ? t('plantsFew') : t('plantsMany');
+    undoToastText.textContent = t('undoUpdated', {what: what, count: count, noun: noun});
     undoToast.hidden = false;
     if(undoToastTimer) clearTimeout(undoToastTimer);
     undoToastTimer = setTimeout(function(){ undoToast.hidden = true; }, 15000);
@@ -2146,7 +2288,7 @@ syncAddPlantVisibility();
 
   document.getElementById('bulkApplyBtn').addEventListener('click', function(e){
     if(!bulkApplyWater && !bulkApplyFert){
-      alert('Обери хоча б одне — «Полито» або «Удобрено» — перед застосуванням.');
+      alert(t('alertBulkNeedChoice'));
       return;
     }
     openBulkDatePopover(e.currentTarget);
@@ -2196,7 +2338,7 @@ syncAddPlantVisibility();
   function openForm(plant){
     editingId = plant ? plant.id : null;
     pendingPhotos = plant && plant.photos ? plant.photos.slice() : [];
-    formTitle.textContent = plant ? 'Редагувати рослину' : 'Додати рослину';
+    formTitle.textContent = plant ? t('formTitleEdit') : t('formTitleAdd');
     document.getElementById('nameInput').value = plant ? plant.name : '';
     document.getElementById('latinInput').value = plant ? (plant.latin || '') : '';
     document.getElementById('roomInput').value = plant ? (plant.room || '') : '';
@@ -2305,12 +2447,12 @@ syncAddPlantVisibility();
     var waterInput = document.getElementById('waterFreqInput');
     var fertInput = document.getElementById('fertFreqInput');
 
-    if(!opts.silent && textarea.value.trim() && !confirm('Поле з інструкціями вже не порожнє. Замінити його згенерованим текстом?')) return false;
+    if(!opts.silent && textarea.value.trim() && !confirm(t('confirmOverwriteInstructions'))) return false;
 
     var btn = document.getElementById('aiGenerateBtn');
     var originalLabel = btn.textContent;
     btn.disabled = true;
-    btn.textContent = '✨ Генерую...';
+    btn.textContent = t('aiGenerating');
     if(opts.silent){
       waterInput.classList.add('ai-loading');
       fertInput.classList.add('ai-loading');
@@ -2327,7 +2469,7 @@ syncAddPlantVisibility();
       });
       var data = await r.json();
       if(!r.ok){
-        if(!opts.silent) alert('Не вдалося згенерувати: ' + (data.error || ('HTTP ' + r.status)));
+        if(!opts.silent) alert(t('alertGenerateFailed') + (data.error || ('HTTP ' + r.status)));
         return false;
       }
       textarea.value = data.instructions || '';
@@ -2335,7 +2477,7 @@ syncAddPlantVisibility();
       if(data.fertDays) fertInput.value = data.fertDays;
       return true;
     }catch(e){
-      if(!opts.silent) alert('Мережева помилка при звʼязку з ШІ: ' + e.message);
+      if(!opts.silent) alert(t('alertAiNetworkError') + e.message);
       return false;
     }finally{
       btn.disabled = false;
@@ -2357,7 +2499,7 @@ syncAddPlantVisibility();
   document.getElementById('aiGenerateBtn').addEventListener('click', function(){
     var nameVal = document.getElementById('nameInput').value.trim();
     if(!nameVal){
-      alert('Спочатку впиши назву рослини — за нею ШІ підбере інструкції.');
+      alert(t('alertNeedName'));
       document.getElementById('nameInput').focus();
       return;
     }
@@ -2392,14 +2534,14 @@ syncAddPlantVisibility();
     closeForm();
     render();
     if(!metaOk || !photoOk){
-      var details = !photoOk && lastPhotoError ? ('\n\nДеталі помилки: ' + lastPhotoError) : '';
-      alert('Увага: частину змін не вдалося зберегти у спільній базі. На цьому пристрої все збереглось.' + details);
+      var details = !photoOk && lastPhotoError ? (t('alertSaveFailedDetails') + lastPhotoError) : '';
+      alert(t('alertSaveFailed') + details);
     }
   });
 
   deleteBtn.addEventListener('click', async function(){
     if(!editingId) return;
-    if(!confirm('Видалити цю рослину зі списку?')) return;
+    if(!confirm(t('confirmDeletePlant'))) return;
     var removedId = editingId;
     plants = plants.filter(function(p){ return p.id !== removedId; });
     await savePlantsMeta();
@@ -2412,17 +2554,17 @@ syncAddPlantVisibility();
     var url = window.location.href;
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(url).then(function(){
-        alert('Посилання скопійовано! Надішли його тому, з ким хочеш поділитися списком рослин — у нього відкриється той самий список.');
+        alert(t('alertLinkCopied'));
       }).catch(function(){
-        prompt('Скопіюй посилання вручну:', url);
+        prompt(t('promptCopyManually'), url);
       });
     } else {
-      prompt('Скопіюй посилання вручну:', url);
+      prompt(t('promptCopyManually'), url);
     }
   });
 
   document.getElementById('newListBtn').addEventListener('click', function(){
-    if(!confirm('Це створить твій ВЛАСНИЙ окремий список рослин, не пов\'язаний з поточним. Поточний список нікуди не зникне — просто відкриється по-старому за своїм посиланням. Продовжити?')) return;
+    if(!confirm(t('confirmNewList'))) return;
     var newId = Math.random().toString(36).slice(2,10);
     try{ localStorage.setItem('leaflog_household_id', newId); }catch(e){}
     var url = window.location.pathname + '?id=' + newId;
