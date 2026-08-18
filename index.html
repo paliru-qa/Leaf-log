@@ -1425,6 +1425,7 @@ main{
     handle.addEventListener('pointermove', onCardDragMove);
     handle.addEventListener('pointerup', onCardDragEnd);
     handle.addEventListener('pointercancel', onCardDragEnd);
+    handle.addEventListener('lostpointercapture', onCardDragEnd);
   });
 }
 
@@ -1445,6 +1446,13 @@ main{
     ds.card.style.left = rect.left + 'px';
     ds.card.style.top = rect.top + 'px';
     ds.active = true;
+
+    // Набір карток не змінюється протягом усього drag (ми не робимо render()
+    // посеред перетягування — це вже гарантовано окремим фіксом), тож досить
+    // зібрати список один раз тут, а не робити querySelectorAll по всій сітці
+    // на кожен кадр. При великій кількості рослин це помітно знімає
+    // навантаження саме під час авто-скролу вниз.
+    ds.otherCards = Array.from(grid.querySelectorAll('.plant-card:not(.dragging-card):not(.reorder-placeholder)'));
   }
 
 // Пересуває плейсхолдер до найближчої картки під точкою (x, y)
@@ -1452,8 +1460,8 @@ function repositionPlaceholder(x, y){
   var ds = dragState;
   if(!ds || !ds.active) return;
 
-  var cards = Array.from(grid.querySelectorAll('.plant-card:not(.dragging-card):not(.reorder-placeholder)'));
-  if(!cards.length) return;
+  var cards = ds.otherCards;
+  if(!cards || !cards.length) return;
 
   // Читаємо всі rect一 РАЗ за виклик (а не по колу всередині forEach з паралельними
   // записами) — саме почергове читання/запис макета на кожен pixel руху миші
@@ -1511,6 +1519,18 @@ function repositionPlaceholder(x, y){
 }
 
 
+  function scheduleReposition(x, y){
+    pendingPointerX = x;
+    pendingPointerY = y;
+    if(repositionRafId === null){
+      repositionRafId = requestAnimationFrame(function(){
+        repositionRafId = null;
+        if(!dragState || !dragState.active) return;
+        repositionPlaceholder(pendingPointerX, pendingPointerY);
+      });
+    }
+  }
+
   function onCardDragMove(e){
   var ds = dragState;
   if(!ds || e.pointerId !== ds.pointerId) return;
@@ -1525,23 +1545,13 @@ function repositionPlaceholder(x, y){
   ds.lastY = e.clientY;
   // Позицію картки, що тягнеться, рухаємо одразу (це просто transform-подібний
   // стиль, дешево), а важку роботу — пошук найближчої картки й переставляння
-  // плейсхолдера — відкладаємо до наступного кадру замальовки. pointermove
-  // може прилітати десятки разів за секунду; без цього троттлінгу кожен такий
-  // виклик змушував браузер синхронно перераховувати layout, і саме це давало
-  // ефект "смикання/блимання", особливо помітний на картках з фото.
-  pendingPointerX = e.clientX;
-  pendingPointerY = e.clientY;
-  ds.card.style.left = (pendingPointerX - ds.grabOffsetX) + 'px';
-  ds.card.style.top = (pendingPointerY - ds.grabOffsetY) + 'px';
+  // плейсхолдера — відкладаємо до наступного кадру замальовки через
+  // scheduleReposition (спільний з авто-скролом, щоб не рахувати двічі за кадр).
+  ds.card.style.left = (e.clientX - ds.grabOffsetX) + 'px';
+  ds.card.style.top = (e.clientY - ds.grabOffsetY) + 'px';
 
-  if(repositionRafId === null){
-    repositionRafId = requestAnimationFrame(function(){
-      repositionRafId = null;
-      if(!dragState || !dragState.active) return;
-      repositionPlaceholder(pendingPointerX, pendingPointerY);
-      updateAutoScroll(pendingPointerY);
-    });
-  }
+  scheduleReposition(e.clientX, e.clientY);
+  updateAutoScroll(e.clientY);
 }
 
   function updateAutoScroll(clientY){
@@ -1559,8 +1569,14 @@ function repositionPlaceholder(x, y){
         if(autoScrollSpeed === 0) return;
         var before = window.scrollY;
         window.scrollBy(0, autoScrollSpeed);
+        // ВАЖЛИВО: раніше тут напряму викликався repositionPlaceholder() —
+        // окремо від rAF-циклу з onCardDragMove. Під час авто-скролу (саме
+        // сценарій "тягну вниз, рослин багато") обидва шляхи спрацьовували
+        // паралельно щокадру — подвійний прохід по всіх картках з
+        // getBoundingClientRect(). Тепер обидва йдуть через один
+        // scheduleReposition(), тож на кадр — максимум один важкий перерахунок.
         if(window.scrollY !== before && dragState && dragState.active){
-          repositionPlaceholder(dragState.lastX, dragState.lastY);
+          scheduleReposition(dragState.lastX, dragState.lastY);
         }
       }, 16);
     } else if(speed === 0){
@@ -1574,7 +1590,16 @@ function repositionPlaceholder(x, y){
 
   async function onCardDragEnd(e){
   var ds = dragState;
-  if(!ds || e.pointerId !== ds.pointerId) return;
+  if(!ds) return;
+  // ВАЖЛИВО (мобільний баг): раніше тут була перевірка `e.pointerId !== ds.pointerId`,
+  // і якщо вона не збігалась (на телефонах під час авто-скролу трапляється, що
+  // pointerup/pointercancel прилітає з "іншим" pointerId, ніж очікувалось),
+  // функція просто виходила — БЕЗ releasePointerCapture, без прибирання
+  // dragState. Захоплення вказівника (pointer capture) лишалося на кнопці
+  // "тягання" назавжди, і браузер продовжував направляти ВСІ дотики саме
+  // туди замість того, щоб дати сторінці скролитись — звідси "фриз, не можу
+  // скролити". Ми ніколи не тягаємо дві картки одночасно, тож тепер будь-який
+  // up/cancel завершує поточний єдиний drag, незалежно від pointerId.
 
   stopAutoScroll();
   if(repositionRafId !== null){
@@ -1585,6 +1610,7 @@ function repositionPlaceholder(x, y){
   ds.handle.removeEventListener('pointermove', onCardDragMove);
 ds.handle.removeEventListener('pointerup', onCardDragEnd);
 ds.handle.removeEventListener('pointercancel', onCardDragEnd);
+ds.handle.removeEventListener('lostpointercapture', onCardDragEnd);
 try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
 
   if(ds.active){
