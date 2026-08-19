@@ -185,10 +185,11 @@ input,textarea{ font-family:'Manrope', sans-serif; }
   flex-shrink:0;
 }
 
-  .add-plant-btn{
+  .btn-primary.add-plant-btn{
   display:inline-flex;
   align-items:center;
   gap:1px;
+  padding:0 10px 0 4px;
 }
 
 .add-plant-btn-icon{
@@ -209,7 +210,7 @@ input,textarea{ font-family:'Manrope', sans-serif; }
   background:var(--accent);
   color:#fff;
   border:1px solid transparent;
-  padding:0 10px 0 4px;
+  padding:10px 18px;
   border-radius:999px;
   font-size:14px;
   font-weight:600;
@@ -326,11 +327,35 @@ main{
 
 .bulk-bar{ position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--accent-dark); color:#fff; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; box-shadow:0 -6px 20px rgba(0,0,0,.15); }
 .bulk-bar span{ font-size:14px; font-weight:600; }
-.bulk-bar-actions{ display:flex; gap:8px; align-items:center; }
+.bulk-bar-actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 .bulk-bar-actions .qa-btn{ background:#fff; border:2px solid transparent; padding:9px 16px; opacity:.5; transition:opacity .15s ease, border-color .15s ease; white-space:nowrap; }
 .bulk-bar-actions .qa-btn.active{ opacity:1; border-color:rgba(255,255,255,.8); }
 .bulk-bar-actions .btn-primary{ padding:9px 16px; font-size:13px; }
 .bulk-bar-actions .btn-secondary{ background:none; border:1px solid rgba(255,255,255,.5); color:#fff; padding:9px 14px; font-size:13px; }
+
+@media(max-width:520px){
+  .bulk-bar{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+    padding:12px 16px 16px;
+  }
+  .bulk-bar-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  /* Два рядки по дві кнопки: Полито/Удобрено зверху, Застосувати/Скасувати
+     знизу — компактніше за окремі повноширинні рядки, а стійкий хедер і так
+     забирає половину екрана. */
+  .bulk-bar-actions .qa-btn,
+  .bulk-bar-actions .btn-primary,
+  .bulk-bar-actions .btn-secondary{
+    text-align:center;
+    padding-top:11px;
+    padding-bottom:11px;
+  }
+}
 
 .undo-toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:65; background:#211f1c; color:#fff; padding:12px 14px 12px 18px; border-radius:12px; display:flex; align-items:center; gap:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); max-width:92vw; }
 .undo-toast span{ font-size:13.5px; }
@@ -608,6 +633,64 @@ main{
 }
 
 [hidden]{ display:none !important; }
+
+/* ============================================================
+   Fertilizing Calendar
+   ============================================================ */
+.legend-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:0 0 14px; }
+.legend-toolbar .legend{ margin:0; flex:1; min-width:0; }
+.fertcal-trigger{ flex-shrink:0; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+.fertcal-trigger-icon{ font-size:15px; line-height:1; }
+@media(max-width:760px){
+  .legend-toolbar{ flex-direction:column; align-items:stretch; }
+  .fertcal-trigger{ justify-content:center; }
+}
+
+.fertcal-backdrop{ position:fixed; inset:0; background:rgba(28,26,22,.32); z-index:70; display:flex; justify-content:flex-end; }
+.fertcal-panel{ position:relative; width:380px; max-width:100%; height:100%; background:var(--surface); box-shadow:-16px 0 40px rgba(30,25,15,.14); padding:24px 22px 20px; overflow-y:auto; display:flex; flex-direction:column; gap:14px; animation:fertcalSlideIn .18s ease; }
+@keyframes fertcalSlideIn{ from{ transform:translateX(24px); opacity:0; } to{ transform:translateX(0); opacity:1; } }
+.fertcal-panel .close-btn{ top:10px; right:10px; }
+.fertcal-title{ font-size:18px; font-weight:700; color:var(--text); padding-right:30px; margin:0; }
+@media(max-width:760px){
+  .fertcal-panel{ width:100%; padding:20px 16px 18px; }
+  .fertcal-backdrop{ justify-content:stretch; }
+}
+
+.fertcal-nav{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.fertcal-nav-btn{ width:34px; height:34px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:17px; line-height:1; display:flex; align-items:center; justify-content:center; transition:background .15s ease, border-color .15s ease; }
+.fertcal-nav-btn:hover{ background:var(--fert-off-bg); }
+.fertcal-month-label{ font-size:14.5px; font-weight:700; color:var(--text); text-transform:capitalize; }
+
+.fertcal-weekdays{ display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; text-align:center; }
+.fertcal-weekdays span{ font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.03em; padding:2px 0; }
+.fertcal-grid{ display:grid; grid-template-columns:repeat(7, 1fr); grid-auto-rows:1fr; gap:4px; }
+.fertcal-day{ position:relative; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; border-radius:var(--radius-sm); background:none; border:1px solid transparent; font-size:13px; font-weight:600; color:var(--text); cursor:pointer; transition:background .12s ease, border-color .12s ease; }
+.fertcal-day:hover{ background:var(--border-soft); }
+.fertcal-day.fertcal-day-outside{ color:var(--text-muted); opacity:.4; cursor:default; }
+.fertcal-day.fertcal-day-outside:hover{ background:none; }
+
+.fertcal-day.fertcal-today{ border-color:var(--accent); font-weight:800; }
+.fertcal-day.fertcal-has-last.fertcal-level-1{ background:color-mix(in srgb, var(--fert-ok-bg) 45%, transparent); }
+.fertcal-day.fertcal-has-last.fertcal-level-2{ background:color-mix(in srgb, var(--fert-ok-bg) 70%, transparent); }
+.fertcal-day.fertcal-has-last.fertcal-level-3{ background:var(--fert-ok-bg); color:var(--fert-ok-text); }
+.fertcal-day.fertcal-has-next.fertcal-level-1{ background:color-mix(in srgb, var(--fert-due-bg) 45%, transparent); }
+.fertcal-day.fertcal-has-next.fertcal-level-2{ background:color-mix(in srgb, var(--fert-due-bg) 70%, transparent); }
+.fertcal-day.fertcal-has-next.fertcal-level-3{ background:var(--fert-due-bg); color:var(--fert-due-text); }
+.fertcal-day.fertcal-has-last.fertcal-has-next{ background:linear-gradient(135deg, var(--fert-ok-bg) 0%, var(--fert-ok-bg) 49%, var(--fert-due-bg) 51%, var(--fert-due-bg) 100%); }
+.fertcal-day.fertcal-selected{ outline:2px solid var(--accent); outline-offset:-2px; font-weight:800; }
+.fertcal-day.fertcal-has-last::after, .fertcal-day.fertcal-has-next::after{ content:''; position:absolute; bottom:4px; width:4px; height:4px; border-radius:50%; background:currentColor; opacity:.5; }
+
+.fertcal-selected-day{ margin-top:6px; padding-top:14px; border-top:1px solid var(--border-soft); }
+.fertcal-selected-day-title{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--text-muted); margin:0 0 8px; }
+.fertcal-plant-list{ display:flex; flex-direction:column; gap:6px; }
+.fertcal-plant-list-empty{ font-size:13px; color:var(--text-muted); padding:8px 0; }
+.fertcal-plant-row{ display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:var(--radius-sm); background:var(--bg); font-size:13.5px; color:var(--text); }
+.fertcal-plant-row-tag{ flex-shrink:0; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:999px; text-transform:uppercase; letter-spacing:.02em; }
+.fertcal-plant-row-tag.fertcal-tag-last{ background:var(--fert-ok-bg); color:var(--fert-ok-text); }
+.fertcal-plant-row-tag.fertcal-tag-next{ background:var(--fert-due-bg); color:var(--fert-due-text); }
+.fertcal-plant-row-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+@media(max-width:380px){ .fertcal-grid, .fertcal-weekdays{ gap:3px; } }
 </style>
 </head>
 <body>
@@ -653,6 +736,7 @@ main{
 </div>
 
 <main>
+  <div class="legend-toolbar" id="legendToolbar">
   <div class="legend" id="legend">
     <button type="button" class="legend-chip" data-key="water-ok" data-i18n="statusWaterOk" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</button>
     <button type="button" class="legend-chip" data-key="water-today" data-i18n="statusWaterToday" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</button>
@@ -660,6 +744,10 @@ main{
     <button type="button" class="legend-chip" data-key="fert-ok" data-i18n="statusFertOk" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
     <button type="button" class="legend-chip" data-key="fert-due" data-i18n="statusFertDue" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
     <button type="button" class="legend-chip" data-key="fert-off" data-i18n="statusFertOff" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
+  </div>
+  <button type="button" class="mode-toggle fertcal-trigger" id="fertCalTriggerBtn">
+    <span class="fertcal-trigger-icon" aria-hidden="true">📅</span><span data-i18n="fertCalTrigger">Календар підживлення</span>
+  </button>
   </div>
   <div class="filter-empty-state" id="filterEmptyState" hidden>
     <span data-i18n="filterEmptyText">Немає рослин із таким статусом.</span>
@@ -836,6 +924,25 @@ main{
   </div>
 </div>
 
+<!-- Fertilizing Calendar sidebar -->
+<div class="fertcal-backdrop" id="fertCalBackdrop" hidden>
+  <aside class="fertcal-panel" id="fertCalPanel">
+    <button type="button" class="close-btn" id="fertCalCloseBtn" aria-label="Закрити" data-i18n-aria="closeAria">×</button>
+    <h2 class="fertcal-title" id="fertCalTitle" data-i18n="fertCalTitle">Календар підживлення</h2>
+    <div class="fertcal-nav">
+      <button type="button" class="fertcal-nav-btn" id="fertCalPrevBtn" aria-label="Попередній місяць" data-i18n-aria="fertCalPrevAria">‹</button>
+      <span class="fertcal-month-label" id="fertCalMonthLabel"></span>
+      <button type="button" class="fertcal-nav-btn" id="fertCalNextBtn" aria-label="Наступний місяць" data-i18n-aria="fertCalNextAria">›</button>
+    </div>
+    <div class="fertcal-weekdays" id="fertCalWeekdays"></div>
+    <div class="fertcal-grid" id="fertCalGrid"></div>
+    <div class="fertcal-selected-day" id="fertCalSelectedDay">
+      <h4 class="fertcal-selected-day-title" id="fertCalSelectedDayTitle"></h4>
+      <div class="fertcal-plant-list" id="fertCalPlantList"></div>
+    </div>
+  </aside>
+</div>
+
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-left">
@@ -984,7 +1091,17 @@ main{
       undoUpdated: 'Оновлено {what} для {count} {noun}.',
       plantsFew: 'рослини',
       plantsMany: 'рослин',
-      dateLocale: 'uk-UA'
+      dateLocale: 'uk-UA',
+      fertCalTrigger: 'Календар підживлення',
+      fertCalTitle: 'Календар підживлення',
+      fertCalPrevAria: 'Попередній місяць',
+      fertCalNextAria: 'Наступний місяць',
+      fertCalWeekdayMon: 'Пн', fertCalWeekdayTue: 'Вт', fertCalWeekdayWed: 'Ср',
+      fertCalWeekdayThu: 'Чт', fertCalWeekdayFri: 'Пт', fertCalWeekdaySat: 'Сб', fertCalWeekdaySun: 'Нд',
+      fertCalTagLast: 'Було',
+      fertCalTagNext: 'Прогноз',
+      fertCalNoPlants: 'На цю дату нічого не заплановано.',
+      fertCalPickDay: 'Обери день у календарі, щоб побачити рослини.'
     },
     en: {
       addPlantAria: 'Add plant',
@@ -1080,7 +1197,17 @@ main{
       undoUpdated: 'Updated {what} for {count} {noun}.',
       plantsFew: 'plants',
       plantsMany: 'plants',
-      dateLocale: 'en-US'
+      dateLocale: 'en-US',
+      fertCalTrigger: 'Fertilizing calendar',
+      fertCalTitle: 'Fertilizing calendar',
+      fertCalPrevAria: 'Previous month',
+      fertCalNextAria: 'Next month',
+      fertCalWeekdayMon: 'Mo', fertCalWeekdayTue: 'Tu', fertCalWeekdayWed: 'We',
+      fertCalWeekdayThu: 'Th', fertCalWeekdayFri: 'Fr', fertCalWeekdaySat: 'Sa', fertCalWeekdaySun: 'Su',
+      fertCalTagLast: 'Done',
+      fertCalTagNext: 'Predicted',
+      fertCalNoPlants: 'Nothing scheduled for this date.',
+      fertCalPickDay: 'Pick a day on the calendar to see plants.'
     }
   };
 
@@ -1135,6 +1262,7 @@ main{
       var cp = plants.find(function(p){ return p.id === currentComparePlantId; });
       if(cp) renderCompare(cp);
     }
+    if(!fertCalBackdrop.hidden) fertCalRender();
   }
 
   var plants = [];
@@ -1153,6 +1281,22 @@ main{
   var filterEmptyState = document.getElementById('filterEmptyState');
   var legendEl = document.getElementById('legend');
   var filterResetBtn = document.getElementById('filterResetBtn');
+
+  // ---------- Fertilizing Calendar: стан (повністю ізольовано) ----------
+  var calFertViewYear = null;
+  var calFertViewMonth = null;
+  var calFertSelectedDateISO = null;
+  var fertCalBackdrop = document.getElementById('fertCalBackdrop');
+  var fertCalTriggerBtn = document.getElementById('fertCalTriggerBtn');
+  var fertCalCloseBtn = document.getElementById('fertCalCloseBtn');
+  var fertCalPrevBtn = document.getElementById('fertCalPrevBtn');
+  var fertCalNextBtn = document.getElementById('fertCalNextBtn');
+  var fertCalMonthLabel = document.getElementById('fertCalMonthLabel');
+  var fertCalWeekdaysEl = document.getElementById('fertCalWeekdays');
+  var fertCalGridEl = document.getElementById('fertCalGrid');
+  var fertCalSelectedDayTitle = document.getElementById('fertCalSelectedDayTitle');
+  var fertCalPlantListEl = document.getElementById('fertCalPlantList');
+  var legendToolbar = document.getElementById('legendToolbar');
 
   function setStatusFilter(key){
     activeStatusFilter = key;
@@ -1191,6 +1335,177 @@ main{
     var d = new Date(iso + 'T00:00:00');
     return d.toLocaleDateString(t('dateLocale'), {day:'numeric', month:'short'});
   }
+
+  // ---------- Fertilizing Calendar: хелпери (тільки читання plants) ----------
+  function addDaysISO(iso, n){
+    var d = new Date(iso + 'T00:00:00');
+    d.setDate(d.getDate() + n);
+    var tz = d.getTimezoneOffset() * 60000;
+    return new Date(d - tz).toISOString().slice(0,10);
+  }
+  function fertCalDateToISO(d){
+    var tz = d.getTimezoneOffset() * 60000;
+    return new Date(d - tz).toISOString().slice(0,10);
+  }
+  function fertCalBuildMonthGrid(year, month){
+    var todayIso = todayISO();
+    var firstOfMonth = new Date(year, month, 1);
+    var leadingEmpty = (firstOfMonth.getDay() + 6) % 7;
+    var gridStart = new Date(year, month, 1 - leadingEmpty);
+    var weeks = [];
+    var cursor = new Date(gridStart);
+    for(var w = 0; w < 6; w++){
+      var week = [];
+      for(var d = 0; d < 7; d++){
+        var iso = fertCalDateToISO(cursor);
+        week.push({ iso: iso, day: cursor.getDate(), inMonth: (cursor.getMonth() === month), isToday: (iso === todayIso) });
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      weeks.push(week);
+      if(cursor.getMonth() !== month && w >= 3) break;
+    }
+    return weeks;
+  }
+  function fertCalGetPlantDates(plant){
+    var last = plant.lastFertilized || null;
+    var next = null;
+    if(plant.fertEnabled && last){
+      next = addDaysISO(last, plant.fertFreq || 30);
+    }
+    return { last: last, next: next };
+  }
+  function fertCalCollectEventsForMonth(year, month){
+    var monthStart = fertCalDateToISO(new Date(year, month, 1));
+    var monthEnd = fertCalDateToISO(new Date(year, month + 1, 0));
+    var lastMap = {}, nextMap = {};
+    plants.forEach(function(p){
+      var dates = fertCalGetPlantDates(p);
+      if(dates.last && dates.last >= monthStart && dates.last <= monthEnd){
+        if(!lastMap[dates.last]) lastMap[dates.last] = [];
+        lastMap[dates.last].push(p.name);
+      }
+      if(dates.next && dates.next >= monthStart && dates.next <= monthEnd){
+        if(!nextMap[dates.next]) nextMap[dates.next] = [];
+        nextMap[dates.next].push(p.name);
+      }
+    });
+    return { lastMap: lastMap, nextMap: nextMap };
+  }
+  function fertCalGetHighlightLevel(count){
+    if(!count || count <= 0) return 0;
+    if(count === 1) return 1;
+    if(count <= 3) return 2;
+    return 3;
+  }
+  function fertCalGetNamesForDate(iso, lastMap, nextMap){
+    var result = [];
+    (lastMap[iso] || []).forEach(function(name){ result.push({ name: name, type: 'last' }); });
+    (nextMap[iso] || []).forEach(function(name){ result.push({ name: name, type: 'next' }); });
+    return result;
+  }
+
+  // ---------- Fertilizing Calendar: рендер (не викликає render() основного списку) ----------
+  function fertCalRender(){
+    var weeks = fertCalBuildMonthGrid(calFertViewYear, calFertViewMonth);
+    var events = fertCalCollectEventsForMonth(calFertViewYear, calFertViewMonth);
+
+    var monthDate = new Date(calFertViewYear, calFertViewMonth, 1);
+    fertCalMonthLabel.textContent = monthDate.toLocaleDateString(t('dateLocale'), { month:'long', year:'numeric' });
+
+    fertCalWeekdaysEl.innerHTML = '';
+    ['fertCalWeekdayMon','fertCalWeekdayTue','fertCalWeekdayWed','fertCalWeekdayThu','fertCalWeekdayFri','fertCalWeekdaySat','fertCalWeekdaySun'].forEach(function(key){
+      var span = document.createElement('span');
+      span.textContent = t(key);
+      fertCalWeekdaysEl.appendChild(span);
+    });
+
+    fertCalGridEl.innerHTML = '';
+    weeks.forEach(function(week){
+      week.forEach(function(dayCell){
+        var lastNames = events.lastMap[dayCell.iso] || [];
+        var nextNames = events.nextMap[dayCell.iso] || [];
+        var lastLevel = fertCalGetHighlightLevel(lastNames.length);
+        var nextLevel = fertCalGetHighlightLevel(nextNames.length);
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'fertcal-day';
+        if(!dayCell.inMonth) btn.classList.add('fertcal-day-outside');
+        if(dayCell.isToday) btn.classList.add('fertcal-today');
+        if(lastNames.length) btn.classList.add('fertcal-has-last', 'fertcal-level-' + lastLevel);
+        if(nextNames.length) btn.classList.add('fertcal-has-next', 'fertcal-level-' + nextLevel);
+        if(calFertSelectedDateISO === dayCell.iso) btn.classList.add('fertcal-selected');
+        btn.textContent = dayCell.day;
+        btn.dataset.iso = dayCell.iso;
+        btn.addEventListener('click', function(){
+          calFertSelectedDateISO = dayCell.iso;
+          fertCalRender();
+        });
+        fertCalGridEl.appendChild(btn);
+      });
+    });
+
+    var names = calFertSelectedDateISO ? fertCalGetNamesForDate(calFertSelectedDateISO, events.lastMap, events.nextMap) : [];
+    fertCalSelectedDayTitle.textContent = calFertSelectedDateISO ? formatDate(calFertSelectedDateISO) : '';
+    fertCalPlantListEl.innerHTML = '';
+    if(!calFertSelectedDateISO){
+      var hint = document.createElement('div');
+      hint.className = 'fertcal-plant-list-empty';
+      hint.textContent = t('fertCalPickDay');
+      fertCalPlantListEl.appendChild(hint);
+    } else if(names.length === 0){
+      var empty = document.createElement('div');
+      empty.className = 'fertcal-plant-list-empty';
+      empty.textContent = t('fertCalNoPlants');
+      fertCalPlantListEl.appendChild(empty);
+    } else {
+      names.forEach(function(entry){
+        var row = document.createElement('div');
+        row.className = 'fertcal-plant-row';
+        var tag = document.createElement('span');
+        tag.className = 'fertcal-plant-row-tag ' + (entry.type === 'last' ? 'fertcal-tag-last' : 'fertcal-tag-next');
+        tag.textContent = entry.type === 'last' ? t('fertCalTagLast') : t('fertCalTagNext');
+        var nameEl = document.createElement('span');
+        nameEl.className = 'fertcal-plant-row-name';
+        nameEl.textContent = entry.name;
+        row.appendChild(tag);
+        row.appendChild(nameEl);
+        fertCalPlantListEl.appendChild(row);
+      });
+    }
+  }
+
+  function fertCalOpen(){
+    var today = new Date(todayISO() + 'T00:00:00');
+    calFertViewYear = today.getFullYear();
+    calFertViewMonth = today.getMonth();
+    calFertSelectedDateISO = todayISO();
+    fertCalRender();
+    fertCalBackdrop.hidden = false;
+  }
+  function fertCalClose(){
+    fertCalBackdrop.hidden = true;
+  }
+
+  fertCalTriggerBtn.addEventListener('click', fertCalOpen);
+  fertCalCloseBtn.addEventListener('click', fertCalClose);
+  fertCalPrevBtn.addEventListener('click', function(){
+    var d = new Date(calFertViewYear, calFertViewMonth - 1, 1);
+    calFertViewYear = d.getFullYear();
+    calFertViewMonth = d.getMonth();
+    calFertSelectedDateISO = null;
+    fertCalRender();
+  });
+  fertCalNextBtn.addEventListener('click', function(){
+    var d = new Date(calFertViewYear, calFertViewMonth + 1, 1);
+    calFertViewYear = d.getFullYear();
+    calFertViewMonth = d.getMonth();
+    calFertSelectedDateISO = null;
+    fertCalRender();
+  });
+  var fertCalMouseDownOnBackdrop = false;
+  fertCalBackdrop.addEventListener('mousedown', function(e){ fertCalMouseDownOnBackdrop = (e.target === fertCalBackdrop); });
+  fertCalBackdrop.addEventListener('click', function(e){ if(e.target === fertCalBackdrop && fertCalMouseDownOnBackdrop) fertCalClose(); });
 
   function waterStatus(plant){
     var freq = plant.waterFreq || 7;
@@ -1359,13 +1674,13 @@ main{
       emptyState.hidden = false;
       grid.hidden = true;
       filterEmptyState.hidden = true;
-      legendEl.hidden = true;
+      legendToolbar.hidden = true;
       return;
     }
     emptyState.hidden = true;
 
     if(reorderMode){
-      legendEl.hidden = true;
+      legendToolbar.hidden = true;
       filterEmptyState.hidden = true;
       grid.hidden = false;
       grid.innerHTML = '';
@@ -1373,7 +1688,7 @@ main{
       return;
     }
 
-    legendEl.hidden = false;
+    legendToolbar.hidden = false;
 
     var visiblePlants = plants;
     if(activeStatusFilter){
@@ -2202,6 +2517,10 @@ if(homeLogoBtn){
     }
     if(activeStatusFilter){
       setStatusFilter(null);
+      changed = true;
+    }
+    if(!fertCalBackdrop.hidden){
+      fertCalClose();
       changed = true;
     }
     if(changed) render();
