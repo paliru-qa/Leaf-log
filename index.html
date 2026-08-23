@@ -665,13 +665,14 @@ main{
   border-radius:999px;
   background:var(--fert-due-bg);
   overflow:hidden;
-  transition:filter .15s ease;
+  opacity:.85;
+  transition:opacity .15s ease;
   z-index:2;
 }
-.fertcal-trigger:hover{ filter:brightness(.85); }
+.fertcal-trigger:hover{ opacity:1; }
 .fertcal-trigger-icon{
-  width:34px;
-  height:34px;
+  width:40px;
+  height:27px;
   display:block;
   flex-shrink:0;
   background-color:var(--fert-due-text);
