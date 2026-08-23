@@ -246,6 +246,10 @@ input,textarea{ font-family:'Manrope', sans-serif; }
     gap:10px;
   }
 
+  main{
+    padding:22px 16px 60px;
+  }
+
   .topbar-row-1{
     grid-template-columns:auto 1fr auto;
     align-items:center;
@@ -645,7 +649,7 @@ main{
 }
 
 /* ---------- Fertilizing Calendar ---------- */
-.legend{ position:relative; padding-right:54px; }
+.legend{ position:relative; padding-right:64px; }
 .fertcal-trigger{
   position:absolute;
   top:8px;
@@ -658,19 +662,27 @@ main{
   height:36px;
   padding:0;
   border:none;
-  border-radius:50%;
-  background:var(--fert-due-text);
+  border-radius:999px;
+  background:var(--fert-due-bg);
   overflow:hidden;
   transition:filter .15s ease;
   z-index:2;
 }
-.fertcal-trigger:hover{ filter:brightness(1.15); }
+.fertcal-trigger:hover{ filter:brightness(.85); }
 .fertcal-trigger-icon{
   width:34px;
   height:34px;
   display:block;
-  object-fit:contain;
   flex-shrink:0;
+  background-color:var(--fert-due-text);
+  -webkit-mask-image:url('assets/icons/calendar.png');
+  mask-image:url('assets/icons/calendar.png');
+  -webkit-mask-size:contain;
+  mask-size:contain;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-position:center;
 }
 
 .fertcal-overlay{ position:fixed; inset:0; background:rgba(28,26,22,.42); z-index:70; display:flex; justify-content:flex-end; }
@@ -763,7 +775,7 @@ main{
     <button type="button" class="legend-chip" data-key="fert-due" data-i18n="statusFertDue" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
     <button type="button" class="legend-chip" data-key="fert-off" data-i18n="statusFertOff" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
     <button type="button" class="fertcal-trigger" id="fertCalTriggerBtn" data-i18n-aria="fertCalTrigger" aria-label="Календар підживлення">
-      <img class="fertcal-trigger-icon" src="assets/icons/calendar.png" alt="">
+      <span class="fertcal-trigger-icon" aria-hidden="true"></span>
     </button>
   </div>
   <div class="filter-empty-state" id="filterEmptyState" hidden>
