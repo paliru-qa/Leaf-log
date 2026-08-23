@@ -246,6 +246,10 @@ input,textarea{ font-family:'Manrope', sans-serif; }
     gap:10px;
   }
 
+  main{
+    padding:22px 16px 60px;
+  }
+
   .topbar-row-1{
     grid-template-columns:auto 1fr auto;
     align-items:center;
@@ -334,7 +338,7 @@ main{
 
 .plant-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; display:flex; flex-direction:column; position:relative; }
 .plant-card.selected{ outline:2px solid var(--accent); outline-offset:-1px; }
-.card-select-box{ position:absolute; top:8px; left:8px; width:24px; height:24px; border-radius:7px; background:rgba(255,255,255,.9); border:1.5px solid var(--border); z-index:5; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:var(--accent); }
+.card-select-box{ position:absolute; top:8px; left:8px; width:24px; height:24px; border-radius:var(--radius-sm); background:rgba(255,255,255,.9); border:1.5px solid var(--border); z-index:5; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:var(--accent); }
 .card-select-box.checked{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
 .bulk-bar{ position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--accent-dark); color:#fff; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; box-shadow:0 -6px 20px rgba(0,0,0,.15); }
@@ -369,7 +373,7 @@ main{
   }
 }
 
-.undo-toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:65; background:#211f1c; color:#fff; padding:12px 14px 12px 18px; border-radius:12px; display:flex; align-items:center; gap:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); max-width:92vw; }
+.undo-toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:65; background:#211f1c; color:#fff; padding:12px 14px 12px 18px; border-radius:var(--radius-sm); display:flex; align-items:center; gap:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); max-width:92vw; }
 .undo-toast span{ font-size:13.5px; }
 .undo-toast-actions{ display:flex; align-items:center; gap:6px; flex-shrink:0; }
 .undo-toast-actions button{ white-space:nowrap; }
@@ -390,7 +394,7 @@ main{
   right:8px;
   width:28px;
   height:28px;
-  border-radius:8px;
+  border-radius:50%;
   background:rgba(255,255,255,.92);
   border:1px solid var(--border);
   color:var(--text-muted);
@@ -439,7 +443,7 @@ main{
 
 .card-instructions{ margin-top:2px; padding:9px 10px; border-radius:var(--radius-sm); background:var(--green-soft); font-size:13px; line-height:1.4; color:var(--green-dark); white-space:pre-wrap; }
 .card-quick-actions{ display:flex; gap:6px; margin-top:4px; }
-.qa-btn{ flex:1; font-size:11.5px; font-weight:700; padding:7px 4px; border-radius:8px; border:1px solid var(--border); background:#fff; }
+.qa-btn{ flex:1; font-size:11.5px; font-weight:700; padding:7px 4px; border-radius:999px; border:1px solid var(--border); background:#fff; }
 .qa-btn.water{ color:var(--water-ok-text); }
 .qa-btn.fert{ color:var(--fert-ok-text); }
 
@@ -472,7 +476,7 @@ main{
 .detail-photo-wrap .no-photo img{ width:46%; height:46%; object-fit:contain; opacity:.26; display:block; }
 .detail-photo-badges{ position:absolute; top:10px; left:10px; display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
 .detail-actions{ display:flex; flex-direction:column; gap:8px; width:150px; }
-.action-btn{ width:150px; padding:10px 0; border-radius:10px; border:1px solid var(--border); background:#fff; font-weight:700; font-size:13.5px; }
+.action-btn{ width:150px; padding:10px 0; border-radius:999px; border:1px solid var(--border); background:#fff; font-weight:700; font-size:13.5px; }
 .action-btn.water-action{ color:var(--water-ok-text); }
 .action-btn.fert-action{ color:var(--fert-ok-text); }
 .action-btn.edit-action{ color:var(--text-muted); }
@@ -497,9 +501,9 @@ main{
 .question-block .ai-generate-btn{ margin-top:8px; }
 .ai-answer-box{ margin-top:10px; padding:12px 14px; border-radius:var(--radius-sm); background:var(--green-soft); font-size:14px; line-height:1.55; white-space:pre-wrap; color:var(--green-dark); }
 
-.date-popover{ position:fixed; z-index:80; background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.15); padding:10px; display:flex; gap:8px; align-items:center; }
-.date-popover input[type=date]{ border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'Manrope', sans-serif; color:var(--text); background:#fff; }
-.date-popover #datePopoverConfirm{ background:var(--accent); color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:13.5px; font-weight:700; white-space:nowrap; }
+.date-popover{ position:fixed; z-index:80; background:#fff; border:1px solid var(--border); border-radius:var(--radius-sm); box-shadow:0 12px 30px rgba(0,0,0,.15); padding:10px; display:flex; gap:8px; align-items:center; }
+.date-popover input[type=date]{ border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 10px; font-size:13.5px; font-family:'Manrope', sans-serif; color:var(--text); background:#fff; }
+.date-popover #datePopoverConfirm{ background:var(--accent); color:#fff; border:none; border-radius:999px; padding:8px 14px; font-size:13.5px; font-weight:700; white-space:nowrap; }
 
 .form-panel h2{ margin-bottom:18px; font-size:21px; padding-right:20px; }
 .field{ margin-bottom:16px; }
@@ -509,26 +513,26 @@ main{
 .ai-generate-btn{ font-size:12px; font-weight:700; color:var(--accent-dark); background:var(--accent-soft); border:1px solid var(--accent); border-radius:999px; padding:5px 12px; white-space:nowrap; }
 .ai-generate-btn:disabled{ opacity:.6; cursor:default; }
 .field input.ai-loading{ background:var(--accent-soft); border-color:var(--accent); transition:background .2s ease; }
-.field input[type=text], .field input[type=number], .field input[type=date], .field textarea{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px; background:#fff; color:var(--text); }
+.field input[type=text], .field input[type=number], .field input[type=date], .field textarea{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-sm); font-size:14px; background:#fff; color:var(--text); }
 .field textarea{ min-height:120px; resize:vertical; font-family:'Manrope', sans-serif; }
 .field-row{ display:flex; gap:14px; flex-wrap:wrap; }
 .field-row .field{ flex:1; min-width:140px; }
 .photo-upload{ display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; }
 .photo-thumbs{ display:flex; gap:8px; flex-wrap:wrap; }
-.photo-thumb{ position:relative; width:74px; height:74px; border-radius:10px; overflow:hidden; background:var(--accent-soft); flex-shrink:0; }
+.photo-thumb{ position:relative; width:74px; height:74px; border-radius:var(--radius-sm); overflow:hidden; background:var(--accent-soft); flex-shrink:0; }
 .photo-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 .photo-thumb .thumb-remove{ position:absolute; top:2px; right:2px; width:20px; height:20px; border-radius:50%; background:rgba(20,20,18,.7); color:#fff; border:none; font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; }
 .photo-thumb .thumb-date{ position:absolute; bottom:0; left:0; right:0; background:rgba(20,20,18,.6); color:#fff; font-size:10px; text-align:center; padding:1px 0; }
-.photo-add-tile{ width:74px; height:74px; border-radius:10px; border:1.5px dashed var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--text-muted); flex-shrink:0; }
+.photo-add-tile{ width:74px; height:74px; border-radius:var(--radius-sm); border:1.5px dashed var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--text-muted); flex-shrink:0; }
 
 .detail-gallery{ display:flex; gap:8px; margin-top:10px; overflow-x:auto; padding-bottom:2px; width:100%; }
-.detail-gallery .gthumb{ position:relative; width:54px; height:54px; border-radius:8px; overflow:hidden; flex-shrink:0; border:2px solid transparent; }
+.detail-gallery .gthumb{ position:relative; width:54px; height:54px; border-radius:var(--radius-sm); overflow:hidden; flex-shrink:0; border:2px solid transparent; }
 .detail-gallery .gthumb.active{ border-color:var(--accent); }
 .detail-gallery .gthumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 .compare-link{ font-size:12.5px; font-weight:700; color:var(--accent-dark); text-decoration:underline; background:none; border:none; margin-top:8px; padding:0; }
 
 .lightbox-overlay{ position:fixed; inset:0; background:rgba(10,10,8,.9); z-index:90; display:flex; align-items:center; justify-content:center; padding:20px; }
-.lightbox-overlay img{ max-width:100%; max-height:88vh; border-radius:10px; object-fit:contain; }
+.lightbox-overlay img{ max-width:100%; max-height:88vh; border-radius:var(--radius-sm); object-fit:contain; }
 .lightbox-close{ position:absolute; top:16px; right:20px; background:none; border:none; color:#fff; font-size:30px; line-height:1; }
 
 .compare-panel{ background:var(--surface); border-radius:20px; max-width:820px; width:100%; padding:26px; position:relative; touch-action:pan-y; }
@@ -552,11 +556,11 @@ main{
   .compare-arrow{ padding:0; height:auto; }
 }
 .compare-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:10px; min-width:0; }
-.compare-col img{ width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:14px; background:var(--accent-soft); border:1px solid var(--border-soft); box-shadow:0 8px 22px rgba(30,25,15,.08); }
+.compare-col img{ width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:var(--radius); background:var(--accent-soft); border:1px solid var(--border-soft); box-shadow:0 8px 22px rgba(30,25,15,.08); }
 .compare-label{ font-size:11px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--accent-dark); background:var(--accent-soft); padding:4px 12px; border-radius:999px; }
 .compare-arrow{ flex-shrink:0; width:32px; height:32px; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:20px; }
 @media(max-width:640px){ .compare-arrow{ transform:rotate(90deg); width:auto; height:auto; padding:2px 0; } }
-.upload-btn{ border:1px solid var(--border); background:#fff; padding:9px 14px; border-radius:9px; font-size:13px; font-weight:600; }
+.upload-btn{ border:1px solid var(--border); background:#fff; padding:9px 14px; border-radius:999px; font-size:13px; font-weight:600; }
 .checkbox-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
 .checkbox-row input{ width:16px; height:16px; }
 .checkbox-row label{ margin:0; text-transform:none; font-weight:500; font-size:13.5px; color:var(--text); }
@@ -644,6 +648,83 @@ main{
   }
 }
 
+/* ---------- Fertilizing Calendar ---------- */
+.legend{ position:relative; padding-right:64px; }
+.fertcal-trigger{
+  position:absolute;
+  top:8px;
+  right:8px;
+  flex-shrink:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:48px;
+  height:36px;
+  padding:0;
+  border:none;
+  border-radius:999px;
+  background:var(--fert-due-bg);
+  overflow:hidden;
+  opacity:.85;
+  transition:opacity .15s ease;
+  z-index:2;
+}
+.fertcal-trigger:hover{ opacity:1; }
+.fertcal-trigger-icon{
+  width:40px;
+  height:27px;
+  display:block;
+  flex-shrink:0;
+  background-color:var(--fert-due-text);
+  -webkit-mask-image:url('assets/icons/calendar.png');
+  mask-image:url('assets/icons/calendar.png');
+  -webkit-mask-size:contain;
+  mask-size:contain;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-position:center;
+}
+
+.fertcal-overlay{ position:fixed; inset:0; background:rgba(28,26,22,.42); z-index:70; display:flex; justify-content:flex-end; }
+.fertcal-sidebar{ background:var(--surface); width:100%; max-width:360px; height:100%; overflow-y:auto; padding:22px 20px 30px; position:relative; box-shadow:-10px 0 30px rgba(0,0,0,.14); }
+.fertcal-sidebar-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; padding-right:8px; }
+.fertcal-sidebar-header h3{ font-size:17px; }
+.fertcal-close{ background:none; border:none; font-size:22px; color:var(--text-muted); line-height:1; padding:6px; margin:-6px -6px -6px 0; }
+.fertcal-nav{ display:flex; align-items:center; justify-content:space-between; margin:14px 0 12px; }
+.fertcal-nav-btn{ width:32px; height:32px; border-radius:50%; border:1px solid var(--border); background:#fff; font-size:16px; color:var(--text); display:flex; align-items:center; justify-content:center; }
+.fertcal-month-label{ font-size:14.5px; font-weight:700; text-transform:capitalize; }
+.fertcal-weekdays{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px; margin-bottom:4px; }
+.fertcal-weekdays span{ font-size:10.5px; font-weight:700; text-align:center; color:var(--text-muted); text-transform:uppercase; }
+.fertcal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.fertcal-day{ position:relative; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:600; color:var(--text); border-radius:var(--radius-sm); cursor:pointer; background:transparent; border:2px solid transparent; }
+.fertcal-day.fertcal-empty{ cursor:default; visibility:hidden; }
+.fertcal-day.fertcal-today{ border-color:var(--accent); }
+.fertcal-day.fertcal-selected{ outline:2px solid var(--text); outline-offset:1px; }
+.fertcal-day.fertcal-has-last.fertcal-level-1{ background:color-mix(in srgb, var(--fert-ok-bg) 25%, transparent); }
+.fertcal-day.fertcal-has-last.fertcal-level-2{ background:color-mix(in srgb, var(--fert-ok-bg) 45%, transparent); }
+.fertcal-day.fertcal-has-last.fertcal-level-3{ background:color-mix(in srgb, var(--fert-ok-bg) 65%, transparent); }
+.fertcal-day.fertcal-has-last.fertcal-level-4{ background:color-mix(in srgb, var(--fert-ok-bg) 85%, transparent); }
+.fertcal-day.fertcal-has-last.fertcal-level-5{ background:var(--fert-ok-bg); }
+.fertcal-day.fertcal-has-next.fertcal-level-1{ background:color-mix(in srgb, var(--fert-due-bg) 25%, transparent); }
+.fertcal-day.fertcal-has-next.fertcal-level-2{ background:color-mix(in srgb, var(--fert-due-bg) 45%, transparent); }
+.fertcal-day.fertcal-has-next.fertcal-level-3{ background:color-mix(in srgb, var(--fert-due-bg) 65%, transparent); }
+.fertcal-day.fertcal-has-next.fertcal-level-4{ background:color-mix(in srgb, var(--fert-due-bg) 85%, transparent); }
+.fertcal-day.fertcal-has-next.fertcal-level-5{ background:var(--fert-due-bg); }
+.fertcal-day.fertcal-has-last-dot::after{ content:''; position:absolute; bottom:3px; right:3px; width:5px; height:5px; border-radius:50%; background:var(--fert-ok-text); }
+.fertcal-selected-block{ margin-top:20px; padding-top:16px; border-top:1px solid var(--border-soft); }
+.fertcal-selected-date{ font-size:12px; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; }
+.fertcal-selected-empty{ font-size:13.5px; color:var(--text-muted); }
+.fertcal-plant-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--border-soft); }
+.fertcal-plant-row:last-child{ border-bottom:none; }
+.fertcal-plant-name{ font-size:13.5px; font-weight:600; }
+.fertcal-plant-tag{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; flex-shrink:0; }
+.fertcal-plant-tag.is-last{ background:var(--fert-ok-bg); color:var(--fert-ok-text); }
+.fertcal-plant-tag.is-next{ background:var(--fert-due-bg); color:var(--fert-due-text); }
+@media(max-width:520px){
+  .fertcal-sidebar{ max-width:100%; }
+}
+
 [hidden]{ display:none !important; }
 </style>
 </head>
@@ -694,6 +775,9 @@ main{
     <button type="button" class="legend-chip" data-key="fert-ok" data-i18n="statusFertOk" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
     <button type="button" class="legend-chip" data-key="fert-due" data-i18n="statusFertDue" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
     <button type="button" class="legend-chip" data-key="fert-off" data-i18n="statusFertOff" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
+    <button type="button" class="fertcal-trigger" id="fertCalTriggerBtn" data-i18n-aria="fertCalTrigger" aria-label="Календар підживлення">
+      <span class="fertcal-trigger-icon" aria-hidden="true"></span>
+    </button>
   </div>
   <div class="filter-empty-state" id="filterEmptyState" hidden>
     <span data-i18n="filterEmptyText">Немає рослин із таким статусом.</span>
@@ -849,6 +933,24 @@ main{
       <h2 class="compare-title"><span id="compareplantName"></span><span class="compare-subtitle" data-i18n="compareSubtitle">до і після</span></h2>
     </div>
     <div class="compare-grid" id="compareGrid"></div>
+  </div>
+</div>
+
+<!-- Fertilizing Calendar sidebar -->
+<div class="fertcal-overlay" id="fertCalOverlay" hidden>
+  <div class="fertcal-sidebar" id="fertCalSidebar">
+    <div class="fertcal-sidebar-header">
+      <h3 data-i18n="fertCalTitle">Календар підживлення</h3>
+      <button type="button" class="fertcal-close" id="fertCalCloseBtn" data-i18n-aria="closeAria" aria-label="Закрити">×</button>
+    </div>
+    <div class="fertcal-nav">
+      <button type="button" class="fertcal-nav-btn" id="fertCalPrevBtn" aria-label="‹">‹</button>
+      <span class="fertcal-month-label" id="fertCalMonthLabel"></span>
+      <button type="button" class="fertcal-nav-btn" id="fertCalNextBtn" aria-label="›">›</button>
+    </div>
+    <div class="fertcal-weekdays" id="fertCalWeekdays"></div>
+    <div class="fertcal-grid" id="fertCalGrid"></div>
+    <div class="fertcal-selected-block" id="fertCalSelectedList"></div>
   </div>
 </div>
 
@@ -1019,7 +1121,11 @@ main{
       undoUpdated: 'Оновлено {what} для {count} {noun}.',
       plantsFew: 'рослини',
       plantsMany: 'рослин',
-      dateLocale: 'uk-UA'
+      dateLocale: 'uk-UA',
+      fertCalTrigger: 'Календар підживлення',
+      fertCalTitle: 'Календар підживлення',
+      fertCalHint: 'Обери дату в календарі, щоб побачити рослини.',
+      fertCalEmptyDate: 'На цю дату немає підживлень.'
     },
     en: {
       addPlantAria: 'Add plant',
@@ -1116,7 +1222,11 @@ main{
       undoUpdated: 'Updated {what} for {count} {noun}.',
       plantsFew: 'plants',
       plantsMany: 'plants',
-      dateLocale: 'en-US'
+      dateLocale: 'en-US',
+      fertCalTrigger: 'Fertilizing Calendar',
+      fertCalTitle: 'Fertilizing Calendar',
+      fertCalHint: 'Select a date on the calendar to see plants.',
+      fertCalEmptyDate: 'No fertilizing on this date.'
     }
   };
 
@@ -1171,6 +1281,7 @@ main{
       var cp = plants.find(function(p){ return p.id === currentComparePlantId; });
       if(cp) renderCompare(cp);
     }
+    if(fertCalOpen) fertCalRender();
   }
 
   var plants = [];
@@ -1250,6 +1361,204 @@ main{
     span.textContent = status.label;
     return span;
   }
+
+  // ---------- Fertilizing Calendar ----------
+  var fertCalOpen = false;
+  var calFertViewYear = 0, calFertViewMonth = 0;
+  var fertCalSelectedDate = null;
+  var FERTCAL_WEEKDAYS = { uk: ['Пн','Вт','Ср','Чт','Пт','Сб','Нд'], en: ['Mo','Tu','We','Th','Fr','Sa','Su'] };
+
+  var fertCalTriggerBtn = document.getElementById('fertCalTriggerBtn');
+  var fertCalOverlay = document.getElementById('fertCalOverlay');
+  var fertCalCloseBtn = document.getElementById('fertCalCloseBtn');
+  var fertCalPrevBtn = document.getElementById('fertCalPrevBtn');
+  var fertCalNextBtn = document.getElementById('fertCalNextBtn');
+  var fertCalMonthLabel = document.getElementById('fertCalMonthLabel');
+  var fertCalWeekdaysEl = document.getElementById('fertCalWeekdays');
+  var fertCalGrid = document.getElementById('fertCalGrid');
+  var fertCalSelectedList = document.getElementById('fertCalSelectedList');
+
+  // Максимальний рівень підсвітки — 5. Досягається вже при 10+ рослинах на
+  // одну дату (тобто і 10, і 30 рослин виглядають однаково інтенсивно) —
+  // подальше збільшення кількості не додає візуальної інформації.
+  function fertCalGetHighlightLevel(count){
+    if(!count || count <= 0) return 0;
+    if(count === 1) return 1;
+    if(count === 2) return 2;
+    if(count <= 4) return 3;
+    if(count <= 9) return 4;
+    return 5;
+  }
+
+  function fertCalDateStr(y, m, d){
+    var mm = String(m + 1).padStart(2, '0');
+    var dd = String(d).padStart(2, '0');
+    return y + '-' + mm + '-' + dd;
+  }
+
+  function fertCalAddDays(iso, days){
+    var d = new Date(iso + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  // Тільки рослини з увімкненим добривом беруть участь у календарі (FC-011)
+  function fertCalBuildMaps(){
+    var lastMap = {}, nextMap = {};
+    plants.forEach(function(p){
+      if(!p.fertEnabled || !p.lastFertilized) return;
+      if(!lastMap[p.lastFertilized]) lastMap[p.lastFertilized] = [];
+      lastMap[p.lastFertilized].push(p.name);
+      var freq = p.fertFreq || 30;
+      var nextDate = fertCalAddDays(p.lastFertilized, freq);
+      if(!nextMap[nextDate]) nextMap[nextDate] = [];
+      nextMap[nextDate].push(p.name);
+    });
+    return { lastMap: lastMap, nextMap: nextMap };
+  }
+
+  function fertCalRenderWeekdays(){
+    fertCalWeekdaysEl.innerHTML = '';
+    var names = FERTCAL_WEEKDAYS[currentLang] || FERTCAL_WEEKDAYS.uk;
+    names.forEach(function(n){
+      var s = document.createElement('span');
+      s.textContent = n;
+      fertCalWeekdaysEl.appendChild(s);
+    });
+  }
+
+  function fertCalPlantRow(name, type){
+    var row = document.createElement('div');
+    row.className = 'fertcal-plant-row';
+    var nameEl = document.createElement('span');
+    nameEl.className = 'fertcal-plant-name';
+    nameEl.textContent = name;
+    row.appendChild(nameEl);
+    var tag = document.createElement('span');
+    tag.className = 'fertcal-plant-tag ' + (type === 'last' ? 'is-last' : 'is-next');
+    tag.textContent = type === 'last' ? t('statusFertOk') : t('statusFertDue');
+    row.appendChild(tag);
+    return row;
+  }
+
+  function fertCalRenderSelectedList(){
+    fertCalSelectedList.innerHTML = '';
+    if(!fertCalSelectedDate){
+      var hint = document.createElement('div');
+      hint.className = 'fertcal-selected-empty';
+      hint.textContent = t('fertCalHint');
+      fertCalSelectedList.appendChild(hint);
+      return;
+    }
+    var maps = fertCalBuildMaps();
+    var lastNames = maps.lastMap[fertCalSelectedDate] || [];
+    var nextNames = maps.nextMap[fertCalSelectedDate] || [];
+
+    var dateLabel = document.createElement('div');
+    dateLabel.className = 'fertcal-selected-date';
+    dateLabel.textContent = formatDate(fertCalSelectedDate);
+    fertCalSelectedList.appendChild(dateLabel);
+
+    if(!lastNames.length && !nextNames.length){
+      var empty = document.createElement('div');
+      empty.className = 'fertcal-selected-empty';
+      empty.textContent = t('fertCalEmptyDate');
+      fertCalSelectedList.appendChild(empty);
+      return;
+    }
+
+    lastNames.forEach(function(name){ fertCalSelectedList.appendChild(fertCalPlantRow(name, 'last')); });
+    nextNames.forEach(function(name){ fertCalSelectedList.appendChild(fertCalPlantRow(name, 'next')); });
+  }
+
+  function fertCalRender(){
+    fertCalRenderWeekdays();
+
+    var monthDate = new Date(calFertViewYear, calFertViewMonth, 1);
+    var monthLabelText = monthDate.toLocaleDateString(t('dateLocale'), { month:'long', year:'numeric' });
+    // Прибираємо суфікс "р." після року в українській локалі
+    monthLabelText = monthLabelText.replace(/\s*р\.?\s*$/i, '');
+    monthLabelText = monthLabelText.charAt(0).toUpperCase() + monthLabelText.slice(1);
+    fertCalMonthLabel.textContent = monthLabelText;
+
+    var maps = fertCalBuildMaps();
+    var todayIso = todayISO();
+    var firstDay = new Date(calFertViewYear, calFertViewMonth, 1);
+    var startOffset = (firstDay.getDay() + 6) % 7; // понеділок = 0
+    var daysInMonth = new Date(calFertViewYear, calFertViewMonth + 1, 0).getDate();
+
+    fertCalGrid.innerHTML = '';
+    for(var i = 0; i < startOffset; i++){
+      var empty = document.createElement('div');
+      empty.className = 'fertcal-day fertcal-empty';
+      fertCalGrid.appendChild(empty);
+    }
+    for(var d = 1; d <= daysInMonth; d++){
+      var dateStr = fertCalDateStr(calFertViewYear, calFertViewMonth, d);
+      var cell = document.createElement('div');
+      cell.className = 'fertcal-day';
+      cell.textContent = d;
+      cell.dataset.date = dateStr;
+
+      var lastNames = maps.lastMap[dateStr] || [];
+      var nextNames = maps.nextMap[dateStr] || [];
+
+      if(nextNames.length){
+        cell.classList.add('fertcal-has-next', 'fertcal-level-' + fertCalGetHighlightLevel(nextNames.length));
+        if(lastNames.length) cell.classList.add('fertcal-has-last-dot');
+      } else if(lastNames.length){
+        cell.classList.add('fertcal-has-last', 'fertcal-level-' + fertCalGetHighlightLevel(lastNames.length));
+      }
+
+      if(dateStr === todayIso) cell.classList.add('fertcal-today');
+      if(dateStr === fertCalSelectedDate) cell.classList.add('fertcal-selected');
+
+      cell.addEventListener('click', function(){
+        fertCalSelectedDate = this.dataset.date;
+        fertCalGrid.querySelectorAll('.fertcal-day').forEach(function(c){ c.classList.remove('fertcal-selected'); });
+        this.classList.add('fertcal-selected');
+        fertCalRenderSelectedList();
+      });
+
+      fertCalGrid.appendChild(cell);
+    }
+
+    fertCalRenderSelectedList();
+  }
+
+  function openFertCal(){
+    var now = new Date();
+    calFertViewYear = now.getFullYear();
+    calFertViewMonth = now.getMonth();
+    fertCalSelectedDate = null;
+    fertCalOpen = true;
+    fertCalOverlay.hidden = false;
+    fertCalRender();
+  }
+  function closeFertCal(){
+    fertCalOpen = false;
+    fertCalOverlay.hidden = true;
+  }
+
+  fertCalTriggerBtn.addEventListener('click', openFertCal);
+  fertCalCloseBtn.addEventListener('click', closeFertCal);
+  var fertCalMouseDownOnBackdrop = false;
+  fertCalOverlay.addEventListener('mousedown', function(e){ fertCalMouseDownOnBackdrop = (e.target === fertCalOverlay); });
+  fertCalOverlay.addEventListener('click', function(e){ if(e.target === fertCalOverlay && fertCalMouseDownOnBackdrop) closeFertCal(); });
+
+  fertCalPrevBtn.addEventListener('click', function(){
+    calFertViewMonth--;
+    if(calFertViewMonth < 0){ calFertViewMonth = 11; calFertViewYear--; }
+    fertCalRender();
+  });
+  fertCalNextBtn.addEventListener('click', function(){
+    calFertViewMonth++;
+    if(calFertViewMonth > 11){ calFertViewMonth = 0; calFertViewYear++; }
+    fertCalRender();
+  });
 
   async function loadPlants(){
     plants = null;
@@ -1391,6 +1700,7 @@ main{
       renderPending = true;
       return;
     }
+    if(fertCalOpen) fertCalRender();
     if(plants.length === 0){
       emptyState.hidden = false;
       grid.hidden = true;
@@ -2234,6 +2544,10 @@ if(homeLogoBtn){
     }
     if(activeStatusFilter){
       setStatusFilter(null);
+      changed = true;
+    }
+    if(fertCalOpen){
+      closeFertCal();
       changed = true;
     }
     if(changed) render();
