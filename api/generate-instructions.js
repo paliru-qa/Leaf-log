@@ -115,7 +115,8 @@ export default async function handler(req, res) {
           { role: 'user', content: userPrompt }
         ],
         temperature: 0.15,
-        max_tokens: 360
+        max_completion_tokens: 700,
+        reasoning_effort: 'low'
       })
     });
     const data = await r.json();
@@ -134,18 +135,33 @@ export default async function handler(req, res) {
     ? [process.env.GROQ_MODEL]
     : ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 
+  function extractText(result){
+    try {
+      return (result.data.choices[0].message.content || '').trim();
+    } catch (e) {
+      return '';
+    }
+  }
+
   try {
     var lastResult = null;
+    var text = '';
     for (var m = 0; m < modelsToTry.length; m++) {
       var model = modelsToTry[m];
       for (var attempt = 0; attempt < 2; attempt++) {
         lastResult = await callGroq(model);
-        if (lastResult.ok) break;
-        if (!isOverloaded(lastResult)) break;
+        if (lastResult.ok) {
+          text = extractText(lastResult);
+          if (text) break; // маємо непорожню відповідь — готово
+          // reasoning-модель (gpt-oss) інколи витрачає весь ліміт токенів на
+          // приховані "роздуми" і не встигає видати фінальний текст — це не
+          // помилка HTTP, тому пробуємо ще раз / іншу модель, а не здаємось одразу
+        } else if (!isOverloaded(lastResult)) {
+          break;
+        }
         await sleep(700);
       }
-      if (lastResult.ok) break;
-      if (!isOverloaded(lastResult)) break;
+      if (text) break;
     }
 
     if (!lastResult.ok) {
@@ -156,14 +172,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: errMsg });
     }
 
-    var text = '';
-    try {
-      text = lastResult.data.choices[0].message.content.trim();
-    } catch (e) {
-      text = '';
-    }
     if (!text) {
-      return res.status(500).json({ error: 'Groq повернув порожню відповідь' });
+      return res.status(500).json({ error: 'Groq повернув порожню відповідь після кількох спроб. Спробуй ще раз за хвилину.' });
     }
 
     var parsed = extractJson(text);
