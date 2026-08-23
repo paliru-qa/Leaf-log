@@ -645,26 +645,29 @@ main{
 }
 
 /* ---------- Fertilizing Calendar ---------- */
-.legend-toolbar{ display:flex; align-items:center; gap:10px; margin:0 0 14px; }
-.legend-toolbar .legend{ flex:1; min-width:0; margin:0; }
+.legend{ position:relative; padding-right:54px; }
 .fertcal-trigger{
+  position:absolute;
+  top:8px;
+  right:8px;
   flex-shrink:0;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  width:48px;
-  height:36px;
+  width:34px;
+  height:34px;
   padding:0;
-  border:1px solid transparent;
-  border-radius:999px;
-  background:var(--fert-due-text);
+  border:none;
+  border-radius:50%;
+  background:var(--fert-ok-text);
   overflow:hidden;
-  transition:background .15s ease;
+  transition:filter .15s ease;
+  z-index:2;
 }
-.fertcal-trigger:hover{ background:#732c47; }
+.fertcal-trigger:hover{ filter:brightness(1.15); }
 .fertcal-trigger-icon{
-  width:36px;
-  height:36px;
+  width:20px;
+  height:20px;
   display:block;
   object-fit:contain;
   flex-shrink:0;
@@ -752,15 +755,13 @@ main{
 </div>
 
 <main>
-  <div class="legend-toolbar" id="legendToolbar">
-    <div class="legend" id="legend">
-      <button type="button" class="legend-chip" data-key="water-ok" data-i18n="statusWaterOk" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</button>
-      <button type="button" class="legend-chip" data-key="water-today" data-i18n="statusWaterToday" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</button>
-      <button type="button" class="legend-chip" data-key="water-overdue" data-i18n="statusWaterOverdueChip" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</button>
-      <button type="button" class="legend-chip" data-key="fert-ok" data-i18n="statusFertOk" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
-      <button type="button" class="legend-chip" data-key="fert-due" data-i18n="statusFertDue" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
-      <button type="button" class="legend-chip" data-key="fert-off" data-i18n="statusFertOff" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
-    </div>
+  <div class="legend" id="legend">
+    <button type="button" class="legend-chip" data-key="water-ok" data-i18n="statusWaterOk" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</button>
+    <button type="button" class="legend-chip" data-key="water-today" data-i18n="statusWaterToday" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</button>
+    <button type="button" class="legend-chip" data-key="water-overdue" data-i18n="statusWaterOverdueChip" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</button>
+    <button type="button" class="legend-chip" data-key="fert-ok" data-i18n="statusFertOk" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
+    <button type="button" class="legend-chip" data-key="fert-due" data-i18n="statusFertDue" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
+    <button type="button" class="legend-chip" data-key="fert-off" data-i18n="statusFertOff" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
     <button type="button" class="fertcal-trigger" id="fertCalTriggerBtn" data-i18n-aria="fertCalTrigger" aria-label="Календар підживлення">
       <img class="fertcal-trigger-icon" src="assets/icons/calendar.png" alt="">
     </button>
@@ -1285,7 +1286,6 @@ main{
   var emptyState = document.getElementById('emptyState');
   var filterEmptyState = document.getElementById('filterEmptyState');
   var legendEl = document.getElementById('legend');
-  var legendToolbarEl = document.getElementById('legendToolbar');
   var filterResetBtn = document.getElementById('filterResetBtn');
 
   function setStatusFilter(key){
@@ -1693,14 +1693,12 @@ main{
       grid.hidden = true;
       filterEmptyState.hidden = true;
       legendEl.hidden = true;
-      legendToolbarEl.hidden = true;
       return;
     }
     emptyState.hidden = true;
 
     if(reorderMode){
       legendEl.hidden = true;
-      legendToolbarEl.hidden = true;
       filterEmptyState.hidden = true;
       grid.hidden = false;
       grid.innerHTML = '';
@@ -1709,7 +1707,6 @@ main{
     }
 
     legendEl.hidden = false;
-    legendToolbarEl.hidden = false;
 
     var visiblePlants = plants;
     if(activeStatusFilter){
