@@ -63,9 +63,11 @@ export default async function handler(req, res) {
     return result.status === 503 || result.status === 429 || /overload|high demand|unavailable|rate limit/i.test(msg);
   }
 
+  // llama-3.3-70b-versatile / llama-3.1-8b-instant deprecated Groq'ом — замінено на актуальні
+  // production-моделі (openai/gpt-oss-*). Якщо задано GROQ_MODEL у Vercel — використовується лише вона.
   const modelsToTry = process.env.GROQ_MODEL
     ? [process.env.GROQ_MODEL]
-    : ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
+    : ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 
   try {
     var lastResult = null;
