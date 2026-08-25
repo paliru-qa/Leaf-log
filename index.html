@@ -30,7 +30,6 @@
 
   --water-ok-bg:#dbf3be;    --water-ok-text:#3f6b12;
   --water-today-bg:#fff8ca; --water-today-text:#7a6300;
-  --water-overdue-bg:#ffd3be; --water-overdue-text:#973a12;
   --fert-ok-bg:#c8d2ff;   --fert-ok-text:#2c3a99;
   --fert-due-bg:#f2c7d3;  --fert-due-text:#8a3655;
   --fert-off-bg:#dbdbdb;  --fert-off-text:#4a4a4a;
@@ -770,8 +769,7 @@ main{
 <main>
   <div class="legend" id="legend">
     <button type="button" class="legend-chip" data-key="water-ok" data-i18n="statusWaterOk" style="background:var(--water-ok-bg);color:var(--water-ok-text)">Полито</button>
-    <button type="button" class="legend-chip" data-key="water-today" data-i18n="statusWaterToday" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити сьогодні</button>
-    <button type="button" class="legend-chip" data-key="water-overdue" data-i18n="statusWaterOverdueChip" style="background:var(--water-overdue-bg);color:var(--water-overdue-text)">Прострочено</button>
+    <button type="button" class="legend-chip" data-key="water-today" data-i18n="statusWaterToday" style="background:var(--water-today-bg);color:var(--water-today-text)">Полити</button>
     <button type="button" class="legend-chip" data-key="fert-ok" data-i18n="statusFertOk" style="background:var(--fert-ok-bg);color:var(--fert-ok-text)">Удобрено</button>
     <button type="button" class="legend-chip" data-key="fert-due" data-i18n="statusFertDue" style="background:var(--fert-due-bg);color:var(--fert-due-text)">Удобрити</button>
     <button type="button" class="legend-chip" data-key="fert-off" data-i18n="statusFertOff" style="background:var(--fert-off-bg);color:var(--fert-off-text)">Не удобрювати</button>
@@ -1035,9 +1033,7 @@ main{
       modeCaretakerAria: 'Режим доглядача',
       modeReorder: 'Змінити порядок',
       statusWaterOk: 'Полито',
-      statusWaterToday: 'Полити сьогодні',
-      statusWaterOverdue: 'Полив прострочено',
-      statusWaterOverdueChip: 'Прострочено',
+      statusWaterToday: 'Полити',
       statusFertOk: 'Удобрено',
       statusFertDue: 'Удобрити',
       statusFertOff: 'Не удобрювати',
@@ -1136,9 +1132,7 @@ main{
       modeCaretakerAria: 'Caretaker mode',
       modeReorder: 'Reorder',
       statusWaterOk: 'Watered',
-      statusWaterToday: 'Water today',
-      statusWaterOverdue: 'Watering overdue',
-      statusWaterOverdueChip: 'Overdue',
+      statusWaterToday: 'Water',
       statusFertOk: 'Fertilized',
       statusFertDue: 'Needs fertilizer',
       statusFertOff: "Don't fertilize",
@@ -1343,8 +1337,7 @@ main{
     var freq = plant.waterFreq || 7;
     var d = daysBetween(plant.lastWatered);
     if(d < freq) return {key:'water-ok', label:t('statusWaterOk'), bg:'var(--water-ok-bg)', text:'var(--water-ok-text)'};
-    if(d === freq) return {key:'water-today', label:t('statusWaterToday'), bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
-    return {key:'water-overdue', label:t('statusWaterOverdue'), bg:'var(--water-overdue-bg)', text:'var(--water-overdue-text)'};
+    return {key:'water-today', label:t('statusWaterToday'), bg:'var(--water-today-bg)', text:'var(--water-today-text)'};
   }
   function fertStatus(plant){
     if(!plant.fertEnabled) return {key:'fert-off', label:t('statusFertOff'), bg:'var(--fert-off-bg)', text:'var(--fert-off-text)'};
