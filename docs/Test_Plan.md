@@ -1,11 +1,11 @@
 # Test Plan
 ## LeafLOG Web Application
 
-**Version:** 1.0  
+**Version:** 2.2  
 **Status:** Draft  
 **Application Under Test:** LeafLOG  
 **Test Environment URL:** https://leaf-log-six.vercel.app/?id=rycu0sei  
-**Reference Document:** Functional Requirements v1.0  
+**Reference Documents:** Functional Requirements v2.0, Feature Requirements v1.2, Feature Requirements v2.1  
 **Test Basis:** Reverse-engineered implemented behavior from live application UI
 
 ---
@@ -14,7 +14,7 @@
 
 The purpose of this test plan is to define the scope, approach, resources, test levels, and deliverables for manual testing of the LeafLOG web application.
 
-This test plan is intended to verify that the current implemented version of the application behaves according to the documented **Functional Requirements v1.0**, including expected business rules, current limitations, and known non-ideal behavior.
+This test plan is intended to verify that the current implemented version of the application behaves according to the documented **Functional Requirements v2.0**, **Feature Requirements v1.2** (header layout, language switcher, footer), and **Feature Requirements v2.1** (status filters, fertilizing calendar, reorder mode update), including expected business rules, current limitations, and known non-ideal behavior.
 
 ---
 
@@ -26,10 +26,13 @@ LeafLOG is a web application for managing household plants. The application allo
 - upload one or more plant photos;
 - track watering and fertilizing activities;
 - update care-related dates for individual plants or multiple plants at once;
-- reorder plants;
+- filter the plant list by a single status;
+- review fertilizing history and forecast in a dedicated calendar view;
+- reorder plants via a dedicated drag handle;
 - use Caretaker mode for simplified quick care actions;
 - share the same plant list through a URL-based `id` parameter;
-- use AI assistance for care suggestions and plant problem questions.
+- switch the UI language between Ukrainian and English;
+- use AI assistance for care suggestions and plant problem questions, returned in the currently selected language.
 
 ---
 
@@ -46,83 +49,121 @@ The following functional areas are included in test scope:
    - copy share link
    - create separate list
 
-2. **Main Screen and Plant List**
+2. **Header Layout and Stability**
+   - three-row header structure
+   - Add Plant reserved space when hidden
+   - control stability across hover/press/toggle states
+   - stability across modes and viewport sizes
+
+3. **Language Switcher (UA / EN)**
+   - switching between Ukrainian and English
+   - coverage of all UI text areas
+   - persistence after refresh
+   - AI output language consistency
+   - no auto-translation of saved plant data
+
+4. **Footer**
+   - copyright/tagline display
+   - share-list actions
+   - responsive positioning (short vs. long page content)
+
+5. **Main Screen and Plant List**
    - top bar actions
    - empty state
    - plant card rendering
    - status badges
    - saved plant order display
 
-3. **Plant CRUD**
+6. **Status Filters**
+   - single active filter behavior
+   - filter toggle on repeated click
+   - filtered empty state
+   - filter reset via logo click
+
+7. **Plant CRUD**
    - add plant
    - edit plant
    - delete plant
    - required and optional fields
    - unsaved changes discard behavior
+   - fertilizing checkbox label wording
 
-4. **Plant Photos**
+8. **Plant Photos**
    - image upload
    - multiple photo support
    - photo preview
    - photo removal before save
    - before/after comparison
 
-5. **Plant Detail View**
+9. **Plant Detail View**
    - detail view opening/closing
    - displayed plant information
    - navigation between plants
    - restrictions by mode
 
-6. **Watering Logic**
-   - watering interval behavior
-   - watering statuses
-   - single-plant Watered flow
-   - date validation for future dates
+10. **Watering Logic**
+    - watering interval behavior
+    - two-state watering status (Watered / Water — no separate Overdue state)
+    - single-plant Watered flow
+    - date validation for future dates
 
-7. **Fertilizing Logic**
-   - fertilizing enabled/disabled behavior
-   - fertilizing statuses
-   - single-plant Fertilized flow
-   - date validation for future dates
+11. **Fertilizing Logic**
+    - fertilizing enabled/disabled behavior
+    - fertilizing statuses
+    - single-plant Fertilized flow
+    - date validation for future dates
 
-8. **Interval Input Behavior**
-   - default fallback values
-   - empty / NaN handling
-   - acceptance of `0` and negative values in current implementation
+12. **Interval Input Behavior**
+    - default fallback values
+    - empty / NaN handling
+    - acceptance of `0` and negative values in current implementation
 
-9. **Bulk Actions**
-   - bulk-select mode
-   - plant selection behavior
-   - Watered / Fertilized toggles
-   - Apply / Cancel flow
-   - shared date application
-   - recalculation of statuses
+13. **Bulk Actions**
+    - bulk-select mode
+    - plant selection behavior
+    - Watered / Fertilized toggles
+    - Apply / Cancel flow
+    - shared date application
+    - recalculation of statuses
 
-10. **Undo for Bulk Actions**
+14. **Undo for Bulk Actions**
     - toast visibility
     - single-level undo
     - 15-second timeout
     - session-scoped behavior
 
-11. **Reorder Mode**
+15. **Reorder Mode**
     - entering reorder mode
+    - dedicated drag-handle interaction
+    - auto-scroll near viewport edges
     - changing order
     - persistence after refresh
+    - mutual exclusivity with other modes
 
-12. **Caretaker Mode**
+16. **Caretaker Mode**
     - entering/exiting caretaker mode
     - mutual exclusivity with other modes
     - hidden Add Plant / Edit actions
     - quick actions on cards
     - instruction highlight behavior
 
-13. **AI Features**
+17. **Fertilizing Calendar**
+    - trigger visibility, placement, and styling
+    - sidebar open/close behavior
+    - month navigation
+    - highlight intensity scaling by plant count
+    - selected-date plant list and terminology
+    - language and shared-list scoping
+
+18. **AI Features**
     - AI care suggestion generation in form
     - AI plant problem Q&A in detail view
     - validation for empty question
     - temporary nature of AI output
+    - output language matches selected UI language
+    - retry behavior on transient empty AI response
 
-14. **Shared Access and Synchronization**
+19. **Shared Access and Synchronization**
     - shared access through URL
     - absence of real-time synchronization
     - refresh-based visibility of remote changes
@@ -138,10 +179,10 @@ The following items are out of scope for this test cycle because they are not pa
 - real-time synchronization;
 - conflict detection and merge resolution;
 - plant history timeline;
-- multilingual support;
+- languages other than Ukrainian and English;
 - summer schedule feature;
 - clear-all-data feature;
-- clickable filtering via status badges.
+- direct care actions (Watered/Fertilized) from within the Fertilizing Calendar sidebar.
 
 ---
 
@@ -155,6 +196,7 @@ The following items will be tested:
 - interaction flows and state changes
 - browser-native date input behavior
 - shared-list behavior through URL
+- localization behavior (UA/EN) across UI and AI output
 - AI-related front-end request flows
 - persistence behavior after refresh
 - visible error handling and user feedback where implemented
@@ -165,17 +207,21 @@ The following items will be tested:
 
 ### 5.1 Functional Areas
 - shared list initialization and switching;
-- plant list display;
+- header layout stability across modes;
+- language switching and persistence;
+- footer content and positioning;
+- plant list display and status filtering;
 - plant add/edit/delete flows;
 - multi-photo handling;
 - photo comparison flow;
 - plant detail rendering;
-- watering status calculation;
+- watering status calculation (two-state);
 - fertilizing status calculation;
 - date picker flows;
 - bulk actions and undo;
-- reorder behavior;
+- reorder behavior via drag handle;
 - caretaker mode behavior;
+- fertilizing calendar rendering, navigation, and interaction;
 - AI-assisted instruction generation;
 - AI question-answer flow;
 - shared access limitations.
@@ -184,13 +230,16 @@ The following items will be tested:
 - visibility and hiding of controls depending on mode;
 - consistency of action availability;
 - correct rendering of badges, buttons, placeholders, and instructions blocks;
-- proper modal/panel opening and closing behavior.
+- proper modal/panel opening and closing behavior;
+- consistent button/chip corner-radius styling;
+- header and footer layout stability across desktop and mobile.
 
 ### 5.3 Data Persistence
 - persistence after save;
 - persistence after refresh;
 - discard behavior after closing form without save;
-- session-scoped undo limitation.
+- session-scoped undo limitation;
+- selected language persistence.
 
 ---
 
@@ -200,10 +249,11 @@ The following areas may be sanity-checked but are not primary validation targets
 
 - visual design polish and branding consistency;
 - backend internals and database structure;
-- exact AI answer quality/content correctness;
+- exact AI answer quality/content correctness (botanical accuracy);
 - exact compression ratio for every uploaded photo;
 - cross-device camera integration specifics;
-- browser-specific native date input UI differences beyond core functional behavior.
+- browser-specific native date input UI differences beyond core functional behavior;
+- internal AI-backend model selection and token-budget tuning, beyond confirming the feature completes successfully.
 
 ---
 
@@ -217,6 +267,7 @@ This test cycle will use:
 - **UI validation**
 - **business rule validation**
 - **state transition testing**
+- **localization spot-checking**
 - **basic regression testing**
 
 ### 7.2 Test Design Techniques
@@ -230,7 +281,7 @@ The following test design techniques will be applied where relevant:
 - exploratory scenario-based testing.
 
 ### 7.3 Testing Strategy
-Testing will be executed module by module using the Functional Requirements v1.0 as the baseline.  
+Testing will be executed module by module using Functional Requirements v2.0, Feature Requirements v1.2, and Feature Requirements v2.1 as the baseline.  
 For each functional area, testing will cover:
 
 - positive flows;
@@ -246,7 +297,9 @@ Special attention will be paid to:
 - bulk action side effects;
 - shared URL behavior;
 - ephemeral AI response behavior;
-- non-persistent UI states after refresh.
+- non-persistent UI states after refresh;
+- consistency of behavior and labels across both supported languages;
+- correct mutual exclusivity between Caretaker, bulk-select, and reorder modes.
 
 ---
 
@@ -259,9 +312,11 @@ Smoke coverage:
 - app opens successfully;
 - list loads;
 - top bar actions are visible;
+- language can be switched;
 - plant can be added;
 - detail view opens;
 - save works;
+- Fertilizing Calendar opens and closes;
 - refresh does not break the list.
 
 ### 8.2 Functional Testing
@@ -272,7 +327,9 @@ Regression testing shall be performed:
 - after bug fixes;
 - after UI changes;
 - after logic changes to watering/fertilizing/modes;
-- after color/theme updates if they affect visibility or action states.
+- after color/theme updates if they affect visibility or action states;
+- after AI backend/model configuration changes;
+- after localization string changes.
 
 ---
 
@@ -282,7 +339,7 @@ Testing may start when the following conditions are met:
 
 - live environment is accessible;
 - test URL is available;
-- Functional Requirements v1.0 is approved as the baseline;
+- Functional Requirements v2.0, Feature Requirements v1.2, and Feature Requirements v2.1 are approved as the baseline;
 - tester has access to at least one clean browser session;
 - basic test data can be created or already exists in the test list.
 
@@ -310,6 +367,7 @@ Testing may be suspended if:
 - the app fails to load consistently;
 - core actions such as save, load, or navigation stop working;
 - API failures prevent meaningful execution of major features;
+- the AI backend consistently fails across all configured models;
 - shared test list becomes corrupted or unusable.
 
 ### 11.2 Resumption Criteria
@@ -358,13 +416,21 @@ The following areas should be checked across the listed viewport sizes:
 
 - header layout and control stability
 - top-bar wrapping and alignment
+- horizontal padding consistency between header, main content, and footer
+- language switcher placement and behavior
+- footer positioning (short vs. long page content)
 - plant card grid behavior
+- status filter row / legend layout
+- Fertilizing Calendar trigger placement (top-right, icon-only, no overlap with filter chips)
+- Fertilizing Calendar sidebar layout and readability
 - modal / form usability
 - date picker accessibility and visibility
 - bulk action bar visibility and usability
 - detail view layout
 - caretaker mode card layout
+- reorder mode drag-handle usability and auto-scroll
 - AI sections readability
+- button and badge corner-radius consistency
 - button stability across interaction states
 - absence of clipping, overlap, or hidden critical controls
 
@@ -373,6 +439,7 @@ The following areas should be checked across the listed viewport sizes:
 - Exact rendering of native date inputs may differ between desktop and mobile browsers.
 - Mobile testing may be performed on real devices or browser emulation, depending on availability.
 - Cross-browser coverage in this test cycle is limited to the primary browsers available for execution.
+- The AI backend (Groq) model configuration may change between test cycles; confirm the currently configured model(s) before executing AI-related scenarios.
 
 ---
 
@@ -392,7 +459,8 @@ Test data should include plant records with combinations such as:
 - plant with no last fertilized date;
 - plant with interval values left empty;
 - plant with interval value `0`;
-- plant with negative interval value.
+- plant with negative interval value;
+- multiple plants sharing the same fertilizing date, in increasing counts (1, 2, 3-4, 5-9, 10+), to validate calendar highlight intensity scaling.
 
 ### 13.2 Suggested Named Test Plants
 Example test data set:
@@ -403,6 +471,7 @@ Example test data set:
 - Aloe Missing Dates
 - Orchid Zero Interval
 - Fern Negative Interval
+- Palm Group A / B / C (shared fertilizing date, for calendar intensity testing)
 
 ### 13.3 AI Test Data
 - valid plant name only
@@ -410,6 +479,7 @@ Example test data set:
 - empty question
 - non-empty plant problem question
 - question with symptoms text
+- AI requests executed in both Ukrainian and English UI language
 
 ---
 
@@ -427,10 +497,12 @@ Example test data set:
 
 The expected QA deliverables for this project are:
 
-- Functional Requirements v1.0
-- Test Plan v1.0
-- Checklist v1.0
-- Detailed Test Cases v1.0
+- Functional Requirements v2.0
+- Feature Requirements v1.2
+- Feature Requirements v2.1
+- Test Plan v2.2
+- Checklist v2.2
+- Detailed Test Cases (updated)
 - Bug Reports / Known Issues
 - Test Summary Report
 - Supporting screenshots if needed
@@ -475,15 +547,17 @@ Suggested priority model:
 - shared test data may be modified during testing by another session/user;
 - lack of real-time sync may cause apparent inconsistencies until refresh;
 - last-write-wins behavior may overwrite concurrent changes;
-- AI endpoints may fail intermittently;
+- AI endpoints may fail intermittently, including transient empty responses from reasoning models;
 - image upload success may vary depending on file size and backend constraints;
-- live environment may change while documentation is being prepared.
+- live environment may change while documentation is being prepared;
+- AI backend model availability may change (e.g. provider deprecating a model), affecting AI-dependent scenarios.
 
 ### 17.2 Assumptions
-- the current Functional Requirements v1.0 correctly reflect implemented behavior;
+- the current Functional Requirements v2.0 and Feature Requirements v1.2 / v2.1 correctly reflect implemented behavior;
 - the provided test URL remains accessible during the test cycle;
 - browser-native date input behavior is acceptable if functionally consistent with requirements;
-- AI correctness is evaluated only from integration/behavior perspective, not botanical accuracy.
+- AI correctness is evaluated only from integration/behavior perspective, not botanical accuracy;
+- both Ukrainian and English translations are expected to be complete and consistent across the UI.
 
 ---
 
@@ -494,6 +568,12 @@ Testing shall be traceable to:
 - Business Rules (`BR-*`)
 - Non-Functional Requirements (`NFR-*`)
 - Known Limitations (`KL-*`)
+- Header Layout Requirements (`HF-*`)
+- Language Switcher Requirements (`LF-*`)
+- Footer Requirements (`FF-*`)
+- Status Filter Requirements (`FL-*`)
+- Fertilizing Calendar Requirements (`FC-*`)
+- Reorder Mode Update Requirements (`RF-*`)
 
 Each checklist item and test case should reference related requirement IDs where applicable.
 
@@ -504,31 +584,46 @@ Each checklist item and test case should reference related requirement IDs where
 The following high-level scenarios shall be covered:
 
 1. Open application with shared list ID and validate list loading.
-2. Create a new plant with only required data.
-3. Create a plant with full optional data.
-4. Edit existing plant and validate persistence.
-5. Delete plant from Edit form and validate permanent removal.
-6. Upload multiple photos and validate preview and saved display.
-7. Open before/after comparison for multi-photo plant.
-8. Validate watering statuses across due states.
-9. Validate fertilizing statuses across enabled/disabled/due states.
-10. Perform single-plant Watered and Fertilized actions.
-11. Validate future-date blocking in care actions.
-12. Validate interval fallback behavior for empty/invalid input.
-13. Validate acceptance of `0` and negative intervals as current behavior.
-14. Enter bulk-select mode and apply Watered to multiple plants.
-15. Apply Fertilized in bulk and validate dependent Watered behavior.
-16. Apply both bulk actions and verify same date is used.
-17. Undo the latest bulk action within 15 seconds.
-18. Validate undo loss after refresh or subsequent bulk action.
-19. Reorder plants and verify persistence after refresh.
-20. Enable Caretaker mode and validate restricted UI.
-21. Use quick actions in Caretaker mode from plant cards.
-22. Generate AI care suggestions in Add/Edit form.
-23. Ask AI a plant problem question in detail view.
-24. Validate AI answer reset when switching plants or closing detail view.
-25. Validate shared access behavior in two separate sessions.
-26. Validate lack of real-time sync and manual refresh requirement.
+2. Switch UI language between Ukrainian and English and validate coverage across all screens.
+3. Refresh the page and validate the selected language persists.
+4. Validate header layout stability across normal, Caretaker, bulk-select, and reorder modes.
+5. Validate footer content, share-link action, and create-new-list action.
+6. Create a new plant with only required data.
+7. Create a plant with full optional data.
+8. Validate fertilizing checkbox label wording in Add and Edit forms.
+9. Edit existing plant and validate persistence.
+10. Delete plant from Edit form and validate permanent removal.
+11. Upload multiple photos and validate preview and saved display.
+12. Open before/after comparison for multi-photo plant.
+13. Validate the two-state watering status (Watered / Water) across due and overdue timing.
+14. Validate fertilizing statuses across enabled/disabled/due states.
+15. Perform single-plant Watered and Fertilized actions.
+16. Validate future-date blocking in care actions.
+17. Validate interval fallback behavior for empty/invalid input.
+18. Validate acceptance of `0` and negative intervals as current behavior.
+19. Click a status badge and validate list filtering, then clear the filter.
+20. Validate filtered empty state and reset control.
+21. Clear an active filter and exit Caretaker mode via logo click.
+22. Enter bulk-select mode and apply Watered to multiple plants.
+23. Apply Fertilized in bulk and validate dependent Watered behavior.
+24. Apply both bulk actions and verify same date is used.
+25. Undo the latest bulk action within 15 seconds.
+26. Validate undo loss after refresh or subsequent bulk action.
+27. Enter reorder mode and drag a tile using the dedicated handle to a new position.
+28. Validate auto-scroll while dragging a tile near the top/bottom viewport edge.
+29. Validate reordered list persists after refresh.
+30. Enable Caretaker mode and validate restricted UI.
+31. Use quick actions in Caretaker mode from plant cards.
+32. Open the Fertilizing Calendar and validate the current month, today's outline, and navigation.
+33. Validate highlight intensity scaling for dates with increasing numbers of plants.
+34. Click a highlighted date and validate the plant list and terminology below the calendar.
+35. Close the Fertilizing Calendar via X, backdrop click, and logo click.
+36. Generate AI care suggestions in Add/Edit form and validate output language.
+37. Ask AI a plant problem question in detail view and validate output language.
+38. Validate AI answer reset when switching plants or closing detail view.
+39. Validate AI retry behavior when a request initially returns an empty response.
+40. Validate shared access behavior in two separate sessions.
+41. Validate lack of real-time sync and manual refresh requirement.
 
 ---
 
@@ -541,7 +636,8 @@ A test is considered **Fail** if:
 - required UI element or action is missing;
 - incorrect state/data is saved;
 - restriction or business rule is violated unexpectedly;
-- visible behavior is inconsistent with current documented implementation.
+- visible behavior is inconsistent with current documented implementation;
+- a UI label or AI-returned text does not match the currently selected language.
 
 ---
 

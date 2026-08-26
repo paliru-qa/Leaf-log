@@ -1,11 +1,11 @@
 # Checklist
 ## LeafLOG Web Application
 
-**Version:** 1.0  
+**Version:** 2.2  
 **Status:** Draft  
 **Application Under Test:** LeafLOG  
 **Test Environment URL:** https://leaf-log-six.vercel.app/?id=rycu0sei  
-**Reference Document:** Functional Requirements v1.0
+**Reference Documents:** Functional Requirements v2.0, Feature Requirements v1.2, Feature Requirements v2.1
 
 ---
 
@@ -25,14 +25,65 @@
 
 ---
 
-## 2. Main Screen and Plant List
+## 2. Header Layout and Stability
+
+- [ ] Header renders as a three-row structure: row 1, row 2, filter row below
+- [ ] Row 1 displays centered `LeafLOG` title
+- [ ] Row 1 displays language switcher in the right corner
+- [ ] Row 2 displays mode/action controls: Select multiple, Caretaker mode, Change order, Add plant
+- [ ] Filter labels render in a separate row below the header, not inside header rows
+- [ ] Add Plant button is hidden when Caretaker mode is enabled
+- [ ] Hiding Add Plant in Caretaker mode does not shift centered title or right-side controls
+- [ ] Reserved space for Add Plant is preserved even while hidden
+- [ ] Header controls do not resize or shift position on hover/press/active/toggle states
+- [ ] Header remains stable and usable on mobile viewport
+- [ ] Header remains stable and usable in normal, Caretaker, bulk-select, and reorder modes
+- [ ] Horizontal padding of header, main content, and footer is visually consistent on mobile
+
+---
+
+## 3. Language Switcher (UA / EN)
+
+- [ ] Language switcher is visible in header row 1, right corner
+- [ ] Switcher shows current language (UA / EN)
+- [ ] User can switch from Ukrainian to English
+- [ ] User can switch from English to Ukrainian
+- [ ] Switching language updates header controls, buttons, form labels, empty states
+- [ ] Switching language updates filter labels
+- [ ] Switching language updates detail view labels
+- [ ] Switching language updates bulk action labels
+- [ ] Switching language updates Caretaker mode labels
+- [ ] Switching language updates AI section labels and system messages
+- [ ] Switching language updates Fertilizing Calendar labels (title, month, tags)
+- [ ] Switching language updates footer text
+- [ ] Selected language persists after page refresh
+- [ ] AI-generated care suggestions are returned in the currently selected language
+- [ ] AI plant-problem answers are returned in the currently selected language
+- [ ] Switching UI language does not auto-translate already-saved plant data
+- [ ] Using the language switcher does not shift or resize header layout
+
+---
+
+## 4. Footer
+
+- [ ] Footer is visible at the bottom of the page
+- [ ] Footer displays copyright text with product name
+- [ ] Footer displays tagline in the currently selected language
+- [ ] Footer provides "Copy share link" action
+- [ ] Footer provides "Create your own list" action
+- [ ] Copy share link copies the current shared list URL
+- [ ] Create your own list generates a new list without modifying current list data
+- [ ] Footer remains readable and responsive on desktop and mobile
+- [ ] Footer stays attached to bottom of viewport when page content is short
+- [ ] Footer appears below content (no overlap) when page content exceeds viewport height
+- [ ] Footer does not obscure modal content or the bulk action bar
+
+---
+
+## 5. Main Screen and Plant List
 
 - [ ] Main screen displays product name
-- [ ] Main screen displays top actions:
-  - [ ] Change order
-  - [ ] Select multiple
-  - [ ] Caretaker mode
-  - [ ] Add plant
+- [ ] Main screen displays top actions: Change order, Select multiple, Caretaker mode, Add plant
 - [ ] Empty state is shown when no plants exist
 - [ ] Empty state contains explanatory text
 - [ ] Empty state contains Add Plant CTA
@@ -42,16 +93,32 @@
 - [ ] Plant card displays plant name
 - [ ] Plant card displays watering frequency text
 - [ ] Plant card displays watering status badge
-- [ ] Plant card displays fertilizing frequency text or “not needed” text
+- [ ] Plant card displays fertilizing frequency text or "not needed" text
 - [ ] Plant card displays fertilizing status badge
 - [ ] Status badges are always visible on plant cards
-- [ ] Status badges are informational only
-- [ ] Clicking status badges does not trigger filtering or other action
 - [ ] Saved plant order is displayed correctly
 
 ---
 
-## 3. Add Plant
+## 6. Status Filters
+
+- [ ] Status badges in the legend row are clickable filter controls
+- [ ] Clicking a status badge filters the list to matching plants only
+- [ ] Only one status filter can be active at a time
+- [ ] Selecting a new filter clears the previously active filter
+- [ ] Clicking the active filter again clears it and restores the full list
+- [ ] Active filter is visually indicated (highlighted chip)
+- [ ] Filtering does not modify saved plant data
+- [ ] Filtering does not change plant order within filtered results
+- [ ] Empty filtered state is shown when no plants match selected filter
+- [ ] Empty filtered state provides a way to reset the filter
+- [ ] Clicking the site logo clears the active filter
+- [ ] Clicking the site logo exits Caretaker mode
+- [ ] Clicking the site logo returns to the default full list view
+
+---
+
+## 7. Add Plant
 
 - [ ] Add Plant form opens successfully
 - [ ] Add Plant form contains all expected fields
@@ -65,6 +132,7 @@
 - [ ] New plant date fields default to current date
 - [ ] User can type date manually if browser allows
 - [ ] User can pick date from date picker
+- [ ] Fertilizing checkbox label reads "Увімкнути підживлення" (UA) / "Fertilizing enabled" (EN)
 - [ ] Form closes automatically after successful save
 - [ ] Closing form without save discards unsaved changes
 - [ ] Backdrop click closes form without saving
@@ -72,12 +140,13 @@
 
 ---
 
-## 4. Edit Plant
+## 8. Edit Plant
 
 - [ ] Edit Plant form opens successfully
 - [ ] Edit form is prefilled with existing data
 - [ ] User can modify editable fields
 - [ ] Edited data is saved in current shared list
+- [ ] Fertilizing checkbox label reads "Увімкнути підживлення" (UA) / "Fertilizing enabled" (EN)
 - [ ] Form closes automatically after save
 - [ ] Closing Edit form without saving discards changes
 - [ ] Native date inputs are used in Edit mode
@@ -86,7 +155,7 @@
 
 ---
 
-## 5. Delete Plant
+## 9. Delete Plant
 
 - [ ] Delete action is available only inside Edit form
 - [ ] Delete action opens confirmation prompt
@@ -98,7 +167,7 @@
 
 ---
 
-## 6. Plant Photos
+## 10. Plant Photos
 
 - [ ] App accepts image files through file picker
 - [ ] Uploaded images are added to pending photo list
@@ -114,22 +183,23 @@
 
 ---
 
-## 7. Before/After Photo Comparison
+## 11. Before/After Photo Comparison
 
 - [ ] Comparison option is available when plant has multiple photos
 - [ ] Comparison view opens successfully
-- [ ] First uploaded photo is used as “before”
-- [ ] Most recent uploaded photo is used as “after”
+- [ ] First uploaded photo is used as "before"
+- [ ] Most recent uploaded photo is used as "after"
 - [ ] Comparison view can be closed
 - [ ] Closing comparison view does not affect saved plant data
 
 ---
 
-## 8. Plant Detail View
+## 12. Plant Detail View
 
 - [ ] Plant detail view opens from plant card in normal mode
 - [ ] Plant detail view opens from plant card in Caretaker mode
 - [ ] Plant detail view does not open from card click in bulk-select mode
+- [ ] Plant detail view does not open from card click in reorder mode
 - [ ] Detail view displays plant photos
 - [ ] Detail view displays location
 - [ ] Detail view displays watering section
@@ -142,15 +212,16 @@
 
 ---
 
-## 9. Watering Logic
+## 13. Watering Logic
 
 - [ ] Watering interval is stored for plant
 - [ ] Last watered date is stored for plant
 - [ ] Watering status is calculated from current date, last watered date, and interval
-- [ ] Status “Watered” is shown when interval has not yet elapsed
-- [ ] Status “Water today” is shown when due date is today
-- [ ] Status “Overdue” is shown when due date has passed
-- [ ] Missing last watered date results in “Overdue”
+- [ ] Status "Полито" / "Watered" is shown when interval has not yet elapsed
+- [ ] Status "Полити" / "Water" is shown when due date is today
+- [ ] Status "Полити" / "Water" is shown when due date has passed (no separate "overdue" status)
+- [ ] Missing last watered date results in "Полити" / "Water" status
+- [ ] Only two watering statuses exist: Watered and Water (no Overdue badge or color)
 - [ ] Single-plant Watered action opens date picker
 - [ ] Single-plant Watered action does not save immediately
 - [ ] Care action date picker defaults to current date
@@ -160,17 +231,17 @@
 
 ---
 
-## 10. Fertilizing Logic
+## 14. Fertilizing Logic
 
 - [ ] Fertilizing enabled flag is supported
-- [ ] Disabled fertilizing shows “Do not fertilize” status
-- [ ] Disabled fertilizing shows “not needed” frequency text
+- [ ] Disabled fertilizing shows "Do not fertilize" status
+- [ ] Disabled fertilizing shows "not needed" frequency text
 - [ ] Enabled fertilizing supports interval and last fertilized date
 - [ ] Fertilizing status is calculated from current date, last fertilized date, and interval
-- [ ] Status “Fertilized” is shown when interval has not yet elapsed
-- [ ] Status “Fertilize” is shown when due date is today
-- [ ] Status “Fertilize” is shown when due date has passed
-- [ ] Missing last fertilized date with fertilizing enabled results in “Fertilize”
+- [ ] Status "Fertilized" is shown when interval has not yet elapsed
+- [ ] Status "Fertilize" is shown when due date is today
+- [ ] Status "Fertilize" is shown when due date has passed
+- [ ] Missing last fertilized date with fertilizing enabled results in "Fertilize"
 - [ ] Single-plant Fertilized action opens date picker
 - [ ] Single-plant Fertilized action does not save immediately
 - [ ] Care action date picker defaults to current date
@@ -180,7 +251,7 @@
 
 ---
 
-## 11. Interval Input Behavior
+## 15. Interval Input Behavior
 
 - [ ] Watering interval input is optional in form
 - [ ] Empty watering interval stores default value `7`
@@ -194,7 +265,7 @@
 
 ---
 
-## 12. Bulk Actions
+## 16. Bulk Actions
 
 - [ ] User can enter bulk-select mode
 - [ ] Plant cards become selectable in bulk-select mode
@@ -202,11 +273,7 @@
 - [ ] Number of selected plants is displayed
 - [ ] Bulk action bar is hidden when no plants are selected
 - [ ] Bulk action bar appears only when bulk-select mode is active and at least one plant is selected
-- [ ] Bulk action bar contains:
-  - [ ] Watered toggle
-  - [ ] Fertilized toggle
-  - [ ] Apply
-  - [ ] Cancel
+- [ ] Bulk action bar contains: Watered toggle, Fertilized toggle, Apply, Cancel
 - [ ] Watered toggle is OFF by default
 - [ ] Fertilized toggle is OFF by default
 - [ ] Selecting Fertilized auto-enables Watered
@@ -225,7 +292,7 @@
 
 ---
 
-## 13. Undo for Bulk Actions
+## 17. Undo for Bulk Actions
 
 - [ ] Successful bulk action shows Undo toast
 - [ ] Undo toast contains Undo action
@@ -242,17 +309,31 @@
 
 ---
 
-## 14. Reorder Mode
+## 18. Reorder Mode
 
 - [ ] User can enter reorder mode
-- [ ] Plant order can be changed in reorder mode
-- [ ] Updated plant order is saved
-- [ ] Updated order persists after refresh
-- [ ] Reorder mode is exited when Caretaker mode is enabled
+- [ ] Plant list remains in tile/card view (not switched to compact list)
+- [ ] Plant cards remain recognizable by photo and name while in reorder mode
+- [ ] Filter labels are hidden while reorder mode is active
+- [ ] Enabling reorder mode exits Caretaker mode
+- [ ] Enabling reorder mode exits bulk-select mode
+- [ ] Each plant tile shows a dedicated drag handle icon
+- [ ] Dragging starts only when the handle is grabbed
+- [ ] Dragging does not start from other areas of the tile
+- [ ] Tapping/clicking a card in reorder mode does not open detail view
+- [ ] Normal page scroll still works on mobile outside the drag handle
+- [ ] User can drag a tile to a new position
+- [ ] Dragging near the top edge of the viewport auto-scrolls upward
+- [ ] Dragging near the bottom edge of the viewport auto-scrolls downward
+- [ ] Auto-scroll allows continuing the same drag without releasing
+- [ ] User can move a tile across a long list in one continuous drag
+- [ ] Updated plant order is saved after drop
+- [ ] Updated order persists after page refresh
+- [ ] Exiting reorder mode restores normal card click behavior (opens detail view)
 
 ---
 
-## 15. Caretaker Mode
+## 19. Caretaker Mode
 
 - [ ] User can enable Caretaker mode from main screen
 - [ ] Interface changes for quick care usage
@@ -272,7 +353,43 @@
 
 ---
 
-## 16. AI Care Suggestions
+## 20. Fertilizing Calendar
+
+- [ ] Calendar trigger is accessible from the legend/filter area, top-right corner
+- [ ] Trigger is icon-only (no text label), pink-colored to match "Удобрити"/"Удобрено" family
+- [ ] Trigger is positioned top-right on both desktop and mobile
+- [ ] Trigger does not visually overlap or touch adjacent filter chips
+- [ ] Trigger hover behavior matches legend chip hover (darkens/increases opacity on hover, not lightens)
+- [ ] Activating trigger opens a sidebar
+- [ ] Sidebar opens showing the current month by default
+- [ ] Sidebar displays a title identifying it as the Fertilizing Calendar
+- [ ] Sidebar displays month/year label without stray suffix characters
+- [ ] Sidebar provides previous/next month navigation arrows
+- [ ] Sidebar displays a monthly calendar grid with weekday headers
+- [ ] Today's date is visually outlined in the calendar
+- [ ] Only plants with fertilizing enabled contribute dates to the calendar
+- [ ] Calendar highlights each plant's last fertilized date
+- [ ] Calendar highlights each plant's predicted next fertilizing date
+- [ ] Highlight intensity is lighter for a single plant on a date
+- [ ] Highlight intensity increases gradually as more plants share a date
+- [ ] Highlight intensity caps at a defined maximum for a high plant count (e.g. 10+)
+- [ ] Date number text remains readable (dark/black) regardless of highlight intensity
+- [ ] Selection ring on a clicked date stays fully inside that cell and never bleeds into an adjacent cell
+- [ ] Clicking a date displays the list of plants associated with that date below the calendar
+- [ ] Plant list under a selected date uses existing app terminology ("Удобрено" / "Удобрити") rather than custom labels
+- [ ] Selecting a date with no fertilizing activity shows an appropriate empty message
+- [ ] Calendar is view-only (no care actions can be triggered from the sidebar)
+- [ ] Sidebar closes via the X icon
+- [ ] Sidebar closes via outside/backdrop click
+- [ ] Sidebar closes via clicking the site logo
+- [ ] Calendar labels and tags follow the currently selected UI language
+- [ ] Calendar reflects data from the current shared list only
+- [ ] If a plant's fertilized date changes, calendar highlights update accordingly on next open/render
+- [ ] Calendar remains visible without highlighted dates when nothing applicable exists for the shown month
+
+---
+
+## 21. AI Care Suggestions
 
 - [ ] Add/Edit form contains AI generation action
 - [ ] AI request returns care instructions field value
@@ -281,12 +398,14 @@
 - [ ] AI response populates form fields only
 - [ ] AI-generated values are not auto-saved
 - [ ] AI-generated values persist only after user clicks Save
+- [ ] AI-generated care suggestions are returned in the currently selected UI language
 - [ ] If AI generation fails, existing field values remain unchanged
+- [ ] A transient empty AI response is retried automatically before surfacing an error
 - [ ] Current AI failure handling is consistent with implemented behavior (alert or silent fail)
 
 ---
 
-## 17. AI Plant Problem Q&A
+## 22. AI Plant Problem Q&A
 
 - [ ] Detail view contains Ask AI action
 - [ ] User must enter question before request is sent
@@ -294,14 +413,16 @@
 - [ ] Empty question does not send request
 - [ ] Non-empty question sends request
 - [ ] AI answer is displayed in UI
+- [ ] AI answer is returned in the currently selected UI language
 - [ ] AI answer is not stored in plant data
 - [ ] AI answer is cleared when switching to another plant
 - [ ] AI answer is cleared when closing detail view
 - [ ] AI answer is displayed without extra disclaimer text
+- [ ] A transient empty AI response is retried automatically before surfacing an error
 
 ---
 
-## 18. Shared Access and Synchronization
+## 23. Shared Access and Synchronization
 
 - [ ] Anyone with same shared URL can access same list
 - [ ] App uses link-based anonymous access only
@@ -313,27 +434,33 @@
 
 ---
 
-## 19. Non-Functional / General Checks
+## 24. Non-Functional / General Checks
 
 - [ ] App is usable in modern desktop browser
 - [ ] App is usable in mobile browser
-- [ ] UI language is Ukrainian only
+- [ ] UI is available in both Ukrainian and English
 - [ ] List data persists after refresh for same shared list ID
 - [ ] Native date input behavior is functional in tested browser
 - [ ] Multi-photo support works within current backend constraints
+- [ ] Buttons, chips, and badges use visually consistent corner radius across the app
+- [ ] AI-backend requests (Groq) complete successfully with the currently configured model
 - [ ] No obvious blocking visual issue prevents core flow execution
 
 ---
 
-## 20. Regression Focus Areas
+## 25. Regression Focus Areas
 
 - [ ] Add/edit/delete plant regression
-- [ ] Watering status regression
+- [ ] Watering status regression (two-state: Watered / Water)
 - [ ] Fertilizing status regression
+- [ ] Status filter regression
+- [ ] Fertilizing Calendar regression (highlighting, selection, language, open/close)
 - [ ] Bulk actions regression
 - [ ] Undo regression
-- [ ] Reorder persistence regression
+- [ ] Reorder persistence and drag-handle regression
 - [ ] Caretaker restrictions regression
-- [ ] AI flow regression
+- [ ] Language switch regression (UA/EN across all screens)
+- [ ] Header/footer layout stability regression (desktop and mobile)
+- [ ] AI flow regression (care suggestions, Q&A, retry-on-empty behavior)
 - [ ] Shared list persistence regression
 - [ ] Detail view open/close regression
