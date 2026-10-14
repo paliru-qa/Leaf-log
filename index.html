@@ -761,6 +761,7 @@ main{
   <div class="topbar-row topbar-row-2">
     <div class="topbar-actions">
       <button type="button" class="mode-toggle" id="bulkToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="modeBulk">Відмітити кілька</span></button>
+      <button type="button" class="mode-toggle" id="selectAllBtn" data-i18n="selectAll">Відмітити всі</button>
       <button type="button" class="mode-toggle" id="reorderToggle"><span class="mt-check" aria-hidden="true">✓</span><span class="mt-label" data-i18n="modeReorder">Змінити порядок</span></button>
     </div>
   </div>
@@ -1029,6 +1030,7 @@ main{
       langAria: 'Змінити мову',
       addPlant: 'Нова рослина',
       modeBulk: 'Відмітити кілька',
+      selectAll: 'Відмітити всі',
       modeCaretaker: 'Режим доглядача',
       modeCaretakerAria: 'Режим доглядача',
       modeReorder: 'Змінити порядок',
@@ -1128,6 +1130,7 @@ main{
       langAria: 'Change language',
       addPlant: 'New plant',
       modeBulk: 'Select multiple',
+      selectAll: 'Select all',
       modeCaretaker: 'Caretaker mode',
       modeCaretakerAria: 'Caretaker mode',
       modeReorder: 'Reorder',
@@ -2629,6 +2632,30 @@ syncAddPlantDisabledState();
     selectedIds = {};
     bulkToggle.classList.toggle('active', bulkMode);
     if(bulkMode && reorderMode) exitReorderMode();
+    updateBulkBar();
+    render();
+  });
+
+  // "Відмітити всі": якщо режим ще не увімкнено — вмикає його, і відмічає всі
+  // рослини, які зараз видно в списку (з урахуванням активного фільтра статусу)
+  document.getElementById('selectAllBtn').addEventListener('click', function(){
+    if(!bulkMode){
+      bulkMode = true;
+      bulkToggle.classList.add('active');
+      if(reorderMode) exitReorderMode();
+      if(caretakerMode){
+        caretakerMode = false;
+        caretakerToggle.classList.remove('active');
+        syncAddPlantDisabledState();
+      }
+    }
+    var visiblePlants = plants;
+    if(activeStatusFilter){
+      visiblePlants = plants.filter(function(p){
+        return waterStatus(p).key === activeStatusFilter || fertStatus(p).key === activeStatusFilter;
+      });
+    }
+    visiblePlants.forEach(function(p){ selectedIds[p.id] = true; });
     updateBulkBar();
     render();
   });
