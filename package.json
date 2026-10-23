@@ -4,5 +4,13 @@
   "private": true,
   "dependencies": {
     "@upstash/redis": "^1.34.3"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
   }
 }
