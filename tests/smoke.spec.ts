@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('Smoke', () => {
-  test('S0: заголовок сторінки містить LeafLOG', async ({ page }) => {
-    await page.goto('/?id=rycu0sei');
+  test('S0: заголовок сторінки містить LeafLOG', { tag: '@smoke' }, async ({ openApp, page }) => {
+    await openApp();
 
     await expect(page).toHaveTitle(/LeafLOG/);
   });
