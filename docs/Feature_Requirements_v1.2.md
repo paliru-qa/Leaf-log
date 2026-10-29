@@ -1,4 +1,6 @@
 # Feature Requirements v1.2
+> **Revised 2026-10-29** to match the current header layout, the language switcher and the Caretaker-mode behavior. Items that are not implemented are marked explicitly.
+
 ## LeafLOG Header Update, Language Switcher, and Footer
 
 ---
@@ -16,41 +18,40 @@ Improve header stability and layout consistency across modes and screen sizes.
 - a separate filter row below the header.
 
 **HF-002.** Header row 1 shall contain:
+- the Caretaker mode toggle on the left,
 - the centered site title `LeafLOG`,
-- a compact language switcher in the right corner.
+- on the right: a compact language switcher and the **Add Plant** action.
 
-**HF-003.** Header row 2 shall contain:
-- the **Add Plant** action on the left,
-- mode/action controls on the right.
+**HF-003.** Header row 2 shall contain the mode/action controls (right-aligned on desktop, wrapped from the left on narrow screens).
 
 **HF-004.** The mode/action controls in header row 2 shall include:
 - Select multiple / Bulk mode
-- Caretaker mode
+- Select all
 - Change order
 
 **HF-005.** The filter labels shall be displayed in a separate row below the header and shall not be treated as part of the header rows.
 
-**HF-006.** In Caretaker mode, the **Add Plant** button shall remain hidden.
+**HF-006.** In Caretaker mode, the **Add Plant** button shall remain visible but disabled (dimmed and not clickable).
 
-**HF-007.** Hiding the Add Plant button in Caretaker mode shall not cause the centered site title or right-side controls to shift position.
+**HF-007.** Disabling the Add Plant button in Caretaker mode shall not cause the centered site title or other header controls to shift position.
 
-**HF-008.** The left area of header row 2 shall preserve reserved space for the Add Plant button even when the button is hidden.
+**HF-008.** The Add Plant button shall keep its position and size whether it is enabled or disabled.
 
 **HF-009.** Header controls shall remain visually stable across hover, press, active, and toggle states, without changing size or position.
 
-**HF-010.** The same header stability behavior shall apply on mobile devices.
+**HF-010.** The same header stability behavior shall apply on mobile devices. On narrow screens the Caretaker toggle and the Add Plant button are shown as icons only.
 
 **HF-011.** The header shall remain readable and usable in normal mode, Caretaker mode, bulk-select mode, and reorder mode.
 
 ### Acceptance Criteria
 
-**AC-H-01.** In normal mode, header row 1 displays the centered `LeafLOG` title and the language switcher in the right corner.
+**AC-H-01.** In normal mode, header row 1 displays the Caretaker toggle on the left, the centered `LeafLOG` title, and the language switcher with the Add Plant button on the right.
 
-**AC-H-02.** In normal mode, header row 2 displays the Add Plant button on the left and mode/action controls on the right.
+**AC-H-02.** In normal mode, header row 2 displays the mode/action controls (Select multiple, Select all, Change order).
 
 **AC-H-03.** Filter labels are displayed in a separate row below the header.
 
-**AC-H-04.** When Caretaker mode is enabled, the Add Plant button is hidden, but the centered title and right-side controls do not shift.
+**AC-H-04.** When Caretaker mode is enabled, the Add Plant button is disabled (dimmed) but stays in place, and the title and other controls do not shift.
 
 **AC-H-05.** Header buttons and controls do not visually jump, resize, or move when hovered, pressed, or toggled on desktop or mobile.
 
@@ -65,9 +66,7 @@ Allow users to switch the site UI between Ukrainian and English.
 
 **LF-001.** The application shall provide a compact language switcher in the right corner of header row 1.
 
-**LF-002.** The language switcher shall be displayed as a dropdown button with at least two options:
-- Ukrainian (`UA`)
-- English (`EN`)
+**LF-002.** The language switcher shall be displayed as a compact toggle button labeled with the currently selected language code (`UA` or `EN`). Each click switches to the other language.
 
 **LF-003.** Changing the selected language shall update visible UI text across the application, including:
 - header controls,
@@ -85,11 +84,19 @@ Allow users to switch the site UI between Ukrainian and English.
 
 **LF-005.** AI-generated care suggestions shall be returned in the currently selected language.
 
+*Status (2026-10-29): not implemented. AI always replies in Ukrainian regardless of the UI language; see bug report BR-003 in `Bug_reports.md`.*
+
 **LF-006.** AI answers in the plant problem/question flow shall be returned in the currently selected language.
+
+*Status (2026-10-29): not implemented. AI always replies in Ukrainian regardless of the UI language; see bug report BR-003 in `Bug_reports.md`.*
 
 **LF-007.** Switching the UI language shall not automatically translate user-entered plant data already stored in the list.
 
 **LF-008.** Using the language switcher shall not cause header controls to shift or resize unexpectedly.
+
+**LF-009.** The `lang` attribute of the page shall follow the selected language (`uk` / `en`).
+
+**LF-010.** Dates shown in the UI shall be formatted according to the selected language (e.g. «15 черв.» in Ukrainian, «Jun 15» in English).
 
 ### Acceptance Criteria
 
@@ -101,7 +108,7 @@ Allow users to switch the site UI between Ukrainian and English.
 
 **AC-L-04.** When Ukrainian is selected, visible UI labels are displayed in Ukrainian.
 
-**AC-L-05.** AI-generated care suggestions and AI answers are returned in the currently selected language.
+**AC-L-05.** AI-generated care suggestions and AI answers are returned in the currently selected language. *(Not implemented, see BR-003.)*
 
 **AC-L-06.** User-entered plant data is not auto-translated when the UI language is changed.
 
