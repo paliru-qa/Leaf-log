@@ -40,7 +40,7 @@ The project demonstrates how a manual QA engineer can:
 - Caretaker mode
 - photo upload and before/after comparison
 - header, footer, and layout stability across modes and viewports
-- UI language switcher (Ukrainian / English) with localized AI output
+- UI language switcher (Ukrainian / English); AI output is currently Ukrainian only (see bug report BR-003)
 - AI-generated care instructions
 - AI plant problem Q&A
 - shared access and sync limitations

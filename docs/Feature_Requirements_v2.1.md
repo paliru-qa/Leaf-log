@@ -1,4 +1,6 @@
 # Feature Requirements v2.1
+> **Revised 2026-10-29** to match the implemented behavior: filters are the legend chips, not the badges on cards; the Fertilizing Calendar trigger is an icon.
+
 ## Status Filters, Fertilizing Calendar and Reorder Mode Update
 
 ---
@@ -10,15 +12,15 @@ Allow users to filter the main plant list by a single selected status and quickl
 
 ### Requirements
 
-**FL-001.** Status badges on the main plant list shall become clickable filter controls.
+**FL-001.** The status legend chips displayed in the filter row (row 3) shall act as clickable filter controls: Watered, Water, Fertilized, Fertilize (English label «Needs fertilizer»), Do not fertilize. Status badges on plant cards remain non-clickable.
 
-**FL-002.** Clicking a status badge shall filter the visible plant list to show only plants with the same selected status.
+**FL-002.** Clicking a filter chip shall filter the visible plant list to show only plants with that status. A plant matches if its watering status or its fertilizing status equals the selected one.
 
 **FL-003.** Only one status filter may be active at a time.
 
 **FL-004.** Selecting a new status filter shall clear any previously active status filter.
 
-**FL-005.** Clicking the currently active status badge again shall clear the filter and restore the full plant list.
+**FL-005.** Clicking the currently active filter chip again shall clear the filter and restore the full plant list.
 
 **FL-006.** The active filter state shall be visually indicated.
 
@@ -26,7 +28,7 @@ Allow users to filter the main plant list by a single selected status and quickl
 
 **FL-008.** Filtering shall not change plant order within the filtered result set.
 
-**FL-009.** If no plants match the selected filter, the system shall display an empty filtered state.
+**FL-009.** If no plants match the selected filter, the system shall display an empty filtered state with a message and a «Reset filter» button that clears the filter.
 
 **FL-010.** Clicking the site title/logo shall clear any active status filter.
 
@@ -34,17 +36,19 @@ Allow users to filter the main plant list by a single selected status and quickl
 
 **FL-012.** Clicking the site title/logo shall return the user to the default main page showing the full plant list for the current shared list.
 
+**FL-013.** Clicking the site title/logo shall also exit bulk-select mode and reorder mode, and close the Fertilizing Calendar if it is open.
+
 ### Acceptance Criteria
 
-**AC-FL-01.** When the user clicks a status badge such as `Watered`, only plants with that same status are displayed.
+**AC-FL-01.** When the user clicks a filter chip such as `Watered`, only plants with that status are displayed.
 
-**AC-FL-02.** When the user clicks a different status badge, the previous filter is cleared and the new single filter is applied.
+**AC-FL-02.** When the user clicks a different filter chip, the previous filter is cleared and the new single filter is applied.
 
-**AC-FL-03.** When the user clicks the currently active status badge again, the filter is removed and the full plant list is shown.
+**AC-FL-03.** When the user clicks the currently active filter chip again, the filter is removed and the full plant list is shown.
 
 **AC-FL-04.** Two status filters cannot be active at the same time.
 
-**AC-FL-05.** Clicking the site title/logo clears the active filter and exits Caretaker mode.
+**AC-FL-05.** Clicking the site title/logo clears the active filter and exits Caretaker, bulk-select and reorder modes.
 
 **AC-FL-06.** After clicking the site title/logo, the user is returned to the default main list view for the current shared list.
 
@@ -61,9 +65,7 @@ Provide a calendar-based sidebar view for reviewing recorded fertilizing dates a
 
 **FC-002.** In row 3, filter controls shall be displayed on the left and the Fertilizing Calendar trigger shall be displayed on the right.
 
-**FC-003.** The Fertilizing Calendar trigger may be displayed as:
-- a text label `Fertilising Calendar`, or
-- a calendar icon styled in the same color family as the fertilizing badge.
+**FC-003.** The Fertilizing Calendar trigger shall be displayed as a calendar icon button (accessible name «Fertilizing Calendar» / «Календар підживлення») styled in the same color family as the fertilizing badge.
 
 **FC-004.** Activating the Fertilizing Calendar trigger shall open a sidebar.
 
@@ -98,7 +100,7 @@ Provide a calendar-based sidebar view for reviewing recorded fertilizing dates a
 - the new last fertilized date shall be highlighted,
 - the new predicted next fertilizing date shall be highlighted.
 
-**FC-014.** Clicking a highlighted or non-highlighted calendar date may display the list of plant names associated with that selected date in the area below the calendar.
+**FC-014.** Clicking a highlighted or non-highlighted calendar date shall select it and display, below the calendar, the plant names associated with that date, each tagged as «Fertilized» (recorded date) or «Fertilize» (predicted date). Before any date is selected the area shows a hint; for a date without fertilizing the area shows an «empty» message.
 
 **FC-015.** The Fertilizing Calendar shall be view-only and shall not allow direct editing or care actions from the sidebar.
 
@@ -152,7 +154,7 @@ Improve plant reordering usability by preserving the existing tile/card layout a
 
 **RF-002.** In reorder mode, plant cards shall remain visually recognizable by photo and plant name.
 
-**RF-003.** In reorder mode, filter labels shall be hidden.
+**RF-003.** In reorder mode, filter labels shall be hidden together with the Fertilizing Calendar trigger (they share one row), so the calendar is not available while reorder mode is active.
 
 **RF-004.** Enabling reorder mode shall automatically exit Caretaker mode.
 
@@ -186,7 +188,7 @@ Improve plant reordering usability by preserving the existing tile/card layout a
 
 **AC-R-01.** When reorder mode is enabled, the plant list remains in tile/card view.
 
-**AC-R-02.** Filter labels are hidden while reorder mode is active.
+**AC-R-02.** Filter labels and the Fertilizing Calendar trigger are hidden while reorder mode is active.
 
 **AC-R-03.** Caretaker mode and bulk-select mode are exited when reorder mode is enabled.
 

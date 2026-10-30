@@ -112,13 +112,19 @@ test.describe('Режими', () => {
       await expect(app.bulkToggle()).toHaveClass(/active/);
     });
 
-    // Поточна поведінка: кнопки caretaker і bulk НЕ вимикають одна одну
-    // (вмикаються разом). Дока каже «взаємовиключні». Якщо це баг — прибери fixme.
-    test.fixme('caretaker вимикає bulk (за докою; зараз працює інакше)', async ({ app }) => {
-      await app.bulkToggle().click();
+    // Узгоджено: caretaker і bulk сумісні (FR-143). Виняток — «Відмітити всі» вимикає caretaker.
+    test('caretaker і bulk можна вмикати разом', async ({ app }) => {
       await app.caretakerToggle().click();
+      await app.bulkToggle().click();
 
-      await expect(app.bulkToggle()).not.toHaveClass(/active/);
+      await expect(app.caretakerToggle()).toHaveClass(/active/);
+      await expect(app.bulkToggle()).toHaveClass(/active/);
+
+      await app.card('Ліна').click();
+      await expect(app.bulkBar()).toBeVisible();
+      await expect(app.bulkCount()).toContainText('1 обрано');
+      // швидкі кнопки на картці в caretaker-режимі лишаються
+      await expect(app.card('Мона').locator('.qa-btn.water')).toBeVisible();
     });
   });
 });
