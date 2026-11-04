@@ -52,6 +52,8 @@ When Caretaker mode is enabled, the user cannot use bulk-select / bulk-edit styl
 
 ## BR-003 AI replies are always in Ukrainian regardless of the selected UI language
 
+**Status:** Fixed (2026-11-04). `index.html` sends `lang` (`uk` / `en`) with both AI requests; `api/diagnose.js` and `api/generate-instructions.js` ask the model to answer in that language (unknown or missing `lang` falls back to Ukrainian). Covered by tests A5–A7 and `api-ai-language.spec.ts`. To be re-verified manually on the deployed site, because the real model output cannot be checked in automated tests.
+
 ### Summary
 The language switcher changes the interface language, but AI care suggestions and AI answers stay in Ukrainian. Feature Requirements v1.2 (LF-005, LF-006) expect them to follow the selected language.
 

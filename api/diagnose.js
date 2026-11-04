@@ -16,13 +16,15 @@ export default async function handler(req, res) {
     try { body = JSON.parse(body); } catch (e) { body = {}; }
   }
   const { name, latin, room, question } = body || {};
+  // Мова відповіді = мова інтерфейсу. Усе, що не 'en', трактуємо як українську (значення за замовчуванням).
+  const lang = body && body.lang === 'en' ? 'en' : 'uk';
   if (!name || !question) {
-    return res.status(400).json({ error: 'Не вказано назву рослини або питання' });
+    return res.status(400).json({ error: lang === 'en' ? 'Plant name or question is missing' : 'Не вказано назву рослини або питання' });
   }
 
   const systemPrompt =
     'Ти — досвідчений консультант-фітопатолог з догляду за кімнатними й балконними рослинами. ' +
-    'Відповідай українською, стисло і по суті, без вступів, привітань і зайвих пояснень. ' +
+    (lang === 'en' ? 'Відповідай англійською, ' : 'Відповідай українською, ') + 'стисло і по суті, без вступів, привітань і зайвих пояснень. ' +
     'НІКОЛИ не вигадуй факти — якщо симптом неоднозначний, чесно перерахуй 2-3 найімовірніші причини, а не стверджуй одну як точну.';
 
   const userPrompt =
@@ -33,7 +35,8 @@ export default async function handler(req, res) {
     'Дай коротку відповідь у два кроки:\n' +
     '1) Що це, ймовірно, таке — 1-2 найвірогідніші причини (коротко, без розлогих пояснень).\n' +
     '2) Що конкретно робити — 2-3 чіткі дії.\n' +
-    'Максимум 5-6 коротких речень загалом. Без списків із зірочками, просто короткі речення чи речення з номерами. Без вступних фраз типу "Дякую за питання".';
+    'Максимум 5-6 коротких речень загалом. Без списків із зірочками, просто короткі речення чи речення з номерами. Без вступних фраз типу "Дякую за питання".' +
+    (lang === 'en' ? '\n\nIMPORTANT: write the whole answer in English (the question above may be in any language).' : '');
 
   function sleep(ms){ return new Promise(function(resolve){ setTimeout(resolve, ms); }); }
 
@@ -99,13 +102,19 @@ export default async function handler(req, res) {
     if (!lastResult.ok) {
       var errMsg = (lastResult.data && lastResult.data.error && lastResult.data.error.message) || 'Помилка Groq API';
       if (isOverloaded(lastResult)) {
-        errMsg = 'Сервери Groq зараз перевантажені. Спробуй ще раз за хвилину-дві.';
+        errMsg = lang === 'en'
+          ? 'Groq servers are overloaded right now. Please try again in a minute or two.'
+          : 'Сервери Groq зараз перевантажені. Спробуй ще раз за хвилину-дві.';
       }
       return res.status(500).json({ error: errMsg });
     }
 
     if (!text) {
-      return res.status(500).json({ error: 'Groq повернув порожню відповідь після кількох спроб. Спробуй ще раз за хвилину.' });
+      return res.status(500).json({
+        error: lang === 'en'
+          ? 'Groq returned an empty response after several attempts. Please try again in a minute.'
+          : 'Groq повернув порожню відповідь після кількох спроб. Спробуй ще раз за хвилину.'
+      });
     }
 
     return res.status(200).json({ answer: text });

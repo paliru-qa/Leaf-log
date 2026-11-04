@@ -2346,7 +2346,8 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
           name: plant.name,
           latin: plant.latin || '',
           room: plant.room || '',
-          question: question
+          question: question,
+          lang: currentLang
         })
       });
       var data = await r.json();
@@ -2861,7 +2862,8 @@ syncAddPlantDisabledState();
         body: JSON.stringify({
           name: nameVal,
           latin: document.getElementById('latinInput').value.trim(),
-          room: document.getElementById('roomInput').value.trim()
+          room: document.getElementById('roomInput').value.trim(),
+          lang: currentLang
         })
       });
       var data = await r.json();
