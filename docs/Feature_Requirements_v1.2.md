@@ -84,11 +84,11 @@ Allow users to switch the site UI between Ukrainian and English.
 
 **LF-005.** AI-generated care suggestions shall be returned in the currently selected language.
 
-*Status (2026-10-29): not implemented. AI always replies in Ukrainian regardless of the UI language; see bug report BR-003 in `Bug_reports.md`.*
+*Status (2026-11-04): implemented. The client sends the UI language (`lang`) to `/api/generate-instructions` and `/api/diagnose`, and the server asks the model to answer in that language (bug report BR-003, fixed).*
 
 **LF-006.** AI answers in the plant problem/question flow shall be returned in the currently selected language.
 
-*Status (2026-10-29): not implemented. AI always replies in Ukrainian regardless of the UI language; see bug report BR-003 in `Bug_reports.md`.*
+*Status (2026-11-04): implemented. The client sends the UI language (`lang`) to `/api/generate-instructions` and `/api/diagnose`, and the server asks the model to answer in that language (bug report BR-003, fixed).*
 
 **LF-007.** Switching the UI language shall not automatically translate user-entered plant data already stored in the list.
 
@@ -108,7 +108,7 @@ Allow users to switch the site UI between Ukrainian and English.
 
 **AC-L-04.** When Ukrainian is selected, visible UI labels are displayed in Ukrainian.
 
-**AC-L-05.** AI-generated care suggestions and AI answers are returned in the currently selected language. *(Not implemented, see BR-003.)*
+**AC-L-05.** AI-generated care suggestions and AI answers are returned in the currently selected language.
 
 **AC-L-06.** User-entered plant data is not auto-translated when the UI language is changed.
 

@@ -568,7 +568,7 @@ The shared list ID is not a plant field: it is the key under which the list is s
 
 **FR-148.** The Add/Edit plant form shall provide an AI generation action for care suggestions.
 
-**FR-149.** A single AI request shall return:
+**FR-149.** A single AI request, sent together with the selected UI language, shall return:
 - care instructions text;
 - suggested watering interval;
 - suggested fertilizing interval.
@@ -595,7 +595,7 @@ The shared list ID is not a plant field: it is the key under which the list is s
 
 **FR-157.** If the question field is empty, the system shall show an alert and shall not send the AI request.
 
-**FR-158.** The AI answer shall be displayed in the UI.
+**FR-158.** The AI answer shall be displayed in the UI, in the language selected in the interface (Ukrainian or English).
 
 **FR-159.** The AI answer shall be ephemeral and shall not be stored in plant data.
 
@@ -713,7 +713,7 @@ The shared list ID is not a plant field: it is the key under which the list is s
 
 **KL-012.** The bulk action bar summary may list only «fertilizing» although the last watered date is updated as well (fertilizing implies watering).
 
-**KL-013.** AI care suggestions and AI answers are always in Ukrainian: the language is hard-coded in the server prompts and the UI language is not sent to the API. This conflicts with LF-005 / LF-006 (see bug report BR-003 in `Bug_reports.md`).
+**KL-013.** *(Resolved 2026-11-04.)* AI care suggestions and AI answers used to be always in Ukrainian. The client now sends the selected UI language to the API and the server prompts ask for that language (LF-005 / LF-006; bug report BR-003). The model is instructed, not forced: occasional wording in the other language cannot be ruled out.
 
 ---
 
@@ -761,7 +761,7 @@ This document reflects the current implemented behavior of the project and can b
 | Bulk | FR-104, FR-110, FR-116, FR-118, FR-175, BR-009, KL-012 | Summary line, «Select all», fertilizing implies watering |
 | Undo | FR-124 | Toast text and close button |
 | Caretaker | FR-138, FR-143, FR-145, FR-176 | «Add plant» disabled instead of hidden; Caretaker and bulk modes are compatible |
-| AI | FR-154, FR-177 … FR-179, KL-013 | Automatic suggestion on name blur, overwrite confirm, Ask AI states; AI language gap |
+| AI | FR-154, FR-177 … FR-179, KL-013 | Automatic suggestion on name blur, overwrite confirm, Ask AI states; AI language gap (fixed 2026-11-04) |
 | Sync | FR-165, FR-180, NFR-010, KL-009 | Local storage fallback and save-failure alert |
 | Language | NFR-002 | UI is available in two languages |
 | Filters | BR-003, KL-010 | Filtering is done through legend chips |

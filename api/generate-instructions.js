@@ -16,8 +16,10 @@ export default async function handler(req, res) {
     try { body = JSON.parse(body); } catch (e) { body = {}; }
   }
   const { name, latin, room } = body || {};
+  // Мова результату = мова інтерфейсу. Усе, що не 'en', трактуємо як українську (значення за замовчуванням).
+  const lang = body && body.lang === 'en' ? 'en' : 'uk';
   if (!name) {
-    return res.status(400).json({ error: 'Не вказано назву рослини' });
+    return res.status(400).json({ error: lang === 'en' ? 'Plant name is missing' : 'Не вказано назву рослини' });
   }
 
   // Список добрив, які реально є в наявності — онови тут, якщо асортимент зміниться.
@@ -52,8 +54,26 @@ export default async function handler(req, res) {
     '- Помідор у горщику (овоч) → "Підходить для томатів і розсади."\n\n' +
     'Якщо ідеальний тип і наявний варіант — ОДНЕ Й ТЕ САМЕ формулювання, пиши лише один раз ("Підходить X"), НІКОЛИ не повторюй ту саму назву двічі як "Ідеально — X, з наявного — X".';
 
+
+  // Для англійського інтерфейсу: промпт лишається українським (він налаштований і стабільний),
+  // але формат результату і назви добрив подаємо англійською.
+  const EN_OUTPUT_RULES =
+    '\n\nOUTPUT LANGUAGE — ENGLISH. The instructions above are written in Ukrainian, but the value of the "instructions" field MUST be written in natural English, in the same short telegraphic style (do not mix languages and do not output Ukrainian words). ' +
+    'The style examples above are in Ukrainian: produce equivalent English phrasing. ' +
+    'Translate the fertilizer names like this: ' +
+    '"для троянд" = "for roses", ' +
+    '"для томатів і розсади" = "for tomatoes and seedlings", ' +
+    '"для середземноморських" = "for Mediterranean plants", ' +
+    '"для пальм і зелених рослин" = "for palms and green foliage plants", ' +
+    '"для гортензій" = "for hydrangeas"; ideal types: ' +
+    '"для кактусів і сукулентів" = "for cacti and succulents", "для орхідей" = "for orchids", ' +
+    '"для квітучих кімнатних рослин" = "for flowering houseplants", "для цитрусових/середземноморських" = "for citrus/Mediterranean plants", ' +
+    '"для овочів" = "for vegetables", "для зелені" = "for foliage plants", "для рослин з кислим ґрунтом" = "for acid-loving plants". ' +
+    'Fertilizer sentence patterns in English: exact match → "Suitable: <available option>."; substitution → "Ideal: <ideal type>; closest available: <available option>."; ' +
+    '"не удобрювати" = "do not fertilize". Keys of the JSON object stay exactly: instructions, water_days, fert_days.';
+
   const systemPrompt =
-    'Ти пишеш стислі, але ЗМІСТОВНІ нотатки з догляду за рослинами для себе, українською. ' +
+    'Ти пишеш стислі, але ЗМІСТОВНІ нотатки з догляду за рослинами для себе, ' + (lang === 'en' ? 'англійською' : 'українською') + '. ' +
     'НЕ пояснюй чому і навіщо. НЕ пиши повних речень з підметом і присудком типу "рослина любить...", "полив повинен бути...". ' +
     'НАЙВАЖЛИВІШЕ ПРАВИЛО — ТОЧНІСТЬ: НІКОЛИ не вигадуй факти. Якщо не впевнений на 100% щодо конкретної властивості виду ' +
     '(особливо про оприскування — це часто плутають), просто НЕ згадуй її, а візьми іншу деталь, у якій ти впевнений. ' +
@@ -72,7 +92,8 @@ export default async function handler(req, res) {
     'ВИБІР ДОБРИВА — дотримуйся СУВОРО цієї таблиці відповідності, щоб результат був однаковим щоразу для одного й того ж виду:\n' +
     FERTILIZER_MAPPING + '\n\n' +
     'У полі "instructions" сформулюй це одним коротким реченням: якщо ідеальний тип точно збігається з наявним — просто "Підходить <варіант зі списку>." ' +
-    'Якщо це заміна — "Ідеально — <ідеальний тип>, з наявного — <варіант зі списку>."';
+    'Якщо це заміна — "Ідеально — <ідеальний тип>, з наявного — <варіант зі списку>."' +
+    (lang === 'en' ? EN_OUTPUT_RULES : '');
 
   const userPrompt =
     `Рослина: "${name}"` +
@@ -83,7 +104,8 @@ export default async function handler(req, res) {
     'Потім у тому ж полі додай ще одне окреме речення про добриво за описаним вище двокроковим підходом (ідеальний тип + найближчий наявний варіант). ' +
     'Речення в "instructions" розділяй крапкою з комою або новим рядком.\n\n' +
     'Заповни "water_days" і "fert_days" реалістичними числами для цього виду.\n\n' +
-    'Поверни рівно один JSON-об\'єкт з трьома ключами: instructions, water_days, fert_days. Нічого більше.';
+    'Поверни рівно один JSON-об\'єкт з трьома ключами: instructions, water_days, fert_days. Нічого більше.' +
+    (lang === 'en' ? '\n\nIMPORTANT: write the "instructions" value in English.' : '');
 
   function extractJson(text){
     var trimmed = text.trim();
@@ -167,13 +189,19 @@ export default async function handler(req, res) {
     if (!lastResult.ok) {
       var errMsg = (lastResult.data && lastResult.data.error && lastResult.data.error.message) || 'Помилка Groq API';
       if (isOverloaded(lastResult)) {
-        errMsg = 'Сервери Groq зараз перевантажені. Це тимчасово — спробуй ще раз за хвилину-дві.';
+        errMsg = lang === 'en'
+          ? 'Groq servers are overloaded right now. This is temporary — please try again in a minute or two.'
+          : 'Сервери Groq зараз перевантажені. Це тимчасово — спробуй ще раз за хвилину-дві.';
       }
       return res.status(500).json({ error: errMsg });
     }
 
     if (!text) {
-      return res.status(500).json({ error: 'Groq повернув порожню відповідь після кількох спроб. Спробуй ще раз за хвилину.' });
+      return res.status(500).json({
+        error: lang === 'en'
+          ? 'Groq returned an empty response after several attempts. Please try again in a minute.'
+          : 'Groq повернув порожню відповідь після кількох спроб. Спробуй ще раз за хвилину.'
+      });
     }
 
     var parsed = extractJson(text);
