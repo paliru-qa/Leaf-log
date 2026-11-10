@@ -509,6 +509,7 @@ main{
 .field label{ display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--text-muted); margin-bottom:6px; }
 .instructions-label-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
 .instructions-label-row label{ margin-bottom:0; }
+.field-hint{ margin-top:4px; font-size:12px; line-height:1.35; color:var(--text-muted); }
 .ai-generate-btn{ font-size:12px; font-weight:700; color:var(--accent-dark); background:var(--accent-soft); border:1px solid var(--accent); border-radius:999px; padding:5px 12px; white-space:nowrap; }
 .ai-generate-btn:disabled{ opacity:.6; cursor:default; }
 .field input.ai-loading{ background:var(--accent-soft); border-color:var(--accent); transition:background .2s ease; }
@@ -858,6 +859,7 @@ main{
       <div class="field">
         <label for="nameInput" data-i18n="nameLabel">Назва рослини *</label>
         <input type="text" id="nameInput" required data-i18n-placeholder="namePlaceholder" placeholder="напр. Monstera">
+        <div class="field-hint" id="nameLangHint" role="note" hidden></div>
       </div>
       <div class="field-row">
         <div class="field">
@@ -1064,6 +1066,7 @@ main{
       formTitleEdit: 'Редагувати рослину',
       photoFieldLabel: 'Фото (можна кілька — щоб порівнювати до/після)',
       nameLabel: 'Назва рослини *',
+      nameLangHint: 'Зміна застосується лише до української версії',
       namePlaceholder: 'напр. Monstera',
       latinLabel: 'Латинська назва',
       latinPlaceholder: "необов'язково",
@@ -1164,6 +1167,7 @@ main{
       formTitleEdit: 'Edit plant',
       photoFieldLabel: 'Photos (you can add several — to compare before/after)',
       nameLabel: 'Plant name *',
+      nameLangHint: 'This change applies to the English version only',
       namePlaceholder: 'e.g. Monstera',
       latinLabel: 'Latin name',
       latinPlaceholder: 'optional',
@@ -1247,12 +1251,19 @@ main{
   // Локалізований контент рослини (LC-010 … LC-012): в англійському інтерфейсі показуємо
   // англійську версію, якщо вона заповнена (пробіли = порожньо), інакше оригінал.
   // Для кожного поля окремо. В українському інтерфейсі завжди оригінал.
-  function localizedText(base, en){
-    if(currentLang === 'en' && typeof en === 'string' && en.trim()) return en;
+  function localizedTextFor(lang, base, en){
+    if(lang === 'en' && typeof en === 'string' && en.trim()) return en;
     return base;
   }
+  function localizedText(base, en){ return localizedTextFor(currentLang, base, en); }
   function plantName(p){ return localizedText(p.name, p.nameEn); }
   function plantInstructions(p){ return localizedText(p.instructions, p.instructionsEn); }
+
+  // Переклад за явно заданою мовою (форма фіксує мову на час відкриття, LC-021)
+  function tFor(lang, key){
+    var dict = I18N[lang] || I18N.uk;
+    return dict[key] !== undefined ? dict[key] : (I18N.uk[key] !== undefined ? I18N.uk[key] : key);
+  }
 
   function applyStaticI18n(){
     document.querySelectorAll('[data-i18n]').forEach(function(el){
@@ -2744,11 +2755,30 @@ syncAddPlantDisabledState();
   formOverlay.addEventListener('mousedown', function(e){ formMouseDownOnBackdrop = (e.target === formOverlay); });
   formOverlay.addEventListener('click', function(e){ if(e.target === formOverlay && formMouseDownOnBackdrop) closeForm(); });
 
+  // Мова форми фіксується при відкритті (LC-021): в UA-формі редагуються name/instructions,
+  // в EN-формі — nameEn/instructionsEn (LC-020).
+  var formLang = 'uk';
+  var formInitialName = '';
+  var nameLangHint = document.getElementById('nameLangHint');
+
+  function updateNameLangHint(){
+    var changed = !!editingId && document.getElementById('nameInput').value.trim() !== formInitialName.trim();
+    nameLangHint.hidden = !changed;
+    if(changed) nameLangHint.textContent = tFor(formLang, 'nameLangHint');
+  }
+  document.getElementById('nameInput').addEventListener('input', updateNameLangHint);
+
   function openForm(plant){
     editingId = plant ? plant.id : null;
+    formLang = currentLang;
     pendingPhotos = plant && plant.photos ? plant.photos.slice() : [];
     formTitle.textContent = plant ? t('formTitleEdit') : t('formTitleAdd');
-    document.getElementById('nameInput').value = plant ? plant.name : '';
+    var shownName = plant ? localizedTextFor(formLang, plant.name, plant.nameEn) : '';
+    document.getElementById('nameInput').value = shownName;
+    formInitialName = shownName;
+    // В англійській формі редагування назву можна очистити: тоді знову покажеться оригінал (LC-024)
+    document.getElementById('nameInput').required = !(plant && formLang === 'en');
+    nameLangHint.hidden = true;
     document.getElementById('latinInput').value = plant ? (plant.latin || '') : '';
     document.getElementById('roomInput').value = plant ? (plant.room || '') : '';
     document.getElementById('waterFreqInput').value = plant ? (plant.waterFreq || 7) : 7;
@@ -2756,7 +2786,7 @@ syncAddPlantDisabledState();
     fertEnabledCheckbox.checked = plant ? !!plant.fertEnabled : true;
     document.getElementById('fertFreqInput').value = plant ? (plant.fertFreq || 30) : 30;
     document.getElementById('lastFertilizedInput').value = plant ? (plant.lastFertilized || todayISO()) : todayISO();
-    document.getElementById('instructionsInput').value = plant ? (plant.instructions || '') : '';
+    document.getElementById('instructionsInput').value = plant ? localizedTextFor(formLang, plant.instructions || '', plant.instructionsEn) : '';
     updatePhotoThumbs();
     fertFields.style.display = fertEnabledCheckbox.checked ? 'flex' : 'none';
     deleteBtn.hidden = !plant;
@@ -2874,7 +2904,7 @@ syncAddPlantDisabledState();
           name: nameVal,
           latin: document.getElementById('latinInput').value.trim(),
           room: document.getElementById('roomInput').value.trim(),
-          lang: currentLang
+          lang: formLang
         })
       });
       var data = await r.json();
@@ -2919,7 +2949,9 @@ syncAddPlantDisabledState();
   plantForm.addEventListener('submit', async function(e){
     e.preventDefault();
     var name = document.getElementById('nameInput').value.trim();
-    if(!name){ document.getElementById('nameInput').focus(); return; }
+    var existing = editingId ? plants.find(function(p){ return p.id === editingId; }) : null;
+    var enEdit = formLang === 'en' && !!existing;
+    if(!name && !enEdit){ document.getElementById('nameInput').focus(); return; }
     var data = {
       id: editingId || uid(),
       name: name,
@@ -2933,6 +2965,29 @@ syncAddPlantDisabledState();
       lastFertilized: document.getElementById('lastFertilizedInput').value || todayISO(),
       instructions: document.getElementById('instructionsInput').value.trim()
     };
+    // Англійська версія (LC-022 … LC-027). Інші поля цього запису форма не чіпає.
+    function englishVersion(entered, original){
+      return entered && entered !== String(original || '').trim() ? entered : '';
+    }
+    if(existing){
+      if(enEdit){
+        // EN-форма: оригінал не змінюється, пишемо лише nameEn / instructionsEn
+        var enName = englishVersion(name, existing.name);
+        var enInstr = englishVersion(data.instructions, existing.instructions);
+        data.name = existing.name;
+        data.instructions = existing.instructions || '';
+        if(enName) data.nameEn = enName;
+        if(enInstr) data.instructionsEn = enInstr;
+      } else {
+        // UA-форма: англійська версія лишається як була
+        if(existing.nameEn) data.nameEn = existing.nameEn;
+        if(existing.instructionsEn) data.instructionsEn = existing.instructionsEn;
+      }
+    } else if(formLang === 'en'){
+      // Нова рослина в EN-інтерфейсі: введене стає і оригіналом, і англійською версією (LC-026)
+      data.nameEn = name;
+      if(data.instructions) data.instructionsEn = data.instructions;
+    }
     if(editingId){
       var idx = plants.findIndex(function(p){ return p.id === editingId; });
       if(idx > -1) plants[idx] = data;
