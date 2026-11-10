@@ -21,6 +21,7 @@ The project demonstrates how a manual QA engineer can:
 - `docs/Functional_Requirements_v2_0.md`
 - `docs/Feature_Requirements_v1.2.md` — header layout, language switcher, footer
 - `docs/Feature_Requirements_v2.1.md` — status filters, fertilizing calendar, reorder mode update
+- `docs/Feature_Requirements_v3.0.md` — Select All button for bulk plant selection
 - `docs/Test_Plan.md` (v2.2)
 - `docs/Check_List.md` (v2.2)
 - `docs/test-cases-v1.0.md` (pending update to match v2.2 scope)
