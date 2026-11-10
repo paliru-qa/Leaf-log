@@ -33,6 +33,9 @@ export type Plant = {
   fertFreq: number;
   lastFertilized: string;
   instructions: string;
+  /** Англійська версія (LC-001): необов'язкові поля. */
+  nameEn?: string;
+  instructionsEn?: string;
 };
 
 let plantCounter = 0;
