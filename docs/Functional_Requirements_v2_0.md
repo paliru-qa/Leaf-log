@@ -1,9 +1,10 @@
 # Functional Requirements
-## Version 2.0
+## Version 2.1
 
 **Status:** Final Draft  
 **Source:** Reverse-engineered from implemented UI and confirmed current behavior  
-**Last revised:** 2026-10-29 — aligned with the implemented behavior, including the changes described in Feature Requirements v1.2 and v2.1 (see [Revision Notes](#25-revision-notes))
+**Last revised:** 2026-11-09 — v2.1 adds English versions of the plant name and care instructions (Feature Requirements v3.1, **not implemented yet**); the rest is aligned with the implemented behavior (see [Revision Notes](#25-revision-notes))  
+**File name:** the file keeps the name `Functional_Requirements_v2_0.md`; the version inside the document is 2.1
 
 ---
 
@@ -79,6 +80,7 @@ The current version includes:
 - AI-generated care suggestions;
 - AI plant problem Q&A;
 - UI language switcher (Ukrainian / English);
+- optional English version of the plant name and care instructions (planned, see Feature Requirements v3.1);
 - status filtering through legend chips;
 - fertilizing calendar;
 - footer with shared-list actions.
@@ -185,7 +187,7 @@ Each plant record shall support the following fields.
 
 ### 6.1 Required Field
 
-**FR-023.** Plant name shall be required.
+**FR-023.** Plant name (the original name, `name`) shall be required.
 
 ### 6.2 Optional Fields
 
@@ -198,7 +200,8 @@ Each plant record shall support the following fields.
 - fertilizing enabled flag;
 - fertilizing interval in days;
 - last fertilized date;
-- care instructions.
+- care instructions;
+- English version of the plant name and of the care instructions (`nameEn`, `instructionsEn`; planned, see FR-181 and Feature Requirements v3.1).
 
 ### 6.3 System Fields
 
@@ -250,7 +253,7 @@ The shared list ID is not a plant field: it is the key under which the list is s
 
 **FR-037.** The system shall allow the user to open the Edit Plant form for an existing plant.
 
-**FR-038.** When editing a plant, the form shall be prefilled with the current plant data.
+**FR-038.** When editing a plant, the form shall be prefilled with the current plant data. *(Planned, see FR-182: the name and care instructions fields are prefilled in the language of the interface.)*
 
 **FR-039.** The system shall allow the user to modify any editable plant field.
 
@@ -259,6 +262,14 @@ The shared list ID is not a plant field: it is the key under which the list is s
 **FR-041.** The system shall allow users to manually type date values or select them through the date picker, subject to browser behavior.
 
 **FR-042.** After saving changes, the system shall update the plant data in the current list.
+
+**FR-181.** *(Planned.)* A plant may have an English version of the name (`nameEn`) and of the care instructions (`instructionsEn`). In the English UI the system shall show the English version when it is not empty and the original otherwise, for each field independently. In the Ukrainian UI the original is always shown. The rule applies to plant cards, the detail view, the before/after comparison, the fertilizing calendar and the Ask AI request (Feature Requirements v3.1, LC-010 … LC-016).
+
+**FR-182.** *(Planned.)* The Add/Edit form edits the version of the name and care instructions that matches the UI language at the moment the form is opened (original in the Ukrainian UI, English version in the English UI). The form language is fixed while the form is open (LC-020 … LC-026).
+
+**FR-183.** *(Planned.)* Saving a plant shall not remove or change `nameEn` / `instructionsEn` unless they are edited in the English form. In the English form the value is stored only when it is not empty and differs from the original; otherwise the English version is removed (LC-022 … LC-028).
+
+**FR-184.** *(Planned.)* In the Edit form, when the name is changed, a hint shall be shown under the name field saying that the change applies only to the version of the language of the form (UA: «Зміна застосується лише до української версії», EN: «This change applies to the English version only»). The hint does not block saving (LC-030 … LC-032).
 
 **FR-043.** After saving changes, the form shall close automatically.
 
@@ -573,7 +584,7 @@ The shared list ID is not a plant field: it is the key under which the list is s
 - suggested watering interval;
 - suggested fertilizing interval.
 
-**FR-150.** AI-generated suggestions shall populate the corresponding form fields only.
+**FR-150.** AI-generated suggestions shall populate the corresponding form fields only. *(Planned: in the English form the generated instructions fill the English instructions field, see LC-040 … LC-042.)*
 
 **FR-151.** AI-generated suggestions shall not be saved automatically.
 
@@ -629,7 +640,7 @@ The shared list ID is not a plant field: it is the key under which the list is s
 
 ## 21. Business Rules
 
-**BR-001.** Plant name is the only required form field.
+**BR-001.** Plant name is the only required form field. *(Planned exception: in the English Edit form the name may be left empty, then the original name is shown, see LC-024.)*
 
 **BR-002.** Shared lists are anonymous and are identified only by the `id` URL parameter.
 
@@ -715,6 +726,14 @@ The shared list ID is not a plant field: it is the key under which the list is s
 
 **KL-013.** *(Resolved 2026-11-04.)* AI care suggestions and AI answers used to be always in Ukrainian. The client now sends the selected UI language to the API and the server prompts ask for that language (LF-005 / LF-006; bug report BR-003). The model is instructed, not forced: occasional wording in the other language cannot be ruled out.
 
+**KL-014.** *(Planned feature.)* Nothing is translated automatically. A plant that has no English version shows the original name and instructions in the English UI (LF-007, LC-011).
+
+**KL-015.** *(Planned feature.)* Editing the name or instructions in one language does not update the other language. Only a change of the name shows a hint (FR-184); there is no hint for the instructions.
+
+**KL-016.** *(Planned feature.)* Latin name and room / location are not localized (LC-004).
+
+**KL-017.** *(Planned feature.)* The English Edit form is prefilled with the original text when there is no English version, so it may show Ukrainian text. The form language is fixed while the form is open (LC-021, LC-023).
+
 ---
 
 ## 24. Summary
@@ -732,6 +751,7 @@ The current version of LeafLOG includes the following core modules:
 - AI-generated care suggestions;
 - AI plant problem Q&A;
 - UI language switcher (UA / EN);
+- English version of the plant name and care instructions (planned);
 - status filters;
 - fertilizing calendar;
 - footer with shared-list actions.
@@ -765,3 +785,13 @@ This document reflects the current implemented behavior of the project and can b
 | Sync | FR-165, FR-180, NFR-010, KL-009 | Local storage fallback and save-failure alert |
 | Language | NFR-002 | UI is available in two languages |
 | Filters | BR-003, KL-010 | Filtering is done through legend chips |
+
+**Revision of 2026-11-09 (version 2.1).** Requirements for the planned feature «English version of plant name and care instructions» were added. The feature is described in detail in `Feature_Requirements_v3.1.md` (IDs `LC-*`); this document only carries the summary requirements and limitations. Nothing in the implemented behavior changed in this revision.
+
+| Area | Changed / added IDs | What changed |
+|---|---|---|
+| Scope | 2.1, 24 | Planned English version of name and instructions |
+| Plant record | FR-023, FR-024, BR-001 | New optional fields `nameEn`, `instructionsEn`; name stays required in the original language |
+| Form | FR-038, FR-150, FR-182 … FR-184 | Form works in the language of the UI; hint when the name changes; AI fills the instructions of the form language |
+| Display | FR-181 | Fallback rule «English if filled, otherwise original» |
+| Limitations | KL-014 … KL-017 | No automatic translation, one-sided edits, Latin name and room not localized, form prefilled with original |

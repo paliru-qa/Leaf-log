@@ -1,11 +1,11 @@
 # Test Plan
 ## LeafLOG Web Application
 
-**Version:** 2.2  
+**Version:** 2.3  
 **Status:** Draft  
 **Application Under Test:** LeafLOG  
 **Test Environment URL:** https://leaf-log-six.vercel.app/?id=rycu0sei  
-**Reference Documents:** Functional Requirements v2.0, Feature Requirements v1.2, Feature Requirements v2.1  
+**Reference Documents:** Functional Requirements v2.0, Feature Requirements v1.2, Feature Requirements v2.1, Feature Requirements v3.1 (planned feature, Feature 8)  
 **Test Basis:** Reverse-engineered implemented behavior from live application UI
 
 ---
@@ -169,6 +169,18 @@ The following functional areas are included in test scope:
     - refresh-based visibility of remote changes
     - last-write-wins behavior
 
+20. **English Version of Plant Name and Care Instructions** *(planned feature, Feature Requirements v3.1; test after implementation)*
+    - English UI shows `nameEn` / `instructionsEn` when non-empty (whitespace counts as empty), otherwise the original, per field independently
+    - Ukrainian UI always shows the original
+    - all display places: plant card (name, alt text, Caretaker instructions), detail view, before/after comparison, fertilizing calendar, Ask AI request
+    - Edit form in English UI: prefill, optional name, saving only non-empty values that differ from the original
+    - Edit form in Ukrainian UI: original values, English version preserved
+    - Add form in English UI: entered values saved to both the original and the English field
+    - hint under the name field when the name is changed in one language only
+    - AI instruction generation in the form follows the form language
+    - English fields preserved by every other save (care actions, bulk, Caretaker, reorder, reload)
+    - shared list: English version visible to every session
+
 ### 3.2 Out of Scope
 
 The following items are out of scope for this test cycle because they are not part of the current implementation:
@@ -224,7 +236,8 @@ The following items will be tested:
 - fertilizing calendar rendering, navigation, and interaction;
 - AI-assisted instruction generation;
 - AI question-answer flow;
-- shared access limitations.
+- shared access limitations;
+- English version of plant name and care instructions (after implementation).
 
 ### 5.2 UI/UX Behavior
 - visibility and hiding of controls depending on mode;
@@ -239,7 +252,8 @@ The following items will be tested:
 - persistence after refresh;
 - discard behavior after closing form without save;
 - session-scoped undo limitation;
-- selected language persistence.
+- selected language persistence;
+- persistence of `nameEn` / `instructionsEn` after save, reload and unrelated plant updates.
 
 ---
 
@@ -269,6 +283,7 @@ This test cycle will use:
 - **state transition testing**
 - **localization spot-checking**
 - **basic regression testing**
+- **automated regression** (Playwright, API mocked) for the English-version feature, in addition to manual checks
 
 ### 7.2 Test Design Techniques
 The following test design techniques will be applied where relevant:
@@ -281,7 +296,7 @@ The following test design techniques will be applied where relevant:
 - exploratory scenario-based testing.
 
 ### 7.3 Testing Strategy
-Testing will be executed module by module using Functional Requirements v2.0, Feature Requirements v1.2, and Feature Requirements v2.1 as the baseline.  
+Testing will be executed module by module using Functional Requirements v2.0 (content version 2.1), Feature Requirements v1.2, Feature Requirements v2.1, and Feature Requirements v3.1 as the baseline.  
 For each functional area, testing will cover:
 
 - positive flows;
@@ -299,6 +314,7 @@ Special attention will be paid to:
 - ephemeral AI response behavior;
 - non-persistent UI states after refresh;
 - consistency of behavior and labels across both supported languages;
+- English version of plant data: fallback to the original, no loss of English fields on unrelated saves;
 - correct mutual exclusivity between Caretaker, bulk-select, and reorder modes.
 
 ---
@@ -457,6 +473,9 @@ Test data should include plant records with combinations such as:
 - plant with multiple photos;
 - plant with no last watered date;
 - plant with no last fertilized date;
+- plant with an English version of the name and instructions (`nameEn`, `instructionsEn`);
+- plant with only one of the two English fields filled;
+- plant with an English field containing only whitespace;
 - plant with interval values left empty;
 - plant with interval value `0`;
 - plant with negative interval value;
@@ -472,6 +491,8 @@ Example test data set:
 - Orchid Zero Interval
 - Fern Negative Interval
 - Palm Group A / B / C (shared fertilizing date, for calendar intensity testing)
+- Monstera Bilingual (`name` in Ukrainian, `nameEn`, `instructions` and `instructionsEn` filled)
+- Ficus Name Only (`nameEn` filled, `instructionsEn` empty)
 
 ### 13.3 AI Test Data
 - valid plant name only
@@ -480,6 +501,7 @@ Example test data set:
 - non-empty plant problem question
 - question with symptoms text
 - AI requests executed in both Ukrainian and English UI language
+- instruction generation from the Edit form in English UI, with and without existing instructions (overwrite confirmation)
 
 ---
 
@@ -500,8 +522,9 @@ The expected QA deliverables for this project are:
 - Functional Requirements v2.0
 - Feature Requirements v1.2
 - Feature Requirements v2.1
-- Test Plan v2.2
-- Checklist v2.2
+- Feature Requirements v3.1
+- Test Plan v2.3
+- Checklist v2.3
 - Detailed Test Cases (updated)
 - Bug Reports / Known Issues
 - Test Summary Report
@@ -553,7 +576,7 @@ Suggested priority model:
 - AI backend model availability may change (e.g. provider deprecating a model), affecting AI-dependent scenarios.
 
 ### 17.2 Assumptions
-- the current Functional Requirements v2.0 and Feature Requirements v1.2 / v2.1 correctly reflect implemented behavior;
+- the current Functional Requirements v2.0 and Feature Requirements v1.2 / v2.1 correctly reflect implemented behavior; Feature Requirements v3.1 describes a feature that is not live until it is released;
 - the provided test URL remains accessible during the test cycle;
 - browser-native date input behavior is acceptable if functionally consistent with requirements;
 - AI correctness is evaluated only from integration/behavior perspective, not botanical accuracy;
@@ -574,6 +597,7 @@ Testing shall be traceable to:
 - Status Filter Requirements (`FL-*`)
 - Fertilizing Calendar Requirements (`FC-*`)
 - Reorder Mode Update Requirements (`RF-*`)
+- Localized Content Requirements (`LC-*`, `AC-LC-*`, Feature Requirements v3.1)
 
 Each checklist item and test case should reference related requirement IDs where applicable.
 
@@ -624,6 +648,17 @@ The following high-level scenarios shall be covered:
 39. Validate AI retry behavior when a request initially returns an empty response.
 40. Validate shared access behavior in two separate sessions.
 41. Validate lack of real-time sync and manual refresh requirement.
+42. In English UI, open a plant with English name and instructions and validate the card, detail view, comparison and fertilizing calendar show the English version.
+43. In English UI, open a plant without an English version (or with whitespace only) and validate the original is shown; check each field independently.
+44. In Ukrainian UI, validate the original name and instructions are always shown, even when an English version exists.
+45. Edit a plant in English UI: change the name and instructions, save, and validate the original is unchanged, the English version is shown in English UI and hidden in Ukrainian UI.
+46. Save the Edit form in English UI without changes (and with the name cleared) and validate no English fields are created or the original is shown again.
+47. Edit a plant in Ukrainian UI and validate the English version is preserved after save and reload.
+48. Create a plant in English UI and validate it is stored as both the original and the English version; create one in Ukrainian UI and validate no English version is stored.
+49. Change the name in the Edit form and validate the hint text (language of the form), that it disappears when the original value is restored, and that it never appears in the Add form.
+50. Generate instructions with AI in the English Edit form, confirm the overwrite prompt, and validate the result is English and saved as the English version.
+51. Perform care actions (single, Caretaker, bulk), reorder, and reload, then validate the English version is still there.
+52. Open the same list in a second session and validate it shows the English version after refresh.
 
 ---
 

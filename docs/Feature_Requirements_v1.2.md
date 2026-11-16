@@ -90,7 +90,7 @@ Allow users to switch the site UI between Ukrainian and English.
 
 *Status (2026-11-04): implemented. The client sends the UI language (`lang`) to `/api/generate-instructions` and `/api/diagnose`, and the server asks the model to answer in that language (bug report BR-003, fixed).*
 
-**LF-007.** Switching the UI language shall not automatically translate user-entered plant data already stored in the list.
+**LF-007.** Switching the UI language shall not automatically translate user-entered plant data already stored in the list. The user can add an English version of the plant name and care instructions manually (planned, see Feature Requirements v3.1, Feature 8); the English UI shows it when it is filled.
 
 **LF-008.** Using the language switcher shall not cause header controls to shift or resize unexpectedly.
 
