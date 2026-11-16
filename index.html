@@ -1244,6 +1244,16 @@ main{
     return str;
   }
 
+  // Локалізований контент рослини (LC-010 … LC-012): в англійському інтерфейсі показуємо
+  // англійську версію, якщо вона заповнена (пробіли = порожньо), інакше оригінал.
+  // Для кожного поля окремо. В українському інтерфейсі завжди оригінал.
+  function localizedText(base, en){
+    if(currentLang === 'en' && typeof en === 'string' && en.trim()) return en;
+    return base;
+  }
+  function plantName(p){ return localizedText(p.name, p.nameEn); }
+  function plantInstructions(p){ return localizedText(p.instructions, p.instructionsEn); }
+
   function applyStaticI18n(){
     document.querySelectorAll('[data-i18n]').forEach(function(el){
       el.textContent = t(el.getAttribute('data-i18n'));
@@ -1407,11 +1417,11 @@ main{
     plants.forEach(function(p){
       if(!p.fertEnabled || !p.lastFertilized) return;
       if(!lastMap[p.lastFertilized]) lastMap[p.lastFertilized] = [];
-      lastMap[p.lastFertilized].push(p.name);
+      lastMap[p.lastFertilized].push(plantName(p));
       var freq = p.fertFreq || 30;
       var nextDate = fertCalAddDays(p.lastFertilized, freq);
       if(!nextMap[nextDate]) nextMap[nextDate] = [];
-      nextMap[nextDate].push(p.name);
+      nextMap[nextDate].push(plantName(p));
     });
     return { lastMap: lastMap, nextMap: nextMap };
   }
@@ -2005,7 +2015,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     var cardPhotoUrl = primaryPhotoUrl(plant);
     if(cardPhotoUrl){
       var img = document.createElement('img');
-      img.src = cardPhotoUrl; img.alt = plant.name;
+      img.src = cardPhotoUrl; img.alt = plantName(plant);
       photoWrap.appendChild(img);
       if(plant.photos && plant.photos.length > 1){
         var countBadge = document.createElement('span');
@@ -2029,7 +2039,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
 
     var name = document.createElement('div');
     name.className = 'card-name';
-    name.textContent = plant.name;
+    name.textContent = plantName(plant);
     body.appendChild(name);
 
     var waterRow = document.createElement('div');
@@ -2051,10 +2061,11 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     body.appendChild(fertRow);
 
     if(caretakerMode){
-      if(plant.instructions){
+      var cardInstructions = plantInstructions(plant);
+      if(cardInstructions){
         var instr = document.createElement('div');
         instr.className = 'card-instructions';
-        instr.textContent = plant.instructions;
+        instr.textContent = cardInstructions;
         body.appendChild(instr);
       }
       var qa = document.createElement('div');
@@ -2133,7 +2144,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     var url = photos.length ? photos[Math.min(detailActivePhotoIdx, photos.length - 1)].url : null;
     if(url){
       var img = document.createElement('img');
-      img.src = url; img.alt = plant.name;
+      img.src = url; img.alt = plantName(plant);
       img.style.cursor = 'zoom-in';
       img.addEventListener('click', function(){ openLightbox(url); });
       detailPhotoWrap.appendChild(img);
@@ -2182,7 +2193,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
     }
     compareLink.hidden = photos.length < 2;
 
-    detailName.textContent = plant.name;
+    detailName.textContent = plantName(plant);
     detailLatin.textContent = plant.latin || '';
     detailLatin.style.display = plant.latin ? 'block' : 'none';
     detailRoom.textContent = plant.room || '—';
@@ -2192,7 +2203,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
       ? t('detailFertInfo', {n: plant.fertFreq || 30, date: formatDate(plant.lastFertilized)})
       : t('detailFertOffNow');
 
-    detailInstructions.textContent = plant.instructions || t('detailNoInstructions');
+    detailInstructions.textContent = plantInstructions(plant) || t('detailNoInstructions');
     detailInstructionsBlock.classList.toggle('caretaker-glow', caretakerMode);
 
     waterBtn.textContent = t('waterAction');
@@ -2261,7 +2272,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
         compareGrid.appendChild(arrow);
       }
     });
-    comparePlantName.textContent = plant.name;
+    comparePlantName.textContent = plantName(plant);
 
     var comparable = plants.filter(function(p){ return p.photos && p.photos.length >= 2; });
     var pos = comparable.findIndex(function(p){ return p.id === plant.id; });
@@ -2343,7 +2354,7 @@ try{ ds.handle.releasePointerCapture(ds.pointerId); }catch(err){}
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: plant.name,
+          name: plantName(plant),
           latin: plant.latin || '',
           room: plant.room || '',
           question: question,
