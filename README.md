@@ -25,8 +25,8 @@ The project demonstrates how a manual QA engineer can:
 - `docs/Feature_Requirements_v3.1.md` — English version of plant name and care instructions (planned)
 - `docs/Test_Plan.md` (v2.3)
 - `docs/Check_List.md` (v2.3)
-- `docs/test-cases-v1.0.md` (pending update to match v2.2 scope)
-- `docs/bug-reports.md`
+- `docs/test-cases-v1.0.md` (planned, not in the repository yet)
+- `docs/Bug_reports.md`
 - `assets/screenshots/`
 
 ## Scope Covered
