@@ -23,7 +23,7 @@ The project demonstrates how a manual QA engineer can:
 - `docs/Feature_Requirements_v2.1.md` — status filters, fertilizing calendar, reorder mode update
 - `docs/Feature_Requirements_v3.0.md` — Select All button for bulk plant selection
 - `docs/Feature_Requirements_v3.1.md` — English version of plant name and care instructions (planned)
-- `docs/Test_Plan.md` (v2.2)
+- `docs/Test_Plan.md` (v2.3)
 - `docs/Check_List.md` (v2.2)
 - `docs/test-cases-v1.0.md` (pending update to match v2.2 scope)
 - `docs/bug-reports.md`
