@@ -524,7 +524,7 @@ The expected QA deliverables for this project are:
 - Feature Requirements v2.1
 - Feature Requirements v3.1
 - Test Plan v2.3
-- Checklist v2.2
+- Checklist v2.3
 - Detailed Test Cases (updated)
 - Bug Reports / Known Issues
 - Test Summary Report

@@ -1,11 +1,11 @@
 # Checklist
 ## LeafLOG Web Application
 
-**Version:** 2.2  
+**Version:** 2.3  
 **Status:** Draft  
 **Application Under Test:** LeafLOG  
 **Test Environment URL:** https://leaf-log-six.vercel.app/?id=rycu0sei  
-**Reference Documents:** Functional Requirements v2.0, Feature Requirements v1.2, Feature Requirements v2.1
+**Reference Documents:** Functional Requirements v2.0, Feature Requirements v1.2, Feature Requirements v2.1, Feature Requirements v3.1 (planned feature, Feature 8)
 
 ---
 
@@ -434,7 +434,53 @@
 
 ---
 
-## 24. Non-Functional / General Checks
+## 24. English Version of Plant Name and Care Instructions
+
+*Planned feature (Feature Requirements v3.1, `LC-*`). Check after implementation.*
+
+**Display**
+- [ ] English UI shows the English name and instructions when they are filled
+- [ ] English UI shows the original when the English field is empty or has only whitespace; each field is checked independently
+- [ ] Ukrainian UI always shows the original, even when an English version exists
+- [ ] Plant card, detail view, before/after comparison and fertilizing calendar all follow the same rule
+- [ ] Caretaker card instructions and photo alt text follow the same rule
+- [ ] Ask AI request uses the displayed plant name
+- [ ] Switching the language with detail, comparison or calendar open updates the shown text
+- [ ] Detail view shows the "no instructions" placeholder only when both versions are empty for the current language
+
+**Edit form**
+- [ ] English UI: the form is prefilled with the English version, or the original if there is none
+- [ ] Ukrainian UI: the form is prefilled with the original
+- [ ] English UI: the name field is not required
+- [ ] English UI: a changed name or instructions is saved as the English version, the original stays unchanged
+- [ ] English UI: a value equal to the original (or empty) is not saved as an English version
+- [ ] Saving the form without changes does not create English fields
+- [ ] Ukrainian UI: editing keeps the existing English version
+- [ ] Form language stays the same if the UI language is switched while the form is open
+
+**Add form**
+- [ ] English UI: the entered name and instructions are saved to both the original and the English fields
+- [ ] Ukrainian UI: no English fields are created
+- [ ] English UI: the name stays required
+
+**Name hint**
+- [ ] Hint appears under the name field when the name is changed in the Edit form
+- [ ] Hint text is in the language of the form (UA: Ukrainian version only, EN: English version only)
+- [ ] Hint disappears when the original value is restored
+- [ ] Hint is not shown in the Add form
+- [ ] Hint is not shown again after the form is closed and reopened
+
+**AI and persistence**
+- [ ] AI generation in the English form returns English instructions and fills the English version
+- [ ] AI generation in the Ukrainian form returns Ukrainian instructions and fills the original
+- [ ] Overwrite confirmation is shown when instructions are not empty; Cancel keeps them unchanged
+- [ ] English fields survive single care actions, Caretaker quick actions, bulk actions, reorder and page reload
+- [ ] English fields are removed together with the plant on delete
+- [ ] Another session with the same shared URL shows the English version after refresh
+
+---
+
+## 25. Non-Functional / General Checks
 
 - [ ] App is usable in modern desktop browser
 - [ ] App is usable in mobile browser
@@ -448,7 +494,7 @@
 
 ---
 
-## 25. Regression Focus Areas
+## 26. Regression Focus Areas
 
 - [ ] Add/edit/delete plant regression
 - [ ] Watering status regression (two-state: Watered / Water)
@@ -464,3 +510,4 @@
 - [ ] AI flow regression (care suggestions, Q&A, retry-on-empty behavior)
 - [ ] Shared list persistence regression
 - [ ] Detail view open/close regression
+- [ ] English version of plant name and instructions regression (display fallback, form saving, preservation on other saves)
