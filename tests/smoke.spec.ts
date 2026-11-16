@@ -9,7 +9,7 @@ test.describe('Smoke', () => {
     await expect(page).toHaveTitle(/LeafLOG/);
   });
 
-  test('S2: під час завантаження немає помилок у консолі', { tag: '@smoke' }, async ({ openApp, page }) => {
+  test('SM1: під час завантаження немає помилок у консолі', { tag: '@smoke' }, async ({ openApp, page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
 
@@ -19,7 +19,7 @@ test.describe('Smoke', () => {
     expect(errors).toEqual([]);
   });
 
-  test('S3: порожній список — показується порожній стан без карток', { tag: '@smoke' }, async ({ openApp, app }) => {
+  test('SM2: порожній список — показується порожній стан без карток', { tag: '@smoke' }, async ({ openApp, app }) => {
     await openApp();
 
     await expect(app.emptyState()).toBeVisible();
@@ -27,7 +27,7 @@ test.describe('Smoke', () => {
     await expect(app.addPlantButton()).toBeVisible();
   });
 
-  test('S4: рослини зі списку відображаються картками', { tag: '@smoke' }, async ({ openApp, app }) => {
+  test('SM3: рослини зі списку відображаються картками', { tag: '@smoke' }, async ({ openApp, app }) => {
     await openApp({
       plants: [makePlant({ name: 'Монстера' }), makePlant({ name: 'Фікус' }), makePlant({ name: 'Алое' })],
     });
@@ -36,7 +36,7 @@ test.describe('Smoke', () => {
     await expect(app.cardNames()).toHaveText(['Монстера', 'Фікус', 'Алое']);
   });
 
-  test('S5: кнопки шапки на місці', { tag: '@smoke' }, async ({ openApp, app }) => {
+  test('SM4: кнопки шапки на місці', { tag: '@smoke' }, async ({ openApp, app }) => {
     await openApp({ plants: [makePlant({ name: 'Монстера' })] });
 
     await expect(app.logo()).toBeVisible();
@@ -46,7 +46,7 @@ test.describe('Smoke', () => {
     await expect(app.bulkToggle()).toBeVisible();
   });
 
-  test('S6: «Додати рослину» відкриває форму, закриття ховає її', { tag: '@smoke' }, async ({ openApp, app }) => {
+  test('SM5: «Додати рослину» відкриває форму, закриття ховає її', { tag: '@smoke' }, async ({ openApp, app }) => {
     await openApp();
 
     await app.addPlantButton().click();
@@ -57,7 +57,7 @@ test.describe('Smoke', () => {
     await expect(app.form()).toBeHidden();
   });
 
-  test('S7: клік по картці відкриває деталі, закриття повертає до списку', { tag: '@smoke' }, async ({ openApp, app }) => {
+  test('SM6: клік по картці відкриває деталі, закриття повертає до списку', { tag: '@smoke' }, async ({ openApp, app }) => {
     await openApp({ plants: [makePlant({ name: 'Монстера' })] });
 
     await app.openCard('Монстера');
@@ -67,7 +67,7 @@ test.describe('Smoke', () => {
     await expect(app.cards()).toHaveCount(1);
   });
 
-  test('S8: футер показує підпис і кнопку нового списку', { tag: '@smoke' }, async ({ openApp, page }) => {
+  test('SM7: футер показує підпис і кнопку нового списку', { tag: '@smoke' }, async ({ openApp, page }) => {
     await openApp();
 
     await expect(page.locator('.footer-tagline')).toBeVisible();
