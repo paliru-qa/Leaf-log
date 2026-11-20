@@ -75,3 +75,42 @@ The language switcher changes the interface language, but AI care suggestions an
 ### Notes
 - Code review: the prompts in `api/diagnose.js` and `api/generate-instructions.js` are hard-coded in Ukrainian, and the requests sent from `index.html` do not include the selected language.
 - Related requirements: LF-005, LF-006, AC-L-05; known limitation KL-013.
+
+## BR-005 Oversized “Add plant” icon slows page load
+
+**Status:** Open (re-checked 2026-11-20 on `main`: the file is unchanged).
+
+### Summary
+The "Нова рослина" button icon file is much larger than its displayed size, adding unnecessary weight to every page load.
+
+### Environment
+- URL: https://leaf-log-six.vercel.app/?id=rycu0sei
+- Chrome (latest), DevTools → Network
+- Affected file: `assets/icons/add-plant-mobile-white.png`
+
+### Steps to Reproduce
+1. Open the site with DevTools → Network open, filter "Img", cache disabled.
+2. Reload the page.
+3. Find `add-plant-mobile-white.png` and check its size.
+4. In Elements, check the rendered size of `.add-plant-btn-icon` in the header button.
+
+### Actual Result
+The icon is displayed at a small size, but the source image is much larger than needed. This adds unnecessary download weight on every page load.
+- File size: 1.09 MB (1,141,412 bytes)
+- Image dimensions: 1536 × 1024 px
+- Displayed at: 36×36 px (desktop), 32×32 px (mobile)
+
+### Expected Result
+The icon file is optimized to 30 KB or less, consistent with the other icons in `assets/icons/`, with no visible loss of quality.
+
+### Severity / Priority
+Low / P3 (performance, no functional impact)
+
+### Notes
+- The other icons in `assets/icons/` are 2.5–43 KB; this one is 25–400 times larger.
+- The same file is used twice in `index.html`: in the header button (`#addPlantBtn`, loaded on every page open) and in the empty-state button (`#addFirstPlantBtn`).
+- The source image is not square (1536 × 1024) and is shown in a square box with `object-fit: contain`, so it is scaled down to about 36 × 24 px.
+
+### Verification after fix
+Re-check the file size in the Network tab: 1.09 MB → ≤ 30 KB. Confirm the icon still looks sharp on desktop and on a retina/mobile screen.
+Recommended size for compression: about 72×72 px (2× of 36 px for retina). An icon like this compresses to ~30 KB easily, for example with squoosh.app or TinyPNG.
