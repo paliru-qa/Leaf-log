@@ -96,3 +96,6 @@ The "Нова рослина" button icon file is much larger than its displayed
 
 ### Expected Result
 - The icon file is optimized to **30 KB or less** (about 72×72 px for retina) with no visible loss of quality
+
+### Attachment
+![BR-005 screenshot](../assets/screenshots/br-005-icon-size.png)
