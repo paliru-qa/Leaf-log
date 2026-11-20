@@ -75,3 +75,24 @@ The language switcher changes the interface language, but AI care suggestions an
 ### Notes
 - Code review: the prompts in `api/diagnose.js` and `api/generate-instructions.js` are hard-coded in Ukrainian, and the requests sent from `index.html` do not include the selected language.
 - Related requirements: LF-005, LF-006, AC-L-05; known limitation KL-013.
+
+## BR-005 Oversized “Add plant” icon slows page load
+
+**Status:** Open (re-checked 2026-11-20).
+
+### Summary
+The "Нова рослина" button icon file is much larger than its displayed size and adds unnecessary weight to every page load.
+
+### Steps to Reproduce
+1. Open the site https://leaf-log-six.vercel.app/?id=rycu0sei with DevTools → Network open (filter "Img", cache disabled).
+2. Reload the page.
+3. Find `add-plant-mobile-white.png` (`assets/icons/`) and check its size.
+4. In Elements, check the rendered size of `.add-plant-btn-icon` in the header button.
+
+### Actual Result
+- File size is **1.09 MB** (1536 × 1024 px)
+- The icon is displayed at 36×36 px (desktop) and 32×32 px (mobile)
+- Other icons in `assets/icons/` are 2.5–43 KB
+
+### Expected Result
+- The icon file is optimized to **30 KB or less** (about 72×72 px for retina) with no visible loss of quality
