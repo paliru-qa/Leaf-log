@@ -1,5 +1,6 @@
 # LeafLOG QA Portfolio Project
 
+[![Tests](https://github.com/paliru-qa/Leaf-log/actions/workflows/tests.yml/badge.svg)](https://github.com/paliru-qa/Leaf-log/actions/workflows/tests.yml)
 ![Playwright](https://img.shields.io/badge/Playwright-TypeScript-2EAD33?logo=playwright&logoColor=white)
 ![Automated tests](https://img.shields.io/badge/automated%20tests-120-brightgreen)
 ![Requirements](https://img.shields.io/badge/requirements-184-blue)
@@ -41,7 +42,7 @@ End-to-end QA work on a **live web application**: requirements reverse-engineere
 | Functional requirements | **184** (`FR-001 … FR-184`), plus business rules, known limitations, non-functional requirements |
 | Feature requirement documents | **4**, each with goals, numbered requirements and acceptance criteria |
 | Regression checklist | **364** checks in 26 sections |
-| Automated tests | **120** tests in 13 spec files, **15** tagged `@smoke` |
+| Automated tests | **120** tests in 13 spec files, **15** tagged `@smoke`, run by CI on every PR |
 | Bug reports | **5** (2 fixed, 1 closed as not reproducible, 2 open) |
 | Security review | **7** findings: 2 Medium, 4 Low, 1 Info. No XSS found. |
 
@@ -83,6 +84,10 @@ How it is built:
 - a page object with shared selectors, and `@smoke` tags for a quick post-deploy check.
 
 AI assistance was used to draft tests from the requirements. I review, correct and run them, and keep the checklist as the source of truth.
+
+### Continuous integration
+
+[GitHub Actions](.github/workflows/tests.yml) runs the full suite on every pull request and every push to `main`. It builds from the commit under test (a local static server, API mocked), so a change is checked before it is deployed. The HTML report is attached to each run as an artifact.
 
 ### Run it
 
@@ -163,6 +168,7 @@ Checked without findings: stored and reflected XSS in all user-entered fields an
 │   ├── Check_List.md                        # v2.3
 │   ├── Bug_reports.md
 │   └── Security_Findings.md
+├── .github/workflows/tests.yml              # CI: Playwright on every PR and push to main
 ├── tests/                                   # Playwright suite, fixtures, page object
 ├── assets/screenshots/                      # evidence for bug reports
 ├── index.html, api/, vercel.json            # application under test
